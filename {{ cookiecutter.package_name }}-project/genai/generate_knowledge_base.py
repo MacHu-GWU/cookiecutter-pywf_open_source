@@ -35,6 +35,7 @@ gh_pipeline = GitHubPipeline(
         f"{PACKAGE_NAME}/**/*.py",
         "tests/**/*.py",
         "docs/source/**/index.rst",
+        "docs/source/**/*.py",
     ],
     exclude=[
         f"{PACKAGE_NAME}/tests/**",
@@ -44,6 +45,8 @@ gh_pipeline = GitHubPipeline(
         f"tests/all.py",
         f"tests/**/all.py",
         f"docs/source/index.rst",
+        f"docs/source/release-history.rst",
+        f"docs/source/conf.py",
     ],
     dir_out=dir_tmp,
 )
