@@ -127,18 +127,21 @@ poetry-plugin-export = ">=1.9.0,<2.0.0"
 dev_python = "{{ cookiecutter.dev_python_version }}"
 # github.com account name (for unit test)
 github_account = "{{ cookiecutter.github_username }}"
-# github.com personal access token
+# Create GitHub token in https://github.com/settings/tokens and put the token at
+# ``${HOME}/.github/${github_account}/pac/${github_token_name}.txt``
 github_token_name = "{{ cookiecutter.token_name }}"
 # codecov.io (for code coverage test report) account name
 # If you use GitHub account to login codecov.io, then it is the same as your github account
 codecov_account = "{{ cookiecutter.github_username }}"
-# Codecov personal access token
+# Create Codecov token in https://app.codecov.io/account/gh/${codecov_account}/access and put the token at
+# ``${HOME}/.codecov/github/${codecov_account}/${codecov_token_name}.txt``
 codecov_token_name = "{{ cookiecutter.token_name }}"
 # readthedocs.org user name (for documentation hosting)
 readthedocs_username = "{{ cookiecutter.readthedocs_username }}"
 # Readthedocs project name, usually it is the same as your project name
 readthedocs_project_name = "{{ cookiecutter.package_name }}"
-# Readthedocs personal access token
+# Create Readthedocs token in https://app.readthedocs.org/accounts/tokens/ and put the token at
+# ``${HOME}/.readthedocs/${readthedocs_username}/${readthedocs_token_name}.txt``
 readthedocs_token_name = "{{ cookiecutter.token_name }}"
 
 # Read: https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#declaring-the-build-backend

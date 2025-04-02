@@ -37,11 +37,11 @@ To use a specific released version (see the `full list of release at here <https
 
     cookiecutter https://github.com/MacHu-GWU/cookiecutter-pywf_open_source --checkout tags/${version}
 
-For example, to use ``v1`` (the latest as of 2025-04-02):
+For example, to use ``0.1.1`` (the latest as of 2025-04-02):
 
 .. code-block:: bash
 
-    cookiecutter https://github.com/MacHu-GWU/cookiecutter-pywf_open_source --checkout tags/v1
+    cookiecutter https://github.com/MacHu-GWU/cookiecutter-pywf_open_source --checkout tags/0.1.1
 
 You'll then be prompted to provide the following information:
 
@@ -68,8 +68,20 @@ You'll then be prompted to provide the following information:
 
 This will generate a repository structure similar to `cookiecutter_pywf_open_source_demo-project <https://github.com/MacHu-GWU/cookiecutter_pywf_open_source_demo-project>`_.
 
+
+Variations
+------------------------------------------------------------------------------
 For my personal open source Python projects, I use a custom branch:
 
 .. code-block:: bash
 
     cookiecutter https://github.com/MacHu-GWU/cookiecutter-pywf_open_source --checkout sanhe
+
+
+Project Maintainer Note
+------------------------------------------------------------------------------
+this project follows the best practice mentioned in `THIS DOCUMENT <https://dev-exp-share.readthedocs.io/en/latest/search.html?q=Creating+Reusable+Project+Templates%3A+From+Concept+to+Implementation&check_keywords=yes&area=default>`_.
+
+- **Seed Repository**: `cookiecutter_pywf_open_source_demo-project <https://github.com/MacHu-GWU/cookiecutter_pywf_open_source_demo-project>`_
+- **Automation Library**: `pywf_open_source-project <https://github.com/MacHu-GWU/pywf_open_source-project>`_
+- **Cookiecutter Template**: `cookiecutter-pywf_open_source <https://github.com/MacHu-GWU/cookiecutter-pywf_open_source>`_
