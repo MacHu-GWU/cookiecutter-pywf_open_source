@@ -5,7 +5,7 @@ Generate the AI knowledge base for the project.
 
 .. code-block:: bash
 
-    pip install "docpack>=0.1.1,<1.0.0"
+    pip install "docpack>=0.1.2,<1.0.0"
 """
 
 import shutil
