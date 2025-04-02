@@ -1,6 +1,6 @@
 {
     "package_name": "your_package_name",
-    "github_username": "your_github_username",
+    "github_username": "MacHu-GWU",
     "license": [
         "MIT",
         "AGPL-3.0-or-later",
@@ -11,12 +11,12 @@
         "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
         "License :: Other/Proprietary License"
     ],
-    "author": "Firstname Lastname",
-    "author_email": "firstname.lastname@email.com",
+    "author": "Sanhe Hu",
+    "author_email": "husanhe@gmail.com",
     "version": "0.1.1",
     "dev_python_version": "3.11.8",
-    "token_name": "your_github_codecov_rtd_token_name",
-    "readthedocs_username": "your_readthedocs_username",
+    "token_name": "sanhe-dev",
+    "readthedocs_username": "machugwu",
     "__prompts__": {
         "package_name": "Your Python package name, in snake case (e.g. my_package)",
         "license": "Pick an open source license for pyproject.toml file, see https://choosealicense.com/ for details",
