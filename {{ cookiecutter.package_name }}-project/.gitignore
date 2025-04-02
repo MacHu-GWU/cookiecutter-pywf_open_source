@@ -1,5 +1,5 @@
 # User Settings
-cookiecutter_pyproject_demo.egg-info/
+{{ cookiecutter.package_name }}.egg-info/
 tmp/
 
 
