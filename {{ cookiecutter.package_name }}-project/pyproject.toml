@@ -33,8 +33,8 @@ include = [
 exclude = [
     "*.pyc",
     "*.pyo",
-    "cookiecutter_pyproject_demo/docs/*",
-    "cookiecutter_pyproject_demo/tests/*",
+    "{{ cookiecutter.package_name }}/docs/*",
+    "{{ cookiecutter.package_name }}/tests/*",
 ]
 requires-python = ">=3.9,<4.0"
 # Full list of classifiers: https://pypi.org/classifiers/
