@@ -1,0 +1,45 @@
+{
+    "package_name": "your_package_name",
+    "github_username": "your_github_username",
+    "license": [
+        "MIT",
+        "AGPL-3.0-or-later",
+        "Proprietary"
+    ],
+    "license_classifier": [
+        "License :: OSI Approved :: MIT License",
+        "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
+        "License :: Other/Proprietary License"
+    ],
+    "author": "Firstname Lastname",
+    "author_email": "firstname.lastname@email.com",
+    "version": "0.1.1",
+    "dev_python_version": "3.11.8",
+    "token_name": "your_github_codecov_rtd_token_name",
+    "readthedocs_username": "your_readthedocs_username",
+    "__prompts__": {
+        "package_name": "Your Python package name, in snake case (e.g. my_package)",
+        "license": "Pick an open source license for pyproject.toml file, see https://choosealicense.com/ for details",
+        "license_classifier": "Pick a license classifier, this has to match the previous one",
+        "author": "Author name for pyproject.toml file",
+        "author_email": "Author email for pyproject.toml file",
+        "version": "Semantic Version, in {major}.{minor}.{micro} (e.g. 0.1.1)",
+        "dev_python_version": "Python version for local development, in {major}.{minor}.{micro} (e.g. 3.11.8)",
+        "token_name": "Your GitHub token, codecov token and readthedocs token name (better to be the same name), if you want to automatically setup CI/CD for your project",
+        "readthedocs_username": "Your readthedocs.org username, if you want to host your documentation website on readthedocs.org"
+    },
+    "_copy_without_render": [
+        "*/vendor/**/*.*",
+        "poetry.lock",
+        "requirements.txt",
+        "requirements-automation.txt",
+        "requirements-dev.txt",
+        "requirements-doc.txt",
+        "requirements-test.txt",
+        "requirements-poetry.txt",
+        "*.jinja",
+        "*.j2",
+        "*.html"
+    ],
+    "_new_lines": "\n"
+}
