@@ -5,7 +5,7 @@ Generate the AI knowledge base for the project.
 
 .. code-block:: bash
 
-    pip install "docpack>=0.1.1,<1.0.0"
+    pip install "docpack>=0.1.2,<1.0.0"
 """
 
 import shutil
@@ -26,16 +26,20 @@ gh_pipeline = GitHubPipeline(
     branch="main",
     dir_repo=dir_project_root,
     include=[
-        "README.rst",
-        "Makefile",
-        "poetry.toml",
-        "pyproject.toml",
-        "bin/**/*.py",
-        "bin/**/*.rst",
         f"{PACKAGE_NAME}/**/*.py",
         "tests/**/*.py",
         "docs/source/**/index.rst",
         "docs/source/**/*.py",
+        "bin/**/*.py",
+        ".github/workflows/*.yml",
+        "README.rst",
+        "Makefile",
+        "poetry.toml",
+        "pyproject.toml",
+        ".coveragerc",
+        "codecov.yml",
+        ".readthedocs.yml",
+        "release-history.rst",
     ],
     exclude=[
         f"{PACKAGE_NAME}/tests/**",
@@ -47,6 +51,15 @@ gh_pipeline = GitHubPipeline(
         f"docs/source/index.rst",
         f"docs/source/release-history.rst",
         f"docs/source/conf.py",
+        ".venv/**/*.*",
+        ".poetry/**/*.*",
+        "build/**/*.*",
+        "dist/**/*.*",
+        "htmlcov/**/*.*",
+        "tmp/**/*.*",
+        ".pytest_cache/**/*.*",
+        ".cache/**/*.*",
+        ".coverage",
     ],
     dir_out=dir_tmp,
 )
