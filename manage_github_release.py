@@ -195,7 +195,7 @@ class GitHubReleaseManager:
         :returns: a boolean flag to indicate whether the operation is performed.
         """
         self.log_func("Checking if the tag is latest on main branch...")
-        (flag, tag, ref, latest_commit_sha) = manager.is_tag_latest_on_main()
+        (flag, tag, ref, latest_commit_sha) = self.is_tag_latest_on_main()
         self.log_func(
             f"Tag = {tag}, Ref = {ref}, Latest commit SHA = {latest_commit_sha}"
         )
