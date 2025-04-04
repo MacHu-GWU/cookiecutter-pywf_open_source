@@ -17,7 +17,17 @@ dir_venv_bin = dir_venv / "bin"
 # virtualenv executable paths
 bin_pytest = dir_venv_bin / "pytest"
 
-# test related
+# ------------------------------------------------------------------------------
+# Test Related
+# ------------------------------------------------------------------------------
 dir_htmlcov = dir_project_root / "htmlcov"
 path_cov_index_html = dir_htmlcov / "index.html"
 dir_unit_test = dir_project_root / "tests"
+dir_int_test = dir_project_root / "tests_int"
+dir_load_test = dir_project_root / "tests_load"
+
+# ------------------------------------------------------------------------------
+# Doc Related
+# ------------------------------------------------------------------------------
+dir_docs_source = dir_project_root / "docs" / "source"
+dir_docs_build_html = dir_project_root / "docs" / "build" / "html"

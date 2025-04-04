@@ -81,6 +81,10 @@ view-doc: ## View documentation website locally
 	~/.pyenv/shims/python ./bin/s04_2_view_doc.py
 
 
+nb-to-md: ## Convert Notebook to Markdown
+	~/.pyenv/shims/python ./bin/s04_3_nb_to_md.py
+
+
 build: ## Build Python library distribution package
 	~/.pyenv/shims/python ./bin/s05_1_build_package.py
 

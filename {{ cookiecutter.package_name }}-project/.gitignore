@@ -1,7 +1,7 @@
 # User Settings
 {{ cookiecutter.package_name }}.egg-info/
+docs/source/**/index.md
 tmp/
-
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
