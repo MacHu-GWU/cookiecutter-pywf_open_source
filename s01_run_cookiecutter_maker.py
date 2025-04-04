@@ -12,10 +12,6 @@ from cookiecutter_maker.api import Parameter, Maker
 dir_here: Path = Path(__file__).absolute().parent
 dir_tmp = dir_here.joinpath("tmp")
 
-# Clean up any existing temporary directory
-if dir_tmp.exists():
-    shutil.rmtree(dir_tmp)
-
 # Create a Maker instance to convert the project into a template
 maker = Maker(
     # The input concrete project directory - the seed project you want to templatize
@@ -159,12 +155,17 @@ maker = Maker(
     verbose=True,
 )
 
-# Execute the template generation process
-maker.make_template()
+if __name__ == "__main__":
+    # Clean up any existing temporary directory
+    if dir_tmp.exists():
+        shutil.rmtree(dir_tmp)
 
-print("\n" + "=" * 80)
-print("Template generation complete!")
-print(f"The template is available at: {dir_tmp}")
-print("\nTo create a new project from this template, run:")
-print(f"    cookiecutter {dir_tmp}")
-print("=" * 80 + "\n")
+    # Execute the template generation process
+    maker.make_template()
+
+    print("\n" + "=" * 80)
+    print("Template generation complete!")
+    print(f"The template is available at: {dir_tmp}")
+    print("\nTo create a new project from this template, run:")
+    print(f"    cookiecutter {dir_tmp}")
+    print("=" * 80 + "\n")
