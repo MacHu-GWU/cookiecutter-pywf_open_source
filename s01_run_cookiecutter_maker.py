@@ -125,7 +125,7 @@ maker = Maker(
         ".poetry",
         "tmp",
         "bin/pywf_open_source",
-        "docs/source/cookiecutter_pywf_open_source_demo",
+        "docs/source/api",
         # file
         ".coverage",  # Coverage data
         ".pyc",  # Compiled Python files
