@@ -544,25 +544,26 @@ files = [
 
 [[package]]
 name = "docfly"
-version = "2.0.3"
+version = "3.0.0"
 description = "A utility tool to help you build better sphinx documents."
 optional = true
-python-versions = "*"
+python-versions = "<4.0,>=3.9"
 groups = ["main"]
 markers = "extra == \"doc\""
 files = [
-    {file = "docfly-2.0.3-py2.py3-none-any.whl", hash = "sha256:85b72bcb7725fcd9eb250f3836748a2686cc1137ac8a1dfb2ee6b828cda1e634"},
-    {file = "docfly-2.0.3.tar.gz", hash = "sha256:aba7774894e1dff8a2dcc2f28ab649cc314bcd1324204b2a37394488ae3fa158"},
+    {file = "docfly-3.0.0-py3-none-any.whl", hash = "sha256:0cc9a9927e8e63856d81e53ae8b9722881a75cf5b21a54ed80c54f8d4af80d7e"},
+    {file = "docfly-3.0.0.tar.gz", hash = "sha256:c0b5c4f0aba2e0cbac697fa5226b9104db7f8cac8346cc7f986544fea91bb889"},
 ]
 
 [package.dependencies]
 jinja2 = "*"
-pathlib-mate = "*"
-sphinx = "*"
+pathlib_mate = "*"
+Sphinx = "*"
 
 [package.extras]
-docs = ["furo (==2021.8.31)", "rstobj (==0.0.7)", "sphinx (==4.3.0)", "sphinx-copybutton (==0.4.0)", "sphinx-inline-tabs (==2021.8.17b10)", "sphinx-jinja (==1.1.1)"]
-tests = ["pytest", "pytest-cov"]
+dev = ["build (>=1.2.1,<2.0.0)", "rich (>=13.8.1,<14.0.0)", "twine (>=6.0.0,<7.0.0)", "wheel (>=0.45.0,<1.0.0)"]
+doc = ["Sphinx (>=7.4.7,<8.0.0)", "furo (==2024.8.6)", "ipython (>=8.18.1,<8.19.0)", "nbsphinx (>=0.8.12,<1.0.0)", "pygments (>=2.18.0,<3.0.0)", "rstobj (==1.2.1)", "sphinx-copybutton (>=0.5.2,<1.0.0)", "sphinx-design (>=0.6.1,<1.0.0)", "sphinx-jinja (>=2.0.2,<3.0.0)"]
+test = ["pytest (>=8.2.2,<9.0.0)", "pytest-cov (>=6.0.0,<7.0.0)"]
 
 [[package]]
 name = "docutils"
@@ -2527,4 +2528,4 @@ test = ["pytest", "pytest-cov"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.9,<4.0"
-content-hash = "6225e519f7355ae953be7d09d9cd85dc03be59289cb8e9fd4f69013721f66a06"
+content-hash = "a940fede95722cddb596cf3a0d2a4d3632fd728dc5e6cfab2bb5bdcf105fbe8c"

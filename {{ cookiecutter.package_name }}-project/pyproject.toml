@@ -97,7 +97,7 @@ doc = [
     "ipython>=8.18.1,<8.19.0", # interactive Python
     "nbsphinx>=0.8.12,<1.0.0", # add jupyter notebook in sphinx doc
     "rstobj==1.2.1", # generate reStructuredText from Python code
-    "docfly==2.0.3", # automaticall generate .. toctree directives and API reference doc
+    "docfly==3.0.0", # automaticall generate .. toctree directives and API reference doc
 ]
 
 # ------------------------------------------------------------------------------

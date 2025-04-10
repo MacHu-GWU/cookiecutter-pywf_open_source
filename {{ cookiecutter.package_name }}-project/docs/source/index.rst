@@ -4,7 +4,6 @@ Release v\ |release| (:ref:`What's new? <release_history>`).
 
 Table of Content
 ------------------------------------------------------------------------------
-
 .. autotoctree::
     :maxdepth: 1
 
@@ -13,6 +12,5 @@ Table of Content
 
 API Document
 ------------------------------------------------------------------------------
-
 * :ref:`by Name <genindex>`
 * :ref:`by Structure <modindex>`
