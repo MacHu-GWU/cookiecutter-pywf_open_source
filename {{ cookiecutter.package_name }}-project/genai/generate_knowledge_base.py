@@ -16,6 +16,7 @@ from docpack.api import GitHubPipeline
 
 dir_here = Path(__file__).absolute().parent
 dir_tmp = dir_here / "tmp"
+dir_tmp_docs = dir_tmp / "docs"
 shutil.rmtree(dir_tmp, ignore_errors=True)
 dir_tmp.mkdir()
 
@@ -61,13 +62,13 @@ gh_pipeline = GitHubPipeline(
         ".cache/**/*.*",
         ".coverage",
     ],
-    dir_out=dir_tmp,
+    dir_out=dir_tmp_docs,
 )
 gh_pipeline.fetch()
 
 filename = "all_in_one_knowledge_base.txt"
 lines = [
     path.read_text()
-    for path in dir_tmp.glob("*.xml")
+    for path in dir_tmp_docs.glob("*.xml")
 ]
 dir_tmp.joinpath(filename).write_text("\n".join(lines), encoding="utf-8")
