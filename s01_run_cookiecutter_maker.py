@@ -90,19 +90,49 @@ maker = Maker(
             prompt="Python version for local development, in {major}.{minor}.{micro} (e.g. 3.11.8)",
         ),
         Parameter(
-            selector=["sanhe-dev"],
-            name="token_name",
-            default="your_github_codecov_rtd_token_name",
-            prompt=(
-                "Your GitHub token, codecov token and readthedocs token name (better to be the same name), "
-                "if you want to automatically setup CI/CD for your project"
-            ),
+            selector=['github_account_field = "sh"', "sh"],
+            name="github_account_field",
+            default="your_github_account_field",
         ),
         Parameter(
-            selector=['readthedocs_username = "machugwu"', "machugwu"],
-            name="readthedocs_username",
-            default="your_readthedocs_username",
-            prompt="Your readthedocs.org username, if you want to host your documentation website on readthedocs.org",
+            selector=['github_user_field = "sh"', "sh"],
+            name="github_user_field",
+            default="your_github_user_field",
+        ),
+        Parameter(
+            selector=['github_token_field = "dev"', "dev"],
+            name="github_token_field",
+            default="your_github_token_field",
+        ),
+        Parameter(
+            selector=['codecov_account_field = "sh"', "sh"],
+            name="codecov_account_field",
+            default="your_codecov_account_field",
+        ),
+        Parameter(
+            selector=['codecov_user_field = "sh"', "sh"],
+            name="codecov_user_field",
+            default="your_codecov_user_field",
+        ),
+        Parameter(
+            selector=['codecov_token_field = "dev"', "dev"],
+            name="codecov_token_field",
+            default="your_codecov_token_field",
+        ),
+        Parameter(
+            selector=['readthedocs_account_field = "sh"', "sh"],
+            name="readthedocs_account_field",
+            default="your_readthedocs_account_field",
+        ),
+        Parameter(
+            selector=['readthedocs_user_field = "sh"', "sh"],
+            name="readthedocs_user_field",
+            default="your_readthedocs_user_field",
+        ),
+        Parameter(
+            selector=['readthedocs_token_field = "dev"', "dev"],
+            name="readthedocs_token_field",
+            default="your_readthedocs_token_field",
         ),
     ],
     # Define which files/directories to include in the template
