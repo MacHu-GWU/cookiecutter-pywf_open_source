@@ -9,6 +9,7 @@ to do git commit, git push, update other branches, and update GitHub release.
 import shutil
 import subprocess
 
+from home_secret import hs
 from manage_github_release import GitHubReleaseManager
 from s01_run_cookiecutter_maker import dir_here
 
@@ -71,6 +72,6 @@ manager = GitHubReleaseManager(
     version="0.1.1",
     github_account="MacHu-GWU",
     github_repo_name="cookiecutter-pywf_open_source",
-    github_token_name="sanhe-dev",
+    github_token=hs.v("providers.github.accounts.sh.users.sh.secrets.dev.value"),
 )
 manager.update_release()
