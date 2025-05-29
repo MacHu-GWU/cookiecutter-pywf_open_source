@@ -196,11 +196,11 @@ class GitHubReleaseManager:
 if __name__ == "__main__":
     # ===== Set parameter here =====
     from home_secret import hs
-    print(hs.v("providers.github.accounts.sh.users.sh.secrets.dev.value"))
-    # manager = GitHubReleaseManager(
-    #     version="0.1.1",
-    #     github_account="MacHu-GWU",
-    #     github_repo_name="cookiecutter-pywf_open_source",
-    #     github_token=hs.v("providers"),
-    # )
-    # manager.update_release()
+
+    manager = GitHubReleaseManager(
+        version="0.1.1",
+        github_account="MacHu-GWU",
+        github_repo_name="cookiecutter-pywf_open_source",
+        github_token=hs.v("providers.github.accounts.sh.users.sh.secrets.dev.value"),
+    )
+    manager.update_release()
