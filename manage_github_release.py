@@ -10,7 +10,6 @@ Requirements::
 
 import typing as T
 import dataclasses
-from pathlib import Path
 from functools import cached_property
 
 from github import Github, GithubException, Repository, GitTag, GitRef, GitRelease
@@ -26,31 +25,8 @@ class GitHubReleaseManager:
     version: str = dataclasses.field()
     github_account: str = dataclasses.field()
     github_repo_name: str = dataclasses.field()
-    github_token_name: str = dataclasses.field()
+    github_token: str = dataclasses.field()
     log_func: T.Callable = dataclasses.field(default=print)
-
-    @cached_property
-    def path_github_token(self) -> Path:
-        """
-        Path to the GitHub token file.
-        """
-        return Path.home().joinpath(
-            ".github",
-            self.github_account,
-            "pac",
-            f"{self.github_token_name}.txt",
-        )
-
-    @cached_property
-    def github_token(self) -> str:
-        """
-        Read the GitHub token from the file.
-        """
-        if self.path_github_token.exists():
-            return self.path_github_token.read_text(encoding="utf-8").strip()
-        else:  # pragma: no cover
-            message = f"Cannot find GitHub token file at {self.path_github_token}!"
-            raise FileNotFoundError(message)
 
     @cached_property
     def gh(self) -> "Github":
@@ -219,10 +195,12 @@ class GitHubReleaseManager:
 
 if __name__ == "__main__":
     # ===== Set parameter here =====
-    manager = GitHubReleaseManager(
-        version="0.1.1",
-        github_account="MacHu-GWU",
-        github_repo_name="cookiecutter-pywf_open_source",
-        github_token_name="sanhe-dev",
-    )
-    manager.update_release()
+    from home_secret import hs
+    print(hs.v("providers.github.accounts.sh.users.sh.secrets.dev.value"))
+    # manager = GitHubReleaseManager(
+    #     version="0.1.1",
+    #     github_account="MacHu-GWU",
+    #     github_repo_name="cookiecutter-pywf_open_source",
+    #     github_token=hs.v("providers"),
+    # )
+    # manager.update_release()
