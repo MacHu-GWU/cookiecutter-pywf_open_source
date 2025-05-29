@@ -15,8 +15,15 @@
     "author_email": "husanhe@gmail.com",
     "version": "0.1.1",
     "dev_python_version": "3.11.8",
-    "token_name": "sanhe-dev",
-    "readthedocs_username": "machugwu",
+    "github_account_field": "sh",
+    "github_user_field": "sh",
+    "github_token_field": "dev",
+    "codecov_account_field": "sh",
+    "codecov_user_field": "sh",
+    "codecov_token_field": "dev",
+    "readthedocs_account_field": "sh",
+    "readthedocs_user_field": "sh",
+    "readthedocs_token_field": "dev",
     "__prompts__": {
         "package_name": "Your Python package name, in snake case (e.g. my_package)",
         "license": "Pick an open source license for pyproject.toml file, see https://choosealicense.com/ for details",
@@ -24,9 +31,7 @@
         "author": "Author name for pyproject.toml file",
         "author_email": "Author email for pyproject.toml file",
         "version": "Semantic Version, in {major}.{minor}.{micro} (e.g. 0.1.1)",
-        "dev_python_version": "Python version for local development, in {major}.{minor}.{micro} (e.g. 3.11.8)",
-        "token_name": "Your GitHub token, codecov token and readthedocs token name (better to be the same name), if you want to automatically setup CI/CD for your project",
-        "readthedocs_username": "Your readthedocs.org username, if you want to host your documentation website on readthedocs.org"
+        "dev_python_version": "Python version for local development, in {major}.{minor}.{micro} (e.g. 3.11.8)"
     },
     "_copy_without_render": [
         "*/vendor/**/*.*",
