@@ -198,7 +198,7 @@ if __name__ == "__main__":
     from home_secret import hs
 
     manager = GitHubReleaseManager(
-        version="0.1.1",
+        version="0.1.2",
         github_account="MacHu-GWU",
         github_repo_name="cookiecutter-pywf_open_source",
         github_token=hs.v("providers.github.accounts.sh.users.sh.secrets.dev.value"),

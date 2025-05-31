@@ -76,8 +76,8 @@ maker = Maker(
         ),
         Parameter(
             selector=[
-                'version = "0.1.1"',
-                "0.1.1",
+                'version = "0.1.2"',
+                "0.1.2",
             ],
             name="version",
             default="0.1.1",
@@ -90,49 +90,22 @@ maker = Maker(
             prompt="Python version for local development, in {major}.{minor}.{micro} (e.g. 3.11.8)",
         ),
         Parameter(
-            selector=['github_account_field = "sh"', "sh"],
-            name="github_account_field",
-            default="your_github_account_field",
-        ),
-        Parameter(
-            selector=['github_user_field = "sh"', "sh"],
-            name="github_user_field",
-            default="your_github_user_field",
-        ),
-        Parameter(
-            selector=['github_token_field = "dev"', "dev"],
+            selector=["providers.github.accounts.sh.users.sh.secrets.dev.value"],
             name="github_token_field",
             default="your_github_token_field",
+            prompt="GitHub token field, Read https://github.com/MacHu-GWU/home_secret-project to learn how to set up your GitHub token using home_secret.json",
         ),
         Parameter(
-            selector=['codecov_account_field = "sh"', "sh"],
-            name="codecov_account_field",
-            default="your_codecov_account_field",
-        ),
-        Parameter(
-            selector=['codecov_user_field = "sh"', "sh"],
-            name="codecov_user_field",
-            default="your_codecov_user_field",
-        ),
-        Parameter(
-            selector=['codecov_token_field = "dev"', "dev"],
+            selector=["providers.codecov_io.accounts.sh.users.sh.secrets.dev.value"],
             name="codecov_token_field",
             default="your_codecov_token_field",
+            prompt="Codecov.io token field, Read https://github.com/MacHu-GWU/home_secret-project to learn how to set up your GitHub token using home_secret.json",
         ),
         Parameter(
-            selector=['readthedocs_account_field = "sh"', "sh"],
-            name="readthedocs_account_field",
-            default="your_readthedocs_account_field",
-        ),
-        Parameter(
-            selector=['readthedocs_user_field = "sh"', "sh"],
-            name="readthedocs_user_field",
-            default="your_readthedocs_user_field",
-        ),
-        Parameter(
-            selector=['readthedocs_token_field = "dev"', "dev"],
+            selector=["providers.readthedocs.accounts.sh.users.sh.secrets.dev.value"],
             name="readthedocs_token_field",
             default="your_readthedocs_token_field",
+            prompt="Readthedocs.org token field, Read https://github.com/MacHu-GWU/home_secret-project to learn how to set up your GitHub token using home_secret.json",
         ),
     ],
     # Define which files/directories to include in the template
@@ -155,6 +128,8 @@ maker = Maker(
         ".poetry",
         "tmp",
         "bin/pywf_open_source",
+        "bin/.coveragerc",
+        "bin/tests.py",
         "docs/source/api",
         # file
         ".coverage",  # Coverage data

@@ -37,11 +37,11 @@ To use a specific released version (see the `full list of release at here <https
 
     cookiecutter https://github.com/MacHu-GWU/cookiecutter-pywf_open_source --checkout tags/${version}
 
-For example, to use ``0.1.1`` (the latest as of 2025-04-02):
+For example, to use ``0.1.2`` (the latest as of 2025-05-30):
 
 .. code-block:: bash
 
-    cookiecutter https://github.com/MacHu-GWU/cookiecutter-pywf_open_source --checkout tags/0.1.1
+    cookiecutter https://github.com/MacHu-GWU/cookiecutter-pywf_open_source --checkout tags/0.1.2
 
 You'll then be prompted to provide the following information:
 
@@ -63,8 +63,9 @@ You'll then be prompted to provide the following information:
     [6/10] Author email for pyproject.toml file (firstname.lastname@email.com): john.doe@email.com
     [7/10] Semantic Version, in {major}.{minor}.{micro} (e.g. 0.1.1) (0.1.1): 0.1.1
     [8/10] Python version for local development, in {major}.{minor}.{micro} (e.g. 3.11.8) (3.11.8): 3.11.8
-    [9/10] Your GitHub token, codecov token and readthedocs token name (better to be the same name), if you want to automatically setup CI/CD for your project (your_github_codecov_rtd_token_name): john-doe-dev
-    [10/10] Your readthedocs.org username, if you want to host your documentation website on readthedocs.org (your_readthedocs_username): johndoe
+    [9/11] GitHub token field, Read https://github.com/MacHu-GWU/home_secret-project to learn how to set up your GitHub token using home_secret.json (your_github_token_field): my_github_token
+    [10/11] Codecov.io token field, Read https://github.com/MacHu-GWU/home_secret-project to learn how to set up your GitHub token using home_secret.json (your_codecov_token_field): my_codecov_token
+    [11/11] Readthedocs.org token field, Read https://github.com/MacHu-GWU/home_secret-project to learn how to set up your GitHub token using home_secret.json (your_readthedocs_token_field): my_readthedocs_token
 
 This will generate a repository structure similar to `cookiecutter_pywf_open_source_demo-project <https://github.com/MacHu-GWU/cookiecutter_pywf_open_source_demo-project>`_.
 

@@ -126,29 +126,18 @@ poetry-plugin-export = ">=1.9.0,<2.0.0"
 # The specific python version you use for local development
 dev_python = "{{ cookiecutter.dev_python_version }}"
 # --- github.com
-# Put your GitHub account username in ``${HOME}/home_secret.json`` at
-# ``providers.github.accounts.${github_account_field}.account_id``
-github_account_field = "{{ cookiecutter.github_account_field }}"
-github_user_field = "{{ cookiecutter.github_user_field }}"
+github_account = "{{ cookiecutter.github_username }}"
 # Create GitHub token in https://github.com/settings/tokens and put the token in
-# ``${HOME}/home_secret.json`` at
-# ``providers.github.accounts.${github_account_field}.users.${github_user_field}.secrets.${github_token_field}.value``
+# ``${HOME}/home_secret.json``
 github_token_field = "{{ cookiecutter.github_token_field }}"
 # --- codecov.io (for code coverage test report)
-# Put your Codecov account username in ``${HOME}/home_secret.json`` at
-# ``providers.codecov.accounts.${codecov_account_field}.account_id``
-codecov_account_field = "{{ cookiecutter.codecov_account_field }}"
-codecov_user_field = "{{ cookiecutter.codecov_user_field }}"
-# Create Codecov token in https://app.codecov.io/account/gh/${codecov_account}/access and put the token in
-# ``${HOME}/home_secret.json`` at
-# ``providers.codecov.accounts.${codecov_account_field}.users.${codecov_user_field}.secrets.${codecov_token_field}.value``
+codecov_account = "{{ cookiecutter.github_username }}"
+# Create Codecov token in https://app.codecov.io/account/gh/${codecov_account}/access
+# and put the token in ``${HOME}/home_secret.json``
 codecov_token_field = "{{ cookiecutter.codecov_token_field }}"
 # --- readthedocs.org (for documentation hosting)
-readthedocs_account_field = "{{ cookiecutter.readthedocs_account_field }}"
-readthedocs_user_field = "{{ cookiecutter.readthedocs_user_field }}"
-# Create Readthedocs token in https://app.readthedocs.org/accounts/tokens/ and put the token at
-# ``${HOME}/home_secret.json`` at
-# ``providers.readthedocs.accounts.${readthedocs_account_field}.users.${readthedocs_user_field}.secrets.${readthedocs_token_field}.value``
+# Create Readthedocs token in https://app.readthedocs.org/accounts/tokens/
+# and put the token at ``${HOME}/home_secret.json``
 readthedocs_token_field = "{{ cookiecutter.readthedocs_token_field }}"
 # Readthedocs project name, usually it is the same as your project name
 readthedocs_project_name = "{{ cookiecutter.package_name }}"
