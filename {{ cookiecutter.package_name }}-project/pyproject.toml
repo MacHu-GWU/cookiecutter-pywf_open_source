@@ -24,18 +24,6 @@ maintainers = [
 ]
 keywords = []
 readme = "README.rst"
-# Files to include in the package distribution
-include = [
-    "*.txt",
-    "*.rst",
-]
-# Files to exclude from the package
-exclude = [
-    "*.pyc",
-    "*.pyo",
-    "{{ cookiecutter.package_name }}/docs/*",
-    "{{ cookiecutter.package_name }}/tests/*",
-]
 requires-python = ">=3.9,<4.0"
 # Full list of classifiers: https://pypi.org/classifiers/
 classifier = [
@@ -120,6 +108,19 @@ Download = "https://pypi.org/pypi/{{ cookiecutter.package_name | slugify }}#file
 
 [tool.poetry.requires-plugins]
 poetry-plugin-export = ">=1.9.0,<2.0.0"
+
+[tool.poetry]
+# Files to include in the package distribution
+packages = [
+    { include = "{{ cookiecutter.package_name }}", from = ".", to = "." }
+]
+# Files to exclude from the package
+exclude = [
+    "{{ cookiecutter.package_name }}/tests/*",
+    "{{ cookiecutter.package_name }}/docs/*",
+    "**/*.pyc",
+    "**/*.pyo",
+]
 
 # python workflow tool config
 [tool.pywf]
