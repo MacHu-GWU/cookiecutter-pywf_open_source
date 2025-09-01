@@ -1,0 +1,5 @@
+- 当 `pywf_internal_proprietary-project <https://github.com/MacHu-GWU/pywf_internal_proprietary-project>`_ 和 `cookiecutter_pywf_internal_proprietary_demo-project <https://github.com/MacHu-GWU/cookiecutter_pywf_internal_proprietary_demo-project>`_ 两个项目都趋于稳定之后再来修改此项目模板.
+- 当模板用到了 ``pywf_internal_proprietary`` 中的新功能时候, 要先发布 ``pywf_internal_proprietary`` 再来修改此项目模板.
+- 由于 `cookiecutter_pywf_internal_proprietary_demo-project <https://github.com/MacHu-GWU/cookiecutter_pywf_internal_proprietary_demo-project>`_ 是我们的 Seed project, 而我们这个 Template 的版本是跟 Seed project 的版本保持一致的.
+- 先运行 ``s01_run_cookiecutter_maker.py`` 脚本. 该脚本的作用时将 ``cookiecutter_pywf_internal_proprietary_demo-project`` 项目反过来变成一个模板, 生成的模板文件在 ``tmp/`` 目录下.
+- 然后运行 ``s02_update_everything.py`` 脚本. 该脚本会自动将模板从 ``/tmp`` 目录拷贝到本目录使其生效, 然后自动 commit 到 git, 并且更新针对特定公司的项目特殊化 ``cookiecutter.json`` 之后的 branch, 其实就是把 main merge 到这些特殊的 branch 上, 然后更新 Git Tag.
