@@ -20,10 +20,13 @@ dir_seed = Path.home().joinpath(
 )
 
 # Extract the current version from the seed project to use as a placeholder
-path_version = dir_seed / "cookiecutter_pywf_internal_proprietary_demo" / "_version.py"
+path_version = dir_seed / "cookiecutter_pywf_open_source_demo" / "_version.py"
 args = [sys.executable, str(path_version)]
 result = subprocess.run(args, capture_output=True)
 version_to_replace = result.stdout.decode("utf-8").strip()
+versions = version_to_replace.split(".")
+assert len(versions) == 3
+assert all(v.isdigit() for v in versions)
 
 # Create a Maker instance to convert the project into a template
 maker = Maker(
