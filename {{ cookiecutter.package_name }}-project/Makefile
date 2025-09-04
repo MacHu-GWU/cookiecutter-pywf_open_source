@@ -1,5 +1,35 @@
 # -*- coding: utf-8 -*-
 
+.PHONY: help \
+		venv-create \
+		venv-remove \
+		poetry-lock \
+		poetry-export \
+		install-root \
+		install \
+		install-dev \
+		install-test \
+		install-doc \
+		install-automation \
+		install-all \
+		test-only \
+		test \
+		cov-only \
+		cov \
+		view-cov \
+		int-only \
+		int \
+		nb-to-md \
+		build-doc \
+		view-doc \
+		build \
+		publish \
+		release \
+		setup-codecov \
+		setup-rtd \
+		edit-github
+
+
 help: ## ⭐ Show this help message
 	@perl -nle'print $& if m{^[a-zA-Z_-]+:.*?## .*$$}' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-40s\033[0m %s\n", $$1, $$2}'
 

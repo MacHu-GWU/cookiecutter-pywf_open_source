@@ -11,7 +11,7 @@ import subprocess
 
 from home_secret import hs
 from manage_github_release import GitHubReleaseManager
-from s01_run_cookiecutter_maker import dir_here
+from s01_run_cookiecutter_maker import dir_here, version_to_replace
 
 dir_tmp_template = dir_here / "tmp" / "{{ cookiecutter.package_name }}-project"
 dir_template = dir_here / "{{ cookiecutter.package_name }}-project"
@@ -69,7 +69,7 @@ for branch_name in branch_name_list:
 switch_branch("main")
 
 manager = GitHubReleaseManager(
-    version="0.1.2",
+    version=version_to_replace,
     github_account="MacHu-GWU",
     github_repo_name="cookiecutter-pywf_open_source",
     github_token=hs.v("providers.github.accounts.sh.users.sh.secrets.dev.value"),
