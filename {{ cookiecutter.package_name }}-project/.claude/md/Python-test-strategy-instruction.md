@@ -2,20 +2,20 @@
 
 ## Unit Test File Organization
 
-Each Python file in your project's source directory has a corresponding unit test file in the `tests/` directory. For example, source code at `cookiecutter_pywf_opensource_demo/<subpackage>/<module>.py` has its test file at `tests/<subpackage>/test_<subpackage>_<module>.py`. The test file name includes the full relative path to prevent naming collisions.
+Each Python file in your project's source directory has a corresponding unit test file in the `tests/` directory. For example, source code at `{{ cookiecutter.package_name }}/<subpackage>/<module>.py` has its test file at `tests/<subpackage>/test_<subpackage>_<module>.py`. The test file name includes the full relative path to prevent naming collisions.
 
 **Example:**
 
-- Source: `cookiecutter_pywf_opensource_demo/math/operations/calculator.py`
+- Source: `{{ cookiecutter.package_name }}/math/operations/calculator.py`
 - Test: `tests/math/operations/test_math_operations_calculator.py`
 
 ## Package Test Directory Structure
 
-Each Python package (directory containing `__init__.py`) has a corresponding test directory in `tests/`. For example, the package at `cookiecutter_pywf_opensource_demo/<subpackage>/` has its test directory at `tests/<subpackage>/`. Each test directory contains an `all.py` file that runs code coverage tests for all modules in that package.
+Each Python package (directory containing `__init__.py`) has a corresponding test directory in `tests/`. For example, the package at `{{ cookiecutter.package_name }}/<subpackage>/` has its test directory at `tests/<subpackage>/`. Each test directory contains an `all.py` file that runs code coverage tests for all modules in that package.
 
 **Example:**
 
-- Package: `cookiecutter_pywf_opensource_demo/math/operations/`
+- Package: `{{ cookiecutter.package_name }}/math/operations/`
 - Test directory: `tests/math/operations/`
 - Test for entire package: `tests/math/operations/all.py`
 
@@ -51,7 +51,7 @@ Each source code directory has a corresponding `all.py` test script. Running `te
 You can also run coverage tests for a specific package:
 
 ```bash
-.venv/bin/python tests/cookiecutter_pywf_opensource_demo/all.py
+.venv/bin/python tests/{{ cookiecutter.package_name }}/all.py
 ```
 
 **Example:**
@@ -80,9 +80,9 @@ After running tests, open the generated HTML file to see:
 
 The package always includes a `api.py` file that exposes all public APIs for package users. Each line in this file defines a Python class, function, or variable.
 
-**Example for a project named `cookiecutter_pywf_opensource_demo`:**
+**Example for a project named `{{ cookiecutter.package_name }}`:**
 ```python
-# In cookiecutter_pywf_opensource_demo/api.py
+# In {{ cookiecutter.package_name }}/api.py
 from .math.operations import add_numbers
 from .math.operations import subtract_numbers
 ```
@@ -102,9 +102,9 @@ from .my_module import my_func_1, my_func_2
 
 The corresponding test file is located at `tests/test_api.py`. This test file imports all public API objects from `api.py` to establish a test baseline, ensuring that any changes to the public API in `api.py` are caught by unit tests.
 
-Example `tests/test_api.py` for `cookiecutter_pywf_opensource_demo`:
+Example `tests/test_api.py` for `{{ cookiecutter.package_name }}`:
 ```python
-from cookiecutter_pywf_opensource_demo import api
+from {{ cookiecutter.package_name }} import api
 
 def test():
     _ = api
@@ -114,4 +114,4 @@ def test():
 
 ---
 
-*Note: Throughout this guide, `<subpackage>`, and `<module>` are placeholders that should be replaced with your actual project structure. The examples using `cookiecutter_pywf_opensource_demo` demonstrate how these concepts apply to a real project.*
+*Note: Throughout this guide, `<subpackage>`, and `<module>` are placeholders that should be replaced with your actual project structure. The examples using `{{ cookiecutter.package_name }}` demonstrate how these concepts apply to a real project.*
