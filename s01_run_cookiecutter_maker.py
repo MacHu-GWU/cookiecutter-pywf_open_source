@@ -144,6 +144,7 @@ maker = Maker(
         "bin/tests.py",
         "docs/source/api",
         # file
+        ".claude/settings.local.json"
         ".coverage",  # Coverage data
         ".pyc",  # Compiled Python files
         "LICENSE.txt",  # License file, we will generate this later
