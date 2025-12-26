@@ -65,6 +65,16 @@ maker = Maker(
             prompt="Pick an open source license for pyproject.toml file, see https://choosealicense.com/ for details",
         ),
         Parameter(
+            selector=['__license__ = "MIT"', "MIT"],
+            name="license",
+            choice=[
+                "MIT",
+                "AGPL-3.0-or-later",
+                "Proprietary",
+            ],
+            prompt="Pick an open source license for pyproject.toml file, see https://choosealicense.com/ for details",
+        ),
+        Parameter(
             selector=["License :: OSI Approved :: MIT License"],
             name="license_classifier",
             default=[
@@ -96,10 +106,19 @@ maker = Maker(
             prompt="Semantic Version, in {major}.{minor}.{micro} (e.g. 0.1.1)",
         ),
         Parameter(
-            selector=['dev_python = "3.11.8"', "3.11.8"],
+            selector=[
+                f'__version__ = "{version_to_replace}"',
+                f"{version_to_replace}",
+            ],
+            name="version",
+            default="0.1.1",
+            prompt="Semantic Version, in {major}.{minor}.{micro} (e.g. 0.1.1)",
+        ),
+        Parameter(
+            selector=['dev_python = "3.12.11"', "3.12.11"],
             name="dev_python_version",
-            default="3.11.8",
-            prompt="Python version for local development, in {major}.{minor}.{micro} (e.g. 3.11.8)",
+            default="3.12.11",
+            prompt="Python version for local development, in {major}.{minor}.{micro} (e.g. 3.12.11)",
         ),
         Parameter(
             selector=["providers.github.accounts.sh.users.sh.secrets.dev.value"],
