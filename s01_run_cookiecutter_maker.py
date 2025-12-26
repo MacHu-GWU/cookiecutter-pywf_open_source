@@ -65,6 +65,16 @@ maker = Maker(
             prompt="Pick an open source license for pyproject.toml file, see https://choosealicense.com/ for details",
         ),
         Parameter(
+            selector=['__license__ = "MIT"', "MIT"],
+            name="license",
+            choice=[
+                "MIT",
+                "AGPL-3.0-or-later",
+                "Proprietary",
+            ],
+            prompt="Pick an open source license for pyproject.toml file, see https://choosealicense.com/ for details",
+        ),
+        Parameter(
             selector=["License :: OSI Approved :: MIT License"],
             name="license_classifier",
             default=[
@@ -89,6 +99,15 @@ maker = Maker(
         Parameter(
             selector=[
                 f'version = "{version_to_replace}"',
+                f"{version_to_replace}",
+            ],
+            name="version",
+            default="0.1.1",
+            prompt="Semantic Version, in {major}.{minor}.{micro} (e.g. 0.1.1)",
+        ),
+        Parameter(
+            selector=[
+                f'__version__ = "{version_to_replace}"',
                 f"{version_to_replace}",
             ],
             name="version",
