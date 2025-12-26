@@ -96,10 +96,10 @@ maker = Maker(
             prompt="Semantic Version, in {major}.{minor}.{micro} (e.g. 0.1.1)",
         ),
         Parameter(
-            selector=['dev_python = "3.11.8"', "3.11.8"],
+            selector=['dev_python = "3.12.11"', "3.12.11"],
             name="dev_python_version",
-            default="3.11.8",
-            prompt="Python version for local development, in {major}.{minor}.{micro} (e.g. 3.11.8)",
+            default="3.12.11",
+            prompt="Python version for local development, in {major}.{minor}.{micro} (e.g. 3.12.11)",
         ),
         Parameter(
             selector=["providers.github.accounts.sh.users.sh.secrets.dev.value"],

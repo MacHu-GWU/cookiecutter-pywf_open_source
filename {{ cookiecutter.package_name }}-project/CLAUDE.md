@@ -10,9 +10,9 @@ See @README.rst for complete project overview.
 
 - **Virtual Environment**: @./.claude/md/Python-virtual-environment-setup-instruction.md
 - **Testing Strategy**: @./.claude/md/Python-test-strategy-instruction.md
-- **Docstring Guide**: @./.claude/md/pywf-open-source-Python-docstring-guide.md
-- **API Documentation**: @./.claude/md/pywf-open-source-Python-cross-reference-api-doc-guide.md
-- **Documentation Structure**: @./.claude/md/pywf-open-source-Python-documentation-structure-guide.md
+- **Docstring Guide**: @./.claude/md/Python-docstring-guide.md
+- **API Documentation**: @./.claude/md/Python-cross-reference-api-doc-guide.md
+- **Documentation Structure**: @./.claude/md/Python-documentation-structure-guide.md
 
 ## Essential Commands
 
