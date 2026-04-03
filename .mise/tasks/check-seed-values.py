@@ -7,9 +7,13 @@ have been replaced with ``{{ cookiecutter.xxx }}`` placeholders.
 This runs AFTER ``make-template`` and BEFORE ``test-template``.
 """
 
-import sys
 import importlib.util
 from pathlib import Path
+
+from rich.console import Console
+from rich.panel import Panel
+from rich.table import Table
+from rich.text import Text
 
 # Import SeedValues from make-template.py
 _spec = importlib.util.spec_from_file_location(
@@ -43,19 +47,46 @@ CHECKS: list[tuple[str, str]] = [
 ]
 
 
+def highlight_value(line: str, value: str) -> Text:
+    """Build a Rich Text with all occurrences of ``value`` highlighted."""
+    text = Text()
+    start = 0
+    while True:
+        idx = line.find(value, start)
+        if idx == -1:
+            text.append(line[start:])
+            break
+        text.append(line[start:idx])
+        text.append(value, style="bold red")
+        start = idx + len(value)
+    return text
+
+
 def main() -> None:
+    console = Console()
+
     if not dir_template.exists():
-        print(f"Template directory does not exist: {dir_template}")
-        print("Run 'mise run make-template' first.")
+        console.print(
+            f"[red]Template directory does not exist:[/red] {dir_template}"
+        )
+        console.print("Run 'mise run make-template' first.")
         return
 
     for label, value in CHECKS:
-        print(f"--- [{label}] = \"{value}\" ---")
+        table = Table(show_header=True, expand=True, show_lines=True)
+        table.add_column("File", style="cyan", no_wrap=True, ratio=2)
+        table.add_column("Line", style="yellow", justify="right", width=5)
+        table.add_column("Content", ratio=5)
 
         # Check file/directory names
         for p in dir_template.rglob("*"):
             if value in p.name:
-                print(f"  name: {p.relative_to(dir_template)}")
+                rel = str(p.relative_to(dir_template))
+                table.add_row(
+                    highlight_value(rel, value),
+                    "",
+                    Text("(in path name)", style="dim"),
+                )
 
         # Check file contents
         for p in sorted(dir_template.rglob("*")):
@@ -65,11 +96,21 @@ def main() -> None:
                 text = p.read_text(encoding="utf-8")
             except (UnicodeDecodeError, ValueError):
                 continue
+            rel = str(p.relative_to(dir_template))
             for lineno, line in enumerate(text.splitlines(), 1):
                 if value in line:
-                    print(f"  {p.relative_to(dir_template)}:{lineno}: {line.strip()}")
+                    table.add_row(
+                        rel,
+                        str(lineno),
+                        highlight_value(line.strip(), value),
+                    )
 
-        print()
+        panel = Panel(
+            table if table.row_count > 0 else Text("No matches", style="green"),
+            title=f"[bold]{label}[/bold] = [yellow]\"{value}\"[/yellow]",
+            border_style="blue",
+        )
+        console.print(panel)
 
 
 if __name__ == "__main__":

@@ -192,6 +192,7 @@ maker = Maker(
         "htmlcov",  # HTML coverage reports
         "__pycache__",  # Python cache files
         "tmp",
+        f"{SeedValues.package_name}.egg-info",
         # file
         ".claude/claude-code-messages.md",
         ".claude/settings.local.json",
