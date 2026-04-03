@@ -31,12 +31,12 @@ uv export --format requirements-txt --no-dev --no-emit-project --no-hashes --no-
 
 [tasks.make-template]
 description = "Convert the seed project into a cookiecutter template"
-run = ".venv/bin/python .mise/tasks/make-template.py"
+run = ".venv/bin/python .mise/tasks/make_template.py"
 depends = ["inst"]
 
 [tasks.check-seed-values]
 description = "Check if the generated template still contains residual seed project values"
-run = ".venv/bin/python .mise/tasks/check-seed-values.py"
+run = ".venv/bin/python .mise/tasks/check_seed_values.py"
 depends = ["inst"]
 
 [tasks.test-template]
@@ -51,11 +51,11 @@ echo "Output: file://$(cd tmp/output && pwd)"
 
 [tasks.check-template]
 description = "Check if the generated output still contains unresolved cookiecutter placeholders"
-run = ".venv/bin/python .mise/tasks/check-template.py"
+run = ".venv/bin/python .mise/tasks/check_template.py"
 
 [tasks.publish-template]
 description = "Publish template: commit, push, merge branches, and create GitHub release"
-run = ".venv/bin/python .mise/tasks/publish-template.py"
+run = ".venv/bin/python .mise/tasks/publish_template.py"
 depends = ["inst"]
 
 [tasks.update-github-metadata]

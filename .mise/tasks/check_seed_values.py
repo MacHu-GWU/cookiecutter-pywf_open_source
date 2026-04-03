@@ -15,10 +15,10 @@ from rich.panel import Panel
 from rich.table import Table
 from rich.text import Text
 
-# Import SeedValues from make-template.py
+# Import SeedValues from make_template.py
 _spec = importlib.util.spec_from_file_location(
     "make_template",
-    Path(__file__).absolute().parent / "make-template.py",
+    Path(__file__).absolute().parent / "make_template.py",
 )
 _mod = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(_mod)

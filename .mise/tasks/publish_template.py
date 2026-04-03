@@ -27,16 +27,22 @@ from pathlib import Path
 from pygithub_mate.api import BaseGitHubRepo
 
 # ---------------------------------------------------------------------------
-# Import shared values from make-template.py
+# Import shared values from make_template.py
 # ---------------------------------------------------------------------------
+# We import from make_template.py to reuse:
+# - `dir_here`: Project root directory path
+# - `version_to_replace`: Seed project version (from seed's pyproject.toml)
+#
+# Why: This template's version is synchronized with the seed project's version.
+# When we create a GitHub release, the tag/release name is the seed version.
 _spec = importlib.util.spec_from_file_location(
     "make_template",
-    Path(__file__).absolute().parent / "make-template.py",
+    Path(__file__).absolute().parent / "make_template.py",
 )
 _mod = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(_mod)
 dir_here = _mod.dir_here
-version_to_replace = _mod.version_to_replace
+version_to_replace = _mod.version_to_replace  # e.g. "1.0.0" from seed project
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -93,7 +99,7 @@ def merge_and_push_branch(branch_name: str):
 # ---------------------------------------------------------------------------
 # Step 2 — Commit and push main
 # ---------------------------------------------------------------------------
-update_and_push_main()
+# update_and_push_main()
 #
 # # ---------------------------------------------------------------------------
 # # Step 3 — Merge main into extra branches (if any)
