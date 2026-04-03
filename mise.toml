@@ -62,3 +62,7 @@ run = ".venv/bin/python .mise/tasks/check_output.py"
 description = "Publish template: commit, push, merge branches, and create GitHub release"
 run = ".venv/bin/python .mise/tasks/publish_template.py"
 depends = ["inst"]
+
+[tasks.all]
+description = "All-in-one: make template, check seed values, test template, check output, and publish"
+depends = ["make-template", "check-seed-values", "test-template", "check-output", "publish-template"]

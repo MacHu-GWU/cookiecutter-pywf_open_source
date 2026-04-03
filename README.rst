@@ -11,11 +11,15 @@
 
 Overview
 ------------------------------------------------------------------------------
-This template provides a ready-to-use structure for Python open source library projects. It generates a complete development environment that allows you to start coding immediately and publish to `PyPI <https://pypi.org/>`_. with minimal setup.
+This template provides a ready-to-use structure for Python open source library projects. It generates a complete development environment that allows you to start coding immediately and publish to `PyPI <https://pypi.org/>`_ with minimal setup.
 
-The template uses `pywf_open_source <https://github.com/MacHu-GWU/pywf_open_source-project>`_ as its automation engine, eliminating the cognitive overhead of remembering complex commands like ``poetry install --extras ...`` or ``pytest -s --tb=native --cov=your_package_name --cov-report term-missing tests``.
+**Key Features:**
 
-A standout feature is the built-in AI coding assistant that creates a knowledge base from your documentation, source code, and other specified files. Unlike solutions requiring vector store databases, you can simply drag and drop files to start interacting with an AI that understands your coding, testing, and documentation style. No need for Cursor, Windsurf, or API tokens - just specify which file, module, function, or class you want to work with, and it's ready to assist.
+- **Modern tooling**: Uses `mise-en-place <https://mise.jdx.dev/>`_ for task management and `uv <https://docs.astral.sh/uv/>`_ for fast Python package management
+- **Automation engine**: Built on `pywf_open_source <https://github.com/MacHu-GWU/pywf_open_source-project>`_, eliminating the need to remember complex commands
+- **Complete CI/CD**: Pre-configured GitHub Actions, CodeCov, and ReadTheDocs integration
+- **Developer-friendly**: Simple commands like ``mise run test`` or ``mise run cov`` replace complex pytest invocations
+- **Documentation ready**: Sphinx documentation setup with auto-generation scripts
 
 
 Disclaimer
@@ -69,6 +73,24 @@ You'll then be prompted to provide the following information:
 
 This will generate a repository structure similar to `cookiecutter_pywf_open_source_demo-project <https://github.com/MacHu-GWU/cookiecutter_pywf_open_source_demo-project>`_.
 
+Once generated, navigate to your project directory and explore the available automation tasks:
+
+.. code-block:: bash
+
+    cd your_package_name-project
+    mise tasks ls  # List all available tasks
+
+Common development tasks include:
+
+- ``mise run inst`` - Install all dependencies using uv
+- ``mise run test`` - Run unit tests
+- ``mise run cov`` - Run tests with coverage report
+- ``mise run build-doc`` - Build documentation
+- ``mise run publish`` - Publish package to PyPI
+- ``mise run release`` - Create a GitHub release
+
+For detailed task information, see the generated ``CLAUDE.md`` file in your project.
+
 
 Variations
 ------------------------------------------------------------------------------
@@ -81,8 +103,26 @@ For my personal open source Python projects, I use a custom branch:
 
 Project Maintainer Note
 ------------------------------------------------------------------------------
-this project follows the best practice mentioned in `THIS DOCUMENT <https://dev-exp-share.readthedocs.io/en/latest/search.html?q=Creating+Reusable+Project+Templates%3A+From+Concept+to+Implementation&check_keywords=yes&area=default>`_.
+This project follows the best practice mentioned in `THIS DOCUMENT <https://dev-exp-share.readthedocs.io/en/latest/search.html?q=Creating+Reusable+Project+Templates%3A+From+Concept+to+Implementation&check_keywords=yes&area=default>`_.
 
-- **Seed Repository**: `cookiecutter_pywf_open_source_demo-project <https://github.com/MacHu-GWU/cookiecutter_pywf_open_source_demo-project>`_
-- **Automation Library**: `pywf_open_source-project <https://github.com/MacHu-GWU/pywf_open_source-project>`_
-- **Cookiecutter Template**: `cookiecutter-pywf_open_source <https://github.com/MacHu-GWU/cookiecutter-pywf_open_source>`_
+**Project Architecture:**
+
+- **Seed Repository**: `cookiecutter_pywf_open_source_demo-project <https://github.com/MacHu-GWU/cookiecutter_pywf_open_source_demo-project>`_ - A concrete project used as the source for template generation
+- **Automation Library**: `pywf_open_source-project <https://github.com/MacHu-GWU/pywf_open_source-project>`_ - Shared automation utilities and helpers
+- **Cookiecutter Template**: `cookiecutter-pywf_open_source <https://github.com/MacHu-GWU/cookiecutter-pywf_open_source>`_ - This repository
+
+**Maintenance Workflow:**
+
+This template is maintained using a "reverse engineering" approach:
+
+1. Make changes in the Seed project (``cookiecutter_pywf_open_source_demo-project``)
+2. Run ``mise run make-template`` to convert the Seed into a template
+3. Run ``mise run publish-template`` to publish the template to GitHub
+
+**Toolchain:**
+
+- **mise-en-place**: Task runner and tool version manager
+- **uv**: Fast Python package installer and resolver
+- **cookiecutter-maker**: Reverse-engineering tool that converts concrete projects into templates
+
+For detailed maintainer instructions, see `maintainer-guide.rst <./maintainer-guide.rst>`_.

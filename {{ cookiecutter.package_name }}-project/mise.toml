@@ -61,7 +61,12 @@ run = ".venv/bin/sphinx-build -b html docs/source docs/build/html"
 description = "Open built Sphinx documentation in browser (requires 'build-doc' task to run first)"
 run = "open docs/build/html/index.html"
 
-# Building & Publishing
+[tasks.notebook-to-markdown]
+description = "Convert Jupyter notebooks to Markdown for AI knowledge base (processes .ipynb files)"
+run = ".venv/bin/python .mise/tasks/notebook-to-markdown.py"
+depends = ["inst"]
+
+# Building & Publishing & Release
 [tasks.build]
 description = "Build Python package wheel and source distribution using uv (outputs to dist/)"
 run = "uv build"
@@ -74,7 +79,6 @@ uv publish --token $PYPI_TOKEN
 """
 depends = ["inst"]
 
-# GitHub Release Management
 [tasks.release]
 description = "Create GitHub release using PyGithub (idempotent: skips if release exists)"
 run = ".venv/bin/python .mise/tasks/release.py"
@@ -94,10 +98,4 @@ depends = ["inst"]
 [tasks.update-github-metadata]
 description = "Update GitHub repository description and homepage using PyGithub"
 run = ".venv/bin/python .mise/tasks/update-github-metadata.py"
-depends = ["inst"]
-
-# Documentation Tools
-[tasks.notebook-to-markdown]
-description = "Convert Jupyter notebooks to Markdown for AI knowledge base (processes .ipynb files)"
-run = ".venv/bin/python .mise/tasks/notebook-to-markdown.py"
 depends = ["inst"]
