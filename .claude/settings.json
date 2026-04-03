@@ -1,11 +1,5 @@
 {
-    "model": "sonnet",
     "permissions": {
-        "defaultMode": "acceptEdits",
-        "deny": [
-            "Bash(git commit*)",
-            "Bash(git push*)"
-        ],
         "allow": [
             "Read(========== Read Section ==========)",
             "Read(========== Write Section ==========)",
@@ -20,7 +14,7 @@
             "Write(./README-cn.md)",
             "Write(./TICKET.md)",
             "Write(./CLAUDE.md)",
-            "Write({{ cookiecutter.package_name }}/**/*.py)",
+            "Write(cookiecutter_pywf_open_source_demo/**/*.py)",
             "Write(tests/**/*.py)",
             "Write(scripts/**/*.py)",
             "Read(========== Bash Section ==========)",
@@ -35,7 +29,25 @@
             "Read(========== Web Search ==========)",
             "WebSearch",
             "Read(========== Web Fetch ==========)",
-            "WebFetch(domain:raw.githubusercontent.com)"
-        ]
-    }
+            "WebFetch(domain:raw.githubusercontent.com)",
+            "Bash(ls:*)",
+            "Bash(uvx --from home-secret-toml hst get readthedocs.accounts.sh.users.sh.secrets.dev.value)",
+            "Bash(tar:*)",
+            "Bash(unzip:*)",
+            "Bash(.venv/bin/pip:*)",
+            "Bash(python -c:*)",
+            "Bash(make build-doc:*)",
+            "Bash(sphinx-build:*)",
+            "WebFetch(domain:github.com)",
+            "WebFetch(domain:learn.scientific-python.org)",
+            "WebFetch(domain:mise.jdx.dev)",
+            "Bash(chmod:*)"
+        ],
+        "deny": [
+            "Bash(git commit*)",
+            "Bash(git push*)"
+        ],
+        "defaultMode": "acceptEdits"
+    },
+    "model": "sonnet"
 }

@@ -22,11 +22,21 @@
 
 import os
 from datetime import datetime
-import {{ cookiecutter.package_name }} as package
+from importlib.metadata import version as get_version, metadata
 
-package_name = package.__name__
-package_author = package.__author__
-package_version = package.__version__
+# Get package metadata from installed package (via pyproject.toml)
+package_name = "{{ cookiecutter.package_name }}"
+_meta = metadata(package_name)
+
+# Extract version
+package_version = get_version(package_name)
+
+# Extract author from "Author-email: Name <email@example.com>" format
+_author_email_raw = _meta.get("Author-email", "")
+if _author_email_raw and "<" in _author_email_raw:
+    package_author = _author_email_raw.split("<")[0].strip()
+else:
+    package_author = _meta.get("Author", "Unknown")
 
 # -- General configuration ------------------------------------------------
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -231,18 +241,18 @@ jinja_contexts = {
 
 # Api Reference Doc
 from pathlib import Path
-import docfly.api as docfly
-
-docfly.ApiDocGenerator(
-    dir_output=Path(__file__).absolute().parent.joinpath("api"),
-    package_name=package_name,
-    ignore_patterns=[
-        # Package
-        f"{package_name}.docs",
-        f"{package_name}.tests",
-        f"{package_name}.vendor",
-        # Module
-        f"{package_name}._version",
-        f"{package_name}.paths",
-    ],
-).fly()
+# import docfly.api as docfly
+#
+# docfly.ApiDocGenerator(
+#     dir_output=Path(__file__).absolute().parent.joinpath("api"),
+#     package_name=package_name,
+#     ignore_patterns=[
+#         # Package
+#         f"{package_name}.docs",
+#         f"{package_name}.tests",
+#         f"{package_name}.vendor",
+#         # Module
+#         f"{package_name}._version",
+#         f"{package_name}.paths",
+#     ],
+# ).fly()

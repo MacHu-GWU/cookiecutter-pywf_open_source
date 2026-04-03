@@ -1,4 +1,6 @@
 # User Settings
+cookiecutter_pywf_open_source.egg-info/
+.claude/claude-code-message*
 tmp/
 
 
