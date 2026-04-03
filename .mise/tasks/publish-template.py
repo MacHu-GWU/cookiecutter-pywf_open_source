@@ -1,21 +1,34 @@
 # -*- coding: utf-8 -*-
 
 """
-After running ``mise run make-template``,
-manually check generated template directory, then you can use this script
-to do git commit, git push, update other branches, and update GitHub release.
+Publish the cookiecutter template to GitHub.
+
+This script is meant to run AFTER ``mise run make-template`` and manual review.
+
+Business logic:
+
+1. Copy the generated template from ``tmp/`` to the project root, replacing the
+   old ``{{ cookiecutter.package_name }}-project/`` directory.
+2. Commit all changes on the ``main`` branch and push to the remote.
+3. (Optional) For each extra branch (e.g. personalized variants like ``sanhe``),
+   merge ``main`` into that branch and push. These branches carry customized
+   ``cookiecutter.json`` defaults for specific users but share the same template.
+4. Switch back to ``main``.
+5. Create (or update) a GitHub release + tag on the latest commit of the default
+   branch, using the seed project's version as the tag/release name.
 """
 
-import sys
+import os
 import shutil
 import subprocess
 import importlib.util
 from pathlib import Path
 
-from home_secret import hs
-from manage_github_release import GitHubReleaseManager
+from pygithub_mate.api import BaseGitHubRepo
 
-# Import make-template.py (contains hyphen, so use importlib)
+# ---------------------------------------------------------------------------
+# Import shared values from make-template.py
+# ---------------------------------------------------------------------------
 _spec = importlib.util.spec_from_file_location(
     "make_template",
     Path(__file__).absolute().parent / "make-template.py",
@@ -25,6 +38,18 @@ _spec.loader.exec_module(_mod)
 dir_here = _mod.dir_here
 version_to_replace = _mod.version_to_replace
 
+# ---------------------------------------------------------------------------
+# Configuration
+# ---------------------------------------------------------------------------
+# Extra branches that carry personalized cookiecutter.json defaults.
+# Each branch will be updated by merging main into it.
+extra_branches: list[str] = [
+    # "sanhe",
+]
+
+# ---------------------------------------------------------------------------
+# Step 1 — Copy generated template to the project root
+# ---------------------------------------------------------------------------
 dir_tmp_template = dir_here / "tmp" / "{{ cookiecutter.package_name }}-project"
 dir_template = dir_here / "{{ cookiecutter.package_name }}-project"
 
@@ -32,58 +57,61 @@ shutil.rmtree(dir_template, ignore_errors=True)
 shutil.copytree(dir_tmp_template, dir_template)
 
 
+# ---------------------------------------------------------------------------
+# Git helpers
+# ---------------------------------------------------------------------------
 def switch_branch(branch_name: str):
-    """
-    Switch to the specified branch.
-    """
-    args = ["git", "checkout", branch_name]
-    subprocess.run(args, cwd=dir_here, check=True)
+    subprocess.run(["git", "checkout", branch_name], cwd=dir_here, check=True)
 
 
 def git_push():
-    args = ["git", "push"]
-    subprocess.run(args, cwd=dir_here, check=True)
+    subprocess.run(["git", "push"], cwd=dir_here, check=True)
 
 
 def update_and_push_main():
-    """
-    Commit everything in the main branch and push to the remote repository.
-    """
+    """Commit everything on main and push."""
     switch_branch("main")
-    args = ["git", "add", "."]
-    subprocess.run(args, cwd=dir_here, check=True)
-
-    args = ["git", "commit", "-m", "update template"]
+    subprocess.run(["git", "add", "."], cwd=dir_here, check=True)
     try:
-        subprocess.run(args, cwd=dir_here, check=True)
+        subprocess.run(
+            ["git", "commit", "-m", "update template"],
+            cwd=dir_here,
+            check=True,
+        )
     except Exception as e:
         print(e)
     git_push()
 
 
 def merge_and_push_branch(branch_name: str):
-    """
-    Merge the main branch into the specified branch and push to the remote repository.
-    """
+    """Merge main into the given branch and push."""
     switch_branch(branch_name)
-    args = ["git", "merge", "main"]
-    subprocess.run(args, cwd=dir_here, check=True)
-    args = ["git", "push"]
-    subprocess.run(args, cwd=dir_here, check=True)
+    subprocess.run(["git", "merge", "main"], cwd=dir_here, check=True)
+    subprocess.run(["git", "push"], cwd=dir_here, check=True)
 
 
-branch_name_list = [
-    "sanhe",
-]
+# ---------------------------------------------------------------------------
+# Step 2 — Commit and push main
+# ---------------------------------------------------------------------------
 update_and_push_main()
-for branch_name in branch_name_list:
-    merge_and_push_branch(branch_name=branch_name)
-switch_branch("main")
-
-manager = GitHubReleaseManager(
-    version=version_to_replace,
-    github_account="MacHu-GWU",
-    github_repo_name="cookiecutter-pywf_open_source",
-    github_token=hs.v("providers.github.accounts.sh.users.sh.secrets.dev.value"),
-)
-manager.update_release()
+#
+# # ---------------------------------------------------------------------------
+# # Step 3 — Merge main into extra branches (if any)
+# # ---------------------------------------------------------------------------
+# for branch_name in extra_branches:
+#     merge_and_push_branch(branch_name=branch_name)
+# switch_branch("main")
+#
+# # ---------------------------------------------------------------------------
+# # Step 4 — Create / update GitHub release
+# # ---------------------------------------------------------------------------
+# gh_repo = BaseGitHubRepo(
+#     github_kwargs=dict(login_or_token=os.environ["GITHUB_TOKEN"]),
+#     owner_name="MacHu-GWU",
+#     repo_name="cookiecutter-pywf_open_source",
+# )
+# gh_repo.put_release_on_latest_commit_on_default_branch(
+#     tag_name=version_to_replace,
+#     release_name=version_to_replace,
+#     release_message=f"Release {version_to_replace}",
+# )

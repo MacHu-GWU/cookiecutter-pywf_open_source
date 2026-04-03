@@ -375,6 +375,7 @@ source = { editable = "." }
 dependencies = [
     { name = "cookiecutter" },
     { name = "cookiecutter-maker" },
+    { name = "pygithub-mate" },
 ]
 
 [package.optional-dependencies]
@@ -414,6 +415,7 @@ requires-dist = [
     { name = "ipython", marker = "extra == 'doc'", specifier = ">=8.18.1,<8.19.0" },
     { name = "nbsphinx", marker = "extra == 'doc'", specifier = ">=0.8.12,<1.0.0" },
     { name = "pygithub", marker = "extra == 'mise'", specifier = ">=2.8.0,<3.0.0" },
+    { name = "pygithub-mate", specifier = ">=0.1.1,<1.0.0" },
     { name = "pygments", marker = "extra == 'doc'", specifier = ">=2.18.0,<3.0.0" },
     { name = "pytest", marker = "extra == 'test'", specifier = ">=8.2.2,<9.0.0" },
     { name = "pytest-cov", marker = "extra == 'test'", specifier = ">=6.0.0,<7.0.0" },
@@ -674,6 +676,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/20/b5/23b216d9d985a956623b6bd12d4086b60f0059b27799f23016af04a74ea1/fastjsonschema-2.21.2.tar.gz", hash = "sha256:b1eb43748041c880796cd077f1a07c3d94e93ae84bba5ed36800a33554ae05de", size = 374130, upload-time = "2025-08-14T18:49:36.666Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/cb/a8/20d0723294217e47de6d9e2e40fd4a9d2f7c4b6ef974babd482a59743694/fastjsonschema-2.21.2-py3-none-any.whl", hash = "sha256:1c797122d0a86c5cace2e54bf4e819c36223b552017172f32c5c024a6b77e463", size = 24024, upload-time = "2025-08-14T18:49:34.776Z" },
+]
+
+[[package]]
+name = "func-args"
+version = "1.0.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/c9/f0/e3410fc39cb3b4d64206cb97c42a7ff1c2e4cd26516903069daf19b2102b/func_args-1.0.1.tar.gz", hash = "sha256:f07c2620fa446da54eb0888d5063167b1068d566e1f9a1879fe912c3d7497821", size = 14577, upload-time = "2025-05-08T03:45:43.549Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/8f/04/51cce2f0ebe02fc7f15186658a9f129fba2d3b5055e3764d1bf087839988/func_args-1.0.1-py3-none-any.whl", hash = "sha256:4562f4eaa0d68142a6ab5ad1f212959fabc2c4cc029b77446bcc377d737e3db4", size = 15268, upload-time = "2025-05-08T03:45:41.982Z" },
 ]
 
 [[package]]
@@ -1195,6 +1206,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/a6/9a/44f918e9be12e49cb8b053f09d5d0733b74df52bf4dabc570da1c3ecd9f6/pygithub-2.9.0.tar.gz", hash = "sha256:a26abda1222febba31238682634cad11d8b966137ed6cc3c5e445b29a11cb0a4", size = 2592289, upload-time = "2026-03-22T21:14:39.053Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/2f/de/72e02bc7674e161b155a4b5a03b2347129d0626115bc97ba5bad5070cac9/pygithub-2.9.0-py3-none-any.whl", hash = "sha256:5e2b260ce327bffce9b00f447b65953ef7078ffe93e5a5425624a3075483927c", size = 449653, upload-time = "2026-03-22T21:14:37.726Z" },
+]
+
+[[package]]
+name = "pygithub-mate"
+version = "0.1.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "func-args" },
+    { name = "pygithub" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/69/3a/0ed290e37819673b4019b5cb1d86368646ff4ef515bbfdf103f4f7caf958/pygithub_mate-0.1.1.tar.gz", hash = "sha256:8934b140784116fb3ba362e4a91846bdeeb654b5f370b5057dc7045f1bb7e652", size = 15603, upload-time = "2025-09-07T20:32:14.692Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/2c/a0/625ffb16fabbc01eaf1795bfe1ac062c83018c934df8b9481e99a51b5002/pygithub_mate-0.1.1-py3-none-any.whl", hash = "sha256:f9f7ab96c0b611b90ad2d7827f0595339685f49549bdbb6b1ecaade29a246509", size = 17024, upload-time = "2025-09-07T20:32:13.658Z" },
 ]
 
 [[package]]
