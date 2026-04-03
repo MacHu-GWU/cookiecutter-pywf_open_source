@@ -79,18 +79,6 @@ Once generated, navigate to your project directory and explore the available aut
     cd your_package_name-project
     mise tasks ls  # List all available tasks
 
-Common development tasks include:
-
-- ``mise run inst`` - Install all dependencies using uv
-- ``mise run test`` - Run unit tests
-- ``mise run cov`` - Run tests with coverage report
-- ``mise run build-doc`` - Build documentation
-- ``mise run publish`` - Publish package to PyPI
-- ``mise run release`` - Create a GitHub release
-
-For detailed task information, see the generated ``CLAUDE.md`` file in your project.
-
-
 Variations
 ------------------------------------------------------------------------------
 For my personal open source Python projects, I use a custom branch:
