@@ -8,15 +8,65 @@
 
 工作流程
 ------------------------------------------------------------------------------
-1. **在 Seed 项目中进行修改**: 所有功能性的修改都应该在 Seed 项目 (``$HOME/GitHub/cookiecutter_pywf_open_source_demo-project``) 中完成并测试
 
-2. **生成模板**: 运行 ``mise run make-template``
+**标准工作流 (推荐)**
+
+一次性执行完整流程:
+
+.. code-block:: bash
+
+    mise run all
+
+这个命令会按顺序执行: make-template → check-seed-values → test-template → check-output → publish-template
+
+**详细步骤说明**
+
+1. **在 Seed 项目中进行修改**
+
+   所有功能性的修改都应该在 Seed 项目 (``$HOME/GitHub/cookiecutter_pywf_open_source_demo-project``) 中完成并测试
+
+2. **生成模板**
+
+   .. code-block:: bash
+
+       mise run make-template
 
    - 该脚本将 Seed 项目反向转换为 cookiecutter 模板
    - 生成的模板文件存放在 ``tmp/`` 目录下
    - 脚本会自动替换具体值为 cookiecutter 占位符 (如 ``{{ cookiecutter.package_name }}``)
 
-3. **发布模板**: 运行 ``mise run publish-template``
+3. **检查 Seed 值残留**
+
+   .. code-block:: bash
+
+       mise run check-seed-values
+
+   - 检查生成的模板中是否还有未被替换的 Seed 项目具体值
+   - 确保所有具体值都已被 cookiecutter 占位符替换
+
+4. **测试模板生成**
+
+   .. code-block:: bash
+
+       mise run test-template
+
+   - 使用默认值运行 cookiecutter，测试模板是否能正常生成项目
+   - 输出目录: ``tmp/output/``
+
+5. **检查输出占位符**
+
+   .. code-block:: bash
+
+       mise run check-output
+
+   - 检查生成的项目中是否有未解析的 cookiecutter 占位符 (如 ``{{ cookiecutter.xxx }}``)
+   - 确保所有占位符都已正确替换
+
+6. **发布模板**
+
+   .. code-block:: bash
+
+       mise run publish-template
 
    - 自动将模板从 ``tmp/`` 目录拷贝到模板目录 (``{{ cookiecutter.package_name }}-project/``)
    - 自动 commit 并 push 到 ``main`` 分支
@@ -27,10 +77,28 @@
 ------------------------------------------------------------------------------
 运行 ``mise tasks ls`` 查看所有可用任务:
 
-- ``mise run make-template`` - 从 Seed 项目生成模板
-- ``mise run publish-template`` - 发布模板到 GitHub
-- ``mise run check-seed-values`` - 检查 Seed 项目的值是否正确
-- ``mise run check-template`` - 检查生成的模板是否正确
+**环境管理**
+
+- ``mise run venv-create`` - 创建 Python 虚拟环境
+- ``mise run venv-remove`` - 删除虚拟环境
+- ``mise run inst`` - 安装所有 Python 依赖
+- ``mise run export`` - 导出依赖到 requirements.txt 文件
+
+**模板生成与验证**
+
+- ``mise run make-template`` - 从 Seed 项目生成 cookiecutter 模板
+- ``mise run check-seed-values`` - 检查模板中是否有残留的 Seed 项目值
+- ``mise run test-template`` - 测试模板生成 (用默认值运行 cookiecutter)
+- ``mise run check-output`` - 检查生成的项目中是否有未解析的占位符
+
+**发布**
+
+- ``mise run publish-template`` - 发布模板到 GitHub (commit, push, merge, release)
+- ``mise run update-github-metadata`` - 更新 GitHub 仓库描述和主页
+
+**一键执行**
+
+- ``mise run all`` - 一次性执行: make-template → check-seed-values → test-template → check-output → publish-template
 
 技术架构
 ------------------------------------------------------------------------------
