@@ -2,6 +2,7 @@
 cookiecutter_pywf_open_source.egg-info/
 .claude/claude-code-message*
 tmp/
+your_package_name-project
 
 
 # Byte-compiled / optimized / DLL files
