@@ -99,23 +99,23 @@ def merge_and_push_branch(branch_name: str):
 # ---------------------------------------------------------------------------
 update_and_push_main()
 
-# # ---------------------------------------------------------------------------
-# # Step 3 — Merge main into extra branches (if any)
-# # ---------------------------------------------------------------------------
-# for branch_name in extra_branches:
-#     merge_and_push_branch(branch_name=branch_name)
-# switch_branch("main")
-#
-# # ---------------------------------------------------------------------------
-# # Step 4 — Create / update GitHub release
-# # ---------------------------------------------------------------------------
-# gh_repo = BaseGitHubRepo(
-#     github_kwargs=dict(login_or_token=os.environ["GITHUB_TOKEN"]),
-#     owner_name="MacHu-GWU",
-#     repo_name="cookiecutter-pywf_open_source",
-# )
-# gh_repo.put_release_on_latest_commit_on_default_branch(
-#     tag_name=version_to_replace,
-#     release_name=version_to_replace,
-#     release_message=f"Release {version_to_replace}",
-# )
+# ---------------------------------------------------------------------------
+# Step 3 — Merge main into extra branches (if any)
+# ---------------------------------------------------------------------------
+for branch_name in extra_branches:
+    merge_and_push_branch(branch_name=branch_name)
+switch_branch("main")
+
+# ---------------------------------------------------------------------------
+# Step 4 — Create / update GitHub release
+# ---------------------------------------------------------------------------
+gh_repo = BaseGitHubRepo(
+    github_kwargs=dict(login_or_token=os.environ["GITHUB_TOKEN"]),
+    owner_name="MacHu-GWU",
+    repo_name="cookiecutter-pywf_open_source",
+)
+gh_repo.put_release_on_latest_commit_on_default_branch(
+    tag_name=version_to_replace,
+    release_name=version_to_replace,
+    release_message=f"Release {version_to_replace}",
+)
