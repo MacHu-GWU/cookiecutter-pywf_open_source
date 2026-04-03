@@ -34,6 +34,20 @@ description = "Convert the seed project into a cookiecutter template"
 run = ".venv/bin/python .mise/tasks/make-template.py"
 depends = ["inst"]
 
+[tasks.test-template]
+description = "Test the generated template by running cookiecutter with default values"
+depends = ["inst"]
+run = """
+rm -rf tmp/output
+.venv/bin/cookiecutter tmp --no-input --output-dir tmp/output
+echo ""
+echo "Output: file://$(cd tmp/output && pwd)"
+"""
+
+[tasks.check-template]
+description = "Check if the generated output still contains unresolved cookiecutter placeholders"
+run = ".venv/bin/python .mise/tasks/check-template.py"
+
 [tasks.publish-template]
 description = "Publish template: commit, push, merge branches, and create GitHub release"
 run = ".venv/bin/python .mise/tasks/publish-template.py"
