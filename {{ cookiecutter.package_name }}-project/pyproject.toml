@@ -26,10 +26,9 @@ keywords = []
 readme = "README.rst"
 requires-python = ">=3.10,<4.0"
 # Full list of classifiers: https://pypi.org/classifiers/
-classifier = [
+classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
-    "{{ cookiecutter.license_classifier }}",
     "Natural Language :: English",
     "Operating System :: Microsoft :: Windows",
     "Operating System :: MacOS",
@@ -58,9 +57,6 @@ dependencies = [
 # Local Development dependenceies
 # ------------------------------------------------------------------------------
 dev = [
-    "twine>=6.0.0,<7.0.0", # distribute package to PyPI
-    "wheel>=0.45.0,<1.0.0", # build wheel package
-    "build>=1.2.1,<2.0.0", # build source distribution
     "rich>=13.8.1,<14.0.0", # pretty print
 ]
 
@@ -89,9 +85,12 @@ doc = [
 ]
 
 # ------------------------------------------------------------------------------
-# Automation (devops) dependenceies
+# Mise task runner dependencies
 # ------------------------------------------------------------------------------
-auto = [
+mise = [
+    "PyGithub>=2.8.0,<3.0.0", # GitHub API client
+    "httpx>=0.28.0,<1.0.0", # HTTP client for ReadTheDocs API
+    "tomli>=2.0.0,<3.0.0; python_version < '3.11'", # TOML parser for Python 3.10
 ]
 
 # Quick Links
@@ -122,28 +121,18 @@ exclude = [
     "**/*.pyo",
 ]
 
-# python workflow tool config
-[tool.pywf]
-# The specific python version you use for local development
-dev_python = "{{ cookiecutter.dev_python_version }}"
-# --- github.com
-github_account = "{{ cookiecutter.github_username }}"
-# Create GitHub token in https://github.com/settings/tokens and put the token in
-# ``${HOME}/home_secret.json``
-github_token_field = "{{ cookiecutter.github_token_field }}"
-# --- codecov.io (for code coverage test report)
-codecov_account = "{{ cookiecutter.github_username }}"
-# Create Codecov token in https://app.codecov.io/account/gh/${codecov_account}/access
-# and put the token in ``${HOME}/home_secret.json``
-codecov_token_field = "{{ cookiecutter.codecov_token_field }}"
-# --- readthedocs.org (for documentation hosting)
-# Create Readthedocs token in https://app.readthedocs.org/accounts/tokens/
-# and put the token at ``${HOME}/home_secret.json``
-readthedocs_token_field = "{{ cookiecutter.readthedocs_token_field }}"
-# Readthedocs project name, usually it is the same as your project name
-readthedocs_project_name = "{{ cookiecutter.package_name }}"
+[tool.setuptools.packages.find]
+where = ["."]
+include = [
+    "{{ cookiecutter.package_name }}*"
+]
+exclude = [
+    "{{ cookiecutter.package_name }}.tests",
+    "{{ cookiecutter.package_name }}.tests.*",
+    "{{ cookiecutter.package_name }}.docs",
+    "{{ cookiecutter.package_name }}.docs.*",
+]
 
-# Read: https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#declaring-the-build-backend
 [build-system]
-requires = ["poetry-core>=2.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"

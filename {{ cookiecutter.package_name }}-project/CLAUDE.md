@@ -1,32 +1,66 @@
-# {{ cookiecutter.package_name }} Project Guide
+# Project Guide for AI Assistants
+
+This document guides AI assistants on how to navigate and work with this project.
 
 ## Project Overview
 
-See @README.rst for complete project overview.
+**What this project does:** Read `README.rst` for project description and purpose.
 
-## Core Development Guides
+**Project type:** Python package
 
-### Python Development Standards
+## Core Configuration Files
 
-- **Virtual Environment**: @./.claude/md/Python-virtual-environment-setup-instruction.md
-- **Testing Strategy**: @./.claude/md/Python-test-strategy-instruction.md
-- **Docstring Guide**: @./.claude/md/Python-docstring-guide.md
-- **API Documentation**: @./.claude/md/Python-cross-reference-api-doc-guide.md
-- **Documentation Structure**: @./.claude/md/Python-documentation-structure-guide.md
+### Tool & Dependency Management
+- `mise.toml` - Task runner and tool version management (Python 3.12, uv, claude)
+- `pyproject.toml` - Python dependencies and package metadata
+- `.venv/` - Virtual environment directory (created by uv)
 
-## Essential Commands
+Use `mise ls python --current` to see the exact Python version in use.
 
-- **All Operations**: @./Makefile (run `make help` for full command list)
-- **Python Execution**: Use `.venv/bin/python` for all Python scripts in:
-  - `debug/**/*.py` - Debug utilities
-  - `scripts/**/*.py` - Automation scripts
-  - `config/**/*.py` - Configuration deployment
-  - `tests/**/*.py` - Unit and integration tests
+### CI/CD & Testing
+- `.github/workflows/main.yml` - GitHub Actions CI workflow
+- `codecov.yml` + `.coveragerc` - Code coverage reporting (codecov.io)
+- `.readthedocs.yml` - Documentation hosting (readthedocs.org)
 
-## Quick Start Workflow
+### Documentation
+- `docs/source/` - Sphinx documentation source files
+- `docs/source/conf.py` - Sphinx configuration
 
-1. **Setup**: `make venv-create && make install-all`
-2. **Update Dependencies**: ``make poetry-lock && make poetry-export && make install``
-3. **Development**: Edit code in ``{{ cookiecutter.package_name }}/**/*.py`` → Run tests ``.venv/bin/python tests/**/*.py``
-4. **Testing**: `make test` or `make cov` for coverage
-5. **Build Document**: `make build-doc && make view-doc` for build sphinx docs and open local html doc site in web browser
+## Development Workflow
+
+### Task Management
+List all available tasks:
+```bash
+mise tasks ls
+```
+
+Run a specific task:
+```bash
+mise run ${task_name}
+```
+
+**Key tasks:**
+- `inst` - Install all dependencies using uv (fast package manager)
+- `cov` - Run unit tests with coverage report
+- `build-doc` - Build Sphinx documentation
+
+For complete task reference, run `mise run list-tasks` to generate `.claude/mise-tasks.md`.
+
+### Testing Philosophy
+This project uses **pytest** with a special pattern that allows running individual test files as standalone scripts.
+
+**Example:** See `tests/test_api.py` - the `if __name__ == "__main__":` block demonstrates this pattern. It runs pytest as a subprocess with coverage tracking for the specific module, enabling quick isolated testing during development.
+
+## Working with This Project
+
+**Approach:**
+1. Don't load entire files unnecessarily - read specific files only when needed
+2. Use task commands (`mise run`) instead of direct tool invocation
+3. Follow the testing pattern when creating new test files
+4. Reference configuration files for specific settings rather than assuming defaults
+
+**Tools in use:**
+- **mise-en-place** - Development tool management
+- **uv** - Fast Python package management
+- **pytest** - Unit testing framework
+- **sphinx** - Documentation generation
