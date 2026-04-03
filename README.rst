@@ -16,7 +16,6 @@ This template provides a ready-to-use structure for Python open source library p
 **Key Features:**
 
 - **Modern tooling**: Uses `mise-en-place <https://mise.jdx.dev/>`_ for task management and `uv <https://docs.astral.sh/uv/>`_ for fast Python package management
-- **Automation engine**: Built on `pywf_open_source <https://github.com/MacHu-GWU/pywf_open_source-project>`_, eliminating the need to remember complex commands
 - **Complete CI/CD**: Pre-configured GitHub Actions, CodeCov, and ReadTheDocs integration
 - **Developer-friendly**: Simple commands like ``mise run test`` or ``mise run cov`` replace complex pytest invocations
 - **Documentation ready**: Sphinx documentation setup with auto-generation scripts
@@ -41,11 +40,11 @@ To use a specific released version (see the `full list of release at here <https
 
     cookiecutter https://github.com/MacHu-GWU/cookiecutter-pywf_open_source --checkout tags/${version}
 
-For example, to use ``0.1.4`` (the latest as of 2025-09-27):
+For example, to use ``1.0.0`` (the latest as of 2026-04-03):
 
 .. code-block:: bash
 
-    cookiecutter https://github.com/MacHu-GWU/cookiecutter-pywf_open_source --checkout tags/0.1.4
+    cookiecutter https://github.com/MacHu-GWU/cookiecutter-pywf_open_source --checkout tags/1.0.0
 
 You'll then be prompted to provide the following information:
 
@@ -66,10 +65,10 @@ You'll then be prompted to provide the following information:
     [5/10] Author name for pyproject.toml file (Firstname Lastname): John Doe
     [6/10] Author email for pyproject.toml file (firstname.lastname@email.com): john.doe@email.com
     [7/10] Semantic Version, in {major}.{minor}.{micro} (e.g. 0.1.1) (0.1.1): 0.1.1
-    [8/10] Python version for local development, in {major}.{minor}.{micro} (e.g. 3.11.8) (3.11.8): 3.11.8
-    [9/11] GitHub token field, Read https://github.com/MacHu-GWU/home_secret-project to learn how to set up your GitHub token using home_secret.json (your_github_token_field): my_github_token
-    [10/11] Codecov.io token field, Read https://github.com/MacHu-GWU/home_secret-project to learn how to set up your GitHub token using home_secret.json (your_codecov_token_field): my_codecov_token
-    [11/11] Readthedocs.org token field, Read https://github.com/MacHu-GWU/home_secret-project to learn how to set up your GitHub token using home_secret.json (your_readthedocs_token_field): my_readthedocs_token
+    [8/10] Python version for local development, in {major}.{minor}.{micro} (e.g. 3.12) (3.12): 3.12
+    [9/11] GitHub token field, Read https://github.com/MacHu-GWU/home_secret_toml-project to learn how to set up your GitHub token using home_secret.json (your_github_token_field): my_github_token
+    [10/11] Codecov.io token field, Read https://github.com/MacHu-GWU/home_secret_toml-project to learn how to set up your GitHub token using home_secret.json (your_codecov_token_field): my_codecov_token
+    [11/11] Readthedocs.org token field, Read https://github.com/MacHu-GWU/home_secret_toml-project to learn how to set up your GitHub token using home_secret.json (your_readthedocs_token_field): my_readthedocs_token
 
 This will generate a repository structure similar to `cookiecutter_pywf_open_source_demo-project <https://github.com/MacHu-GWU/cookiecutter_pywf_open_source_demo-project>`_.
 
@@ -108,7 +107,6 @@ This project follows the best practice mentioned in `THIS DOCUMENT <https://dev-
 **Project Architecture:**
 
 - **Seed Repository**: `cookiecutter_pywf_open_source_demo-project <https://github.com/MacHu-GWU/cookiecutter_pywf_open_source_demo-project>`_ - A concrete project used as the source for template generation
-- **Automation Library**: `pywf_open_source-project <https://github.com/MacHu-GWU/pywf_open_source-project>`_ - Shared automation utilities and helpers
 - **Cookiecutter Template**: `cookiecutter-pywf_open_source <https://github.com/MacHu-GWU/cookiecutter-pywf_open_source>`_ - This repository
 
 **Maintenance Workflow:**
