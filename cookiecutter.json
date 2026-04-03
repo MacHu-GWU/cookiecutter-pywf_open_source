@@ -25,10 +25,10 @@
         "author": "Author name for pyproject.toml file",
         "author_email": "Author email for pyproject.toml file",
         "version": "Semantic Version, in {major}.{minor}.{micro} (e.g. 0.1.1)",
-        "dev_python_version": "Python version for local development, in {major}.{minor}.{micro} (e.g. 3.11.8)",
-        "github_token_field": "GitHub token field, Read https://github.com/MacHu-GWU/home_secret-project to learn how to set up your GitHub token using home_secret.json",
-        "codecov_token_field": "Codecov.io token field, Read https://github.com/MacHu-GWU/home_secret-project to learn how to set up your GitHub token using home_secret.json",
-        "readthedocs_token_field": "Readthedocs.org token field, Read https://github.com/MacHu-GWU/home_secret-project to learn how to set up your GitHub token using home_secret.json"
+        "dev_python_version": "Python version for local development, in {major}.{minor} (e.g. 3.12)",
+        "github_token_field": "GitHub token field, Read https://github.com/MacHu-GWU/home_secret_toml-project to learn how to set up your GitHub token using home_secret.json",
+        "codecov_token_field": "Codecov.io token field, Read https://github.com/MacHu-GWU/home_secret_toml-project to learn how to set up your GitHub token using home_secret.json",
+        "readthedocs_token_field": "Readthedocs.org token field, Read https://github.com/MacHu-GWU/home_secret_toml-project to learn how to set up your GitHub token using home_secret.json"
     },
     "_copy_without_render": [
         "*/vendor/**/*.*",

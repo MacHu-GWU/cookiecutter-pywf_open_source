@@ -4,9 +4,8 @@
 Convert a seed repo into a project template.
 """
 
-import sys
 import shutil
-import subprocess
+import tomllib
 from pathlib import Path
 from cookiecutter_maker.api import Parameter, Maker
 from cookiecutter_pywf_open_source.paths import path_enum
@@ -19,14 +18,18 @@ dir_seed = Path.home().joinpath(
     "cookiecutter_pywf_open_source_demo-project",
 )
 
-# Extract the current version from the seed project to use as a placeholder
-path_version = dir_seed / "cookiecutter_pywf_open_source_demo" / "_version.py"
-args = [sys.executable, str(path_version)]
-result = subprocess.run(args, capture_output=True)
-version_to_replace = result.stdout.decode("utf-8").strip()
+# Extract the current version from the seed project's pyproject.toml
+with open(dir_seed / "pyproject.toml", "rb") as f:
+    pyproject = tomllib.load(f)
+version_to_replace = pyproject["project"]["version"]
 versions = version_to_replace.split(".")
 assert len(versions) == 3
 assert all(v.isdigit() for v in versions)
+
+# Extract the dev python version from the seed project's mise.toml
+with open(dir_seed / "mise.toml", "rb") as f:
+    mise_config = tomllib.load(f)
+dev_python_version = mise_config["tools"]["python"]
 
 # Create a Maker instance to convert the project into a template
 maker = Maker(
@@ -115,25 +118,25 @@ maker = Maker(
             prompt="Semantic Version, in {major}.{minor}.{micro} (e.g. 0.1.1)",
         ),
         Parameter(
-            selector=['dev_python = "3.12.11"', "3.12.11"],
+            selector=[f'python = "{dev_python_version}"', dev_python_version],
             name="dev_python_version",
-            default="3.12.11",
-            prompt="Python version for local development, in {major}.{minor}.{micro} (e.g. 3.12.11)",
+            default=dev_python_version,
+            prompt=f"Python version for local development, in {{major}}.{{minor}} (e.g. {dev_python_version})",
         ),
         Parameter(
-            selector=["providers.github.accounts.sh.users.sh.secrets.dev.value"],
+            selector=["github.accounts.sh.users.sh.secrets.dev.value"],
             name="github_token_field",
             default="your_github_token_field",
             prompt="GitHub token field, Read https://github.com/MacHu-GWU/home_secret_toml-project to learn how to set up your GitHub token using home_secret.json",
         ),
         Parameter(
-            selector=["providers.codecov_io.accounts.sh.users.sh.secrets.dev.value"],
+            selector=["codecov_io.accounts.sh.users.sh.secrets.dev.value"],
             name="codecov_token_field",
             default="your_codecov_token_field",
             prompt="Codecov.io token field, Read https://github.com/MacHu-GWU/home_secret_toml-project to learn how to set up your GitHub token using home_secret.json",
         ),
         Parameter(
-            selector=["providers.readthedocs.accounts.sh.users.sh.secrets.dev.value"],
+            selector=["readthedocs.accounts.sh.users.sh.secrets.dev.value"],
             name="readthedocs_token_field",
             default="your_readthedocs_token_field",
             prompt="Readthedocs.org token field, Read https://github.com/MacHu-GWU/home_secret_toml-project to learn how to set up your GitHub token using home_secret.json",
@@ -159,7 +162,7 @@ maker = Maker(
         "tmp",
         # file
         ".claude/claude-code-messages.md",
-        ".claude/settings.local.json"
+        ".claude/settings.local.json",
         ".coverage",  # Coverage data
         ".pyc",  # Compiled Python files
         "LICENSE.txt",  # License file, we will generate this later
