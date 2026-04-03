@@ -14,7 +14,7 @@
     "author": "Firstname Lastname",
     "author_email": "firstname.lastname@email.com",
     "version": "0.1.1",
-    "dev_python_version": "3.11.8",
+    "dev_python_version": "3.12",
     "github_token_field": "your_github_token_field",
     "codecov_token_field": "your_codecov_token_field",
     "readthedocs_token_field": "your_readthedocs_token_field",
