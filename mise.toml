@@ -34,6 +34,11 @@ description = "Convert the seed project into a cookiecutter template"
 run = ".venv/bin/python .mise/tasks/make-template.py"
 depends = ["inst"]
 
+[tasks.check-seed-values]
+description = "Check if the generated template still contains residual seed project values"
+run = ".venv/bin/python .mise/tasks/check-seed-values.py"
+depends = ["inst"]
+
 [tasks.test-template]
 description = "Test the generated template by running cookiecutter with default values"
 depends = ["inst"]
