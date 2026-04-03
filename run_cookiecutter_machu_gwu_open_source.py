@@ -20,8 +20,9 @@ class Context:
     license_classifier: str = dataclasses.field()
     version: str = dataclasses.field()
     dev_python_version: str = dataclasses.field()
-    token_name: str = dataclasses.field()
-    readthedocs_username: str = dataclasses.field()
+    github_token_field: str = dataclasses.field()
+    codecov_token_field: str = dataclasses.field()
+    readthedocs_token_field: str = dataclasses.field()
 
     # --- Derived
     package_name_slug: str = dataclasses.field(init=False)
@@ -43,9 +44,10 @@ if __name__ == "__main__":
         author="Sanhe Hu",
         author_email="husanhe@gmail.com",
         version="0.1.1",
-        dev_python_version="3.11.8",
-        token_name="sanhe-dev",
-        readthedocs_username="machugwu",
+        dev_python_version="3.12",
+        github_token_field="github.accounts.sh.users.sh.secrets.dev.value",
+        codecov_token_field="codecov_io.accounts.sh.users.sh.secrets.dev.value",
+        readthedocs_token_field="readthedocs.accounts.sh.users.sh.secrets.dev.value",
     )
 
     dir_here: Path = Path(__file__).absolute().parent
