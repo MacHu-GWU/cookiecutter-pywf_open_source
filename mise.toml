@@ -1,0 +1,35 @@
+# See claude code environment variables documents at https://code.claude.com/docs/en/settings
+[env]
+GITHUB_TOKEN = "{{ exec(command='uvx --from home-secret-toml hst get github.accounts.sh.users.sh.secrets.dev.value') }}"
+
+[tools]
+python = "3.12"
+uv = "latest"
+claude = "latest"
+
+# === Tasks ===
+# Python Environment Management
+[tasks.venv-create]
+description = "Create Python virtual environment using uv (creates .venv directory)"
+run = "uv venv --allow-existing"
+
+[tasks.venv-remove]
+description = "Remove Python virtual environment (deletes .venv directory)"
+run = "rm -r .venv"
+
+# Dependency Management
+[tasks.inst]
+description = "Install all Python dependencies using uv (syncs from pyproject.toml and uv.lock)"
+depends = ["venv-create"]
+run = "uv sync --all-extras"
+
+[tasks.export]
+description = "Export Python dependencies to requirements*.txt files using uv (for legacy compatibility)"
+run = """
+uv export --format requirements-txt --no-dev --no-emit-project --no-hashes --no-annotate --no-emit-package pywin32 --no-emit-package colorama --no-emit-package tzdata | sed 's/ ; platform_machine ==.*or.*//' > requirements.txt
+"""
+
+[tasks.update-github-metadata]
+description = "Update GitHub repository description and homepage using PyGithub"
+run = ".venv/bin/python .mise/tasks/update-github-metadata.py"
+depends = ["inst"]

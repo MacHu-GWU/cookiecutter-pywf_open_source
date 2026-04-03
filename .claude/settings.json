@@ -1,0 +1,53 @@
+{
+    "permissions": {
+        "allow": [
+            "Read(========== Read Section ==========)",
+            "Read(========== Write Section ==========)",
+            "Write(.claude/*.md)",
+            "Write(.claude/TEACHING.md)",
+            "Write(.claude/skills/*/*.md)",
+            "Write(.claude/skills/*/SKILL.md)",
+            "Write(.claude/skills/*/references/*.md)",
+            "Write(.claude/skills/*/scripts/*.py)",
+            "Write(./**/*.md)",
+            "Write(./README.md)",
+            "Write(./README-cn.md)",
+            "Write(./TICKET.md)",
+            "Write(./CLAUDE.md)",
+            "Write(cookiecutter_pywf_open_source_demo/**/*.py)",
+            "Write(tests/**/*.py)",
+            "Write(scripts/**/*.py)",
+            "Read(========== Bash Section ==========)",
+            "Bash(.venv/bin/python debug/**/*.py)",
+            "Bash(.venv/bin/python scripts/**/*.py)",
+            "Bash(.venv/bin/python config/**/*.py)",
+            "Bash(.venv/bin/python tests/**/*.py)",
+            "Bash(mise *)",
+            "Bash(uv *)",
+            "Bash(ruff *)",
+            "Read(========== Skill Section ==========)",
+            "Read(========== Web Search ==========)",
+            "WebSearch",
+            "Read(========== Web Fetch ==========)",
+            "WebFetch(domain:raw.githubusercontent.com)",
+            "Bash(ls:*)",
+            "Bash(uvx --from home-secret-toml hst get readthedocs.accounts.sh.users.sh.secrets.dev.value)",
+            "Bash(tar:*)",
+            "Bash(unzip:*)",
+            "Bash(.venv/bin/pip:*)",
+            "Bash(python -c:*)",
+            "Bash(make build-doc:*)",
+            "Bash(sphinx-build:*)",
+            "WebFetch(domain:github.com)",
+            "WebFetch(domain:learn.scientific-python.org)",
+            "WebFetch(domain:mise.jdx.dev)",
+            "Bash(chmod:*)"
+        ],
+        "deny": [
+            "Bash(git commit*)",
+            "Bash(git push*)"
+        ],
+        "defaultMode": "acceptEdits"
+    },
+    "model": "sonnet"
+}
