@@ -105,22 +105,6 @@ Download = "https://pypi.org/pypi/{{ cookiecutter.package_name | slugify }}#file
 # For command line interface, read: https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#creating-executable-scripts
 [project.scripts]
 
-[tool.poetry.requires-plugins]
-poetry-plugin-export = ">=1.9.0,<2.0.0"
-
-[tool.poetry]
-# Files to include in the package distribution
-packages = [
-    { include = "{{ cookiecutter.package_name }}", from = ".", to = "." }
-]
-# Files to exclude from the package
-exclude = [
-    "{{ cookiecutter.package_name }}/tests/*",
-    "{{ cookiecutter.package_name }}/docs/*",
-    "**/*.pyc",
-    "**/*.pyo",
-]
-
 [tool.setuptools.packages.find]
 where = ["."]
 include = [

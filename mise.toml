@@ -29,6 +29,11 @@ run = """
 uv export --format requirements-txt --no-dev --no-emit-project --no-hashes --no-annotate --no-emit-package pywin32 --no-emit-package colorama --no-emit-package tzdata | sed 's/ ; platform_machine ==.*or.*//' > requirements.txt
 """
 
+[tasks.update-github-metadata]
+description = "Update GitHub repository description and homepage using PyGithub"
+run = ".venv/bin/python .mise/tasks/update-github-metadata.py"
+depends = ["inst"]
+
 [tasks.make-template]
 description = "Convert the seed project into a cookiecutter template"
 run = ".venv/bin/python .mise/tasks/make_template.py"
@@ -49,16 +54,15 @@ echo ""
 echo "Output: file://$(cd tmp/output && pwd)"
 """
 
-[tasks.check-template]
+[tasks.check-output]
 description = "Check if the generated output still contains unresolved cookiecutter placeholders"
-run = ".venv/bin/python .mise/tasks/check_template.py"
+run = ".venv/bin/python .mise/tasks/check_output.py"
 
 [tasks.publish-template]
 description = "Publish template: commit, push, merge branches, and create GitHub release"
 run = ".venv/bin/python .mise/tasks/publish_template.py"
 depends = ["inst"]
 
-[tasks.update-github-metadata]
-description = "Update GitHub repository description and homepage using PyGithub"
-run = ".venv/bin/python .mise/tasks/update-github-metadata.py"
-depends = ["inst"]
+[tasks.all]
+description = "All-in-one: make template, check seed values, test template, check output, and publish"
+depends = ["make-template", "check-seed-values", "test-template", "check-output", "publish-template"]
