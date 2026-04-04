@@ -47,7 +47,7 @@ version_to_replace = SeedValues.version
 # Extra branches that carry personalized cookiecutter.json defaults.
 # Each branch will be updated by merging main into it.
 extra_branches: list[str] = [
-    # "sanhe",
+    "sanhe",
 ]
 
 # ---------------------------------------------------------------------------
