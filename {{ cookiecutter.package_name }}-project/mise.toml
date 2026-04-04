@@ -69,7 +69,10 @@ depends = ["inst"]
 # Building & Publishing & Release
 [tasks.build]
 description = "🏗️ Build Python package wheel and source distribution using uv (outputs to dist/)"
-run = "uv build"
+run = """
+rm -rf dist
+uv build
+"""
 
 [tasks.publish]
 description = "🚀 Publish Python package to PyPI using uv (prints PyPI URL after success)"
@@ -77,7 +80,7 @@ run = """
 .venv/bin/python .mise/tasks/publish.py
 uv publish --token $PYPI_TOKEN
 """
-depends = ["inst"]
+depends = ["build"]
 
 [tasks.release]
 description = "🏷 Create GitHub release using PyGithub (idempotent: skips if release exists)"
