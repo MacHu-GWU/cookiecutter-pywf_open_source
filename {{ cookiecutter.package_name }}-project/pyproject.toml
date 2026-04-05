@@ -33,9 +33,12 @@ classifiers = [
     "Operating System :: Microsoft :: Windows",
     "Operating System :: MacOS",
     "Operating System :: Unix",
-    # Note: classfier like "Programming Language :: Python :: 3 :: Only",
-    # "Programming Language :: Python :: 3.X" is no longer needed,
-    # because we have ``requires-python`` field.
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
 ]
 
 # ------------------------------------------------------------------------------
@@ -80,8 +83,8 @@ doc = [
     "pygments>=2.18.0,<3.0.0", # syntax highlight
     "ipython>=8.18.1,<8.19.0", # interactive Python
     "nbsphinx>=0.8.12,<1.0.0", # add jupyter notebook in sphinx doc
-    "rstobj==1.2.1", # generate reStructuredText from Python code
-    "docfly==3.0.0", # automaticall generate .. toctree directives and API reference doc
+    "rstobj==2.0.0", # generate reStructuredText from Python code
+    "docfly==3.0.3", # automaticall generate .. toctree directives and API reference doc
 ]
 
 # ------------------------------------------------------------------------------
