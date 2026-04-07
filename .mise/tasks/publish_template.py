@@ -51,6 +51,14 @@ extra_branches: list[str] = [
 ]
 
 # ---------------------------------------------------------------------------
+# Confirmation gate — must type Y (uppercase) to proceed
+# ---------------------------------------------------------------------------
+_answer = input("This will commit, push, and create a GitHub release. Type Y to proceed: ")
+if _answer != "Y":
+    print("Aborted.")
+    raise SystemExit(0)
+
+# ---------------------------------------------------------------------------
 # Step 1 — Copy generated template to the project root
 # ---------------------------------------------------------------------------
 dir_project_root = path_enum.dir_project_root
