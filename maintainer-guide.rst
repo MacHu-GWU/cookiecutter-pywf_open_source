@@ -104,5 +104,4 @@
 ------------------------------------------------------------------------------
 - **Template Repository**: ``cookiecutter-pywf_open_source`` (当前仓库)
 - **Seed Repository**: ``cookiecutter_pywf_open_source_demo-project``
-- **Automation Library**: ``pywf_open_source-project``
 - **工具链**: mise-en-place (任务管理) + uv (包管理)
