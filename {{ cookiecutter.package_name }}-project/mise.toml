@@ -9,6 +9,7 @@ PYPI_TOKEN = "{% raw %}{{{% endraw %} exec(command='uvx --from home-secret-toml 
 python = "{{ cookiecutter.dev_python_version }}"
 uv = "latest"
 claude = "latest"
+pandoc = "3.9" # Use pandoc 3.9 - latest stable major version as of 2026-04
 
 # === Tasks ===
 # Python Environment Management
