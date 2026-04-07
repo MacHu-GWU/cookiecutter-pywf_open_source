@@ -65,4 +65,10 @@ depends = ["inst"]
 
 [tasks.all]
 description = "All-in-one: make template, check seed values, test template, check output, and publish"
-depends = ["make-template", "check-seed-values", "test-template", "check-output", "publish-template"]
+run = """
+mise run make-template
+mise run check-seed-values
+mise run test-template
+mise run check-output
+mise run publish-template
+"""
