@@ -1,4 +1,7 @@
 # comprehensive github action yml reference: https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions
+# estimate build time:
+# - Linux: 15s
+# - Windows: 40s
 
 ---
 # Name of the workflow as it will appear in the GitHub Actions tab
@@ -51,17 +54,17 @@ jobs:
             python-version: 2.7
     steps:
       # Check out the repository code to the runner
-      - uses: "actions/checkout@v4" # https://github.com/marketplace/actions/checkout
+      - uses: "actions/checkout@v6" # https://github.com/marketplace/actions/checkout
       # Setup Python with the specified version from the matrix
-      - uses: "actions/setup-python@v5" # https://github.com/marketplace/actions/setup-python
+      - uses: "actions/setup-python@v6" # https://github.com/marketplace/actions/setup-python
         with:
           python-version: "${% raw %}{{{% endraw %} matrix.python-version {% raw %}}}{% endraw %}"
       # Install uv - fast Python package installer
       - name: "Install uv"
-        uses: "astral-sh/setup-uv@v5" # https://github.com/marketplace/actions/setup-uv
+        uses: "astral-sh/setup-uv@v8.0.0" # https://github.com/marketplace/actions/setup-uv
       # Cache .venv directory to skip uv sync when dependencies unchanged
       - name: "Cache venv"
-        uses: "actions/cache@v4"
+        uses: "actions/cache@v5"
         id: cache-venv
         with:
           path: .venv
