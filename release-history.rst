@@ -15,6 +15,31 @@ Backlog (TODO)
 **Miscellaneous**
 
 
+1.0.4 (2026-04-21)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+**Features and Improvements**
+
+- Added ``py-changelog`` Claude Code skill: automates updating ``release-history.rst`` before publishing a new version, driven by git history
+- Added ``write-agent-skill`` Claude Code skill + reference doc (``extend-claude-with-skills.md``) to guide authoring new agent skills
+
+**Miscellaneous**
+
+- Updated ``uv.lock`` dependencies to latest versions
+
+
+1.0.3 (2026-04-21)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+**Features and Improvements**
+
+- Added ``write-agent-skill`` Claude Code skill scaffold (initial version, later extended in 1.0.4)
+- Added ``01-Project-Overview`` Sphinx documentation section and ``99-Maintainer-Guide`` entry
+- ``build-doc`` mise task now cleans ``docs/build`` before rebuilding to avoid stale output
+
+**Miscellaneous**
+
+- Updated ``uv.lock`` dependencies to latest versions
+
+
 1.0.2 (2026-04-06)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 **Features and Improvements**
