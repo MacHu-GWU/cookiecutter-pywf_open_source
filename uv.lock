@@ -370,7 +370,7 @@ wheels = [
 
 [[package]]
 name = "cookiecutter-pywf-open-source"
-version = "0.1.4"
+version = "1.0.4"
 source = { editable = "." }
 dependencies = [
     { name = "cookiecutter" },
