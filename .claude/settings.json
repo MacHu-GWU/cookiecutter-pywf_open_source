@@ -1,22 +1,23 @@
 {
+    "model": "sonnet",
     "permissions": {
+        "defaultMode": "auto",
+        "deny": [
+        ],
         "allow": [
             "Read(========== Read Section ==========)",
-            "Read(========== Write Section ==========)",
-            "Write(.claude/*.md)",
-            "Write(.claude/TEACHING.md)",
-            "Write(.claude/skills/*/*.md)",
-            "Write(.claude/skills/*/SKILL.md)",
-            "Write(.claude/skills/*/references/*.md)",
-            "Write(.claude/skills/*/scripts/*.py)",
-            "Write(./**/*.md)",
-            "Write(./README.md)",
-            "Write(./README-cn.md)",
-            "Write(./TICKET.md)",
-            "Write(./CLAUDE.md)",
-            "Write(cookiecutter_pywf_open_source_demo/**/*.py)",
-            "Write(tests/**/*.py)",
-            "Write(scripts/**/*.py)",
+            "Read(========== Edit Section ==========)",
+            "Edit(.claude/*.md)",
+            "Edit(.claude/skills/*/*.md)",
+            "Edit(.claude/skills/*/SKILL.md)",
+            "Edit(.claude/skills/*/references/*.md)",
+            "Edit(.claude/skills/*/scripts/*.py)",
+            "Edit(./**/*.md)",
+            "Edit(./README.md)",
+            "Edit(./CLAUDE.md)",
+            "Edit(cookiecutter_pywf_open_source_demo/**/*.py)",
+            "Edit(tests/**/*.py)",
+            "Edit(scripts/**/*.py)",
             "Read(========== Bash Section ==========)",
             "Bash(.venv/bin/python debug/**/*.py)",
             "Bash(.venv/bin/python scripts/**/*.py)",
@@ -30,8 +31,8 @@
             "WebSearch",
             "Read(========== Web Fetch ==========)",
             "WebFetch(domain:raw.githubusercontent.com)",
+            "Read(========== More ==========)",
             "Bash(ls:*)",
-            "Bash(uvx --from home-secret-toml hst get readthedocs.accounts.sh.users.sh.secrets.dev.value)",
             "Bash(tar:*)",
             "Bash(unzip:*)",
             "Bash(.venv/bin/pip:*)",
@@ -42,12 +43,6 @@
             "WebFetch(domain:learn.scientific-python.org)",
             "WebFetch(domain:mise.jdx.dev)",
             "Bash(chmod:*)"
-        ],
-        "deny": [
-            "Bash(git commit*)",
-            "Bash(git push*)"
-        ],
-        "defaultMode": "acceptEdits"
-    },
-    "model": "sonnet"
+        ]
+    }
 }
