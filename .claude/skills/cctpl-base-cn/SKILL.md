@@ -13,13 +13,13 @@ cctpl 家族负责维护一对 cookiecutter 仓库: seed repo (可运行的具�
 | `references/01-background-and-concepts.md` | 背景: 模板为什么难以持续维护, seed / tpl 设计如何解决; 术语, 命名规范, 两类改动, skill 放在哪里, 两个独立版本号 | done |
 | `references/02-repo-layout.md` | tpl repo 与 seed repo 的结构, 三类文件 (source / artifact / workspace), 分支, 每类具体值的位置 | done |
 | `references/03-workflow.md` | 8 个阶段的生命周期, 执行者, 入口与产出, 失败回退, 交接规则 | done |
-| `references/04-mise-task-contract.md` | 每个 mise task 的名称, 输入, 输出, 退出码, 安全级别 | planned |
+| `references/04-mise-task-contract.md` | 每个 mise task 的名称, 输入, 输出, 退出码, 安全级别 | done |
 | `references/05-parameterization.md` | seed value → parameter 的规则, selector, exclude / no_render, Jinja 冲突, hooks | planned |
-| `references/06-safety-rules.md` | agent 不执行 git 写操作, 标准 deny 列表, "Commands for you to run" 输出格式 | planned |
+| `references/06-safety-rules.md` | agent 不执行 git 写操作, 标准 deny 列表, "Commands for you to run" 输出格式 | done |
 | `references/07-versioning-and-release.md` | tpl 版本号 bump 规则, `/py-changelog`, seed SHA 记录, preset 分支 merge | planned |
 | `references/08-verification.md` | 四个验证层级 | planned |
 | `references/09-troubleshooting.md` | 常见故障与修法 | planned |
-| `assets/settings-permissions.json` | 标准 `additionalDirectories` 与 deny 片段 | planned |
+| `assets/settings-permissions.json` | 标准 `additionalDirectories` 与 deny 片段 | done |
 
 ## Invokers
 
