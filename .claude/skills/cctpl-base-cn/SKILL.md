@@ -1,0 +1,43 @@
+---
+name: cctpl-base-cn
+description: "Shared knowledge for the cctpl-*-cn skills that maintain a cookiecutter tpl repo + seed repo pair (seed → 参数化 → 模板 → 发布): concepts, repo layout, workflow, mise task contract, parameterization, safety rules, versioning, verification. Use to answer questions about how this template pair is maintained (模板仓库, 种子仓库, seed repo, template dir, preset 分支) or to decide which cctpl invoker fits."
+---
+cctpl 家族负责维护一对 cookiecutter 仓库: seed repo (可运行的具体项目) 和 tpl repo (把 seed 参数化成模板并发布). 本 skill 是家族的 base, 只存放共享规范, 不绑定任何单一动作, 也不绑定任何具体的仓库对. 具体值 (seed 路径, parameters, 版本号) 一律从仓库中读取, 位置见 `references/02-repo-layout.md` 的 "Where Facts Live".
+
+本家族文档正文为中文, 标题, 文件名, 术语为英文. `references/` 是唯一的 source of truth: `.mise/tasks/` 的实现, `CLAUDE.md`, `maintainer-guide.rst` 与之冲突时, 以本 skill 为准, 并修正对方.
+
+## Files
+
+| File | 内容 | 状态 |
+| :--- | :--- | :--- |
+| `references/01-background-and-concepts.md` | 背景: 模板为什么难以持续维护, seed / tpl 设计如何解决; 术语, 命名规范, 两类改动, skill 放在哪里, 两个独立版本号 | done |
+| `references/02-repo-layout.md` | tpl repo 与 seed repo 的结构, 三类文件 (source / artifact / workspace), 分支, 每类具体值的位置 | done |
+| `references/03-workflow.md` | 8 个阶段的生命周期, 执行者, 入口与产出, 失败回退, 交接规则 | done |
+| `references/04-mise-task-contract.md` | 每个 mise task 的名称, 输入, 输出, 退出码, 安全级别 | planned |
+| `references/05-parameterization.md` | seed value → parameter 的规则, selector, exclude / no_render, Jinja 冲突, hooks | planned |
+| `references/06-safety-rules.md` | agent 不执行 git 写操作, 标准 deny 列表, "Commands for you to run" 输出格式 | planned |
+| `references/07-versioning-and-release.md` | tpl 版本号 bump 规则, `/py-changelog`, seed SHA 记录, preset 分支 merge | planned |
+| `references/08-verification.md` | 四个验证层级 | planned |
+| `references/09-troubleshooting.md` | 常见故障与修法 | planned |
+| `assets/settings-permissions.json` | 标准 `additionalDirectories` 与 deny 片段 | planned |
+
+## Invokers
+
+| Invoker | 做什么 | 读取的 base 文件 | 触发 |
+| :--- | :--- | :--- | :--- |
+| `cctpl-change-cn` | 归类改动需求, 在 seed 或 tpl source 中实施, 跑 seed 自测, 接着执行 sync | 01, 02, 03, 05, 06 | agent 或用户 |
+| `cctpl-sync-cn` | 生成模板, 全部检查, 应用 artifact; 诊断并修复参数化问题 | 02, 04, 05, 06, 08, 09 | agent 或用户 |
+| `cctpl-add-param-cn` | 新增或修改一个 cookiecutter parameter, 两边联动 | 01, 04, 05, 06 | agent 或用户 |
+| `cctpl-release-cn` | 前置检查, 版本 bump, changelog, 记录 seed SHA, 打印发布命令 | 03, 04, 06, 07 | 仅用户 |
+| `cctpl-verify-cn` | 从 GitHub 拉取已发布模板, 生成项目并测试 (forked context) | 04, 08, 09 | 仅用户 |
+
+阶段与 invoker 的对应关系见 `references/03-workflow.md`.
+
+## External Skills
+
+- `/pypi-cookiecutter_maker`: 参数化所用的 `cookiecutter_maker` 库的 API. 本家族不重复其内容.
+- `/py-changelog`: 维护 `release-history.rst`. Release Prep 阶段使用.
+
+## Implementation Status
+
+本家族正在从 1.0 的脚本迁移到 2.0 规范. 规范中描述的以下内容可能尚未在代码中落地, 使用前先检查仓库现状: `CCTPL_SEED_DIR` env, `apply-template` task, `preset/*` 分支命名, settings 中的 deny 规则与 `additionalDirectories`. 全部落地后删除本节.
