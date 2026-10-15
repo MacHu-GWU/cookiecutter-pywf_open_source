@@ -81,7 +81,7 @@ seed repo 就是一个普通的, 由本模板 (或其前身) 生成的项目. �
 | 事实 | 位置 |
 | :--- | :--- |
 | seed repo 的本地路径 | tpl repo `mise.toml` 的 `[env] CCTPL_SEED_DIR` |
-| 同上, 供 Claude Code 访问 | tpl repo `.claude/settings.json` 的 `permissions.additionalDirectories`. **必须与 `CCTPL_SEED_DIR` 指向同一目录** |
+| 同上, 供 Claude Code 访问 | tpl repo `.claude/settings.json` 的 `permissions.additionalDirectories`, 写成相对 tpl repo 根目录的路径 (例如 `../<seed repo>`). **必须与 `CCTPL_SEED_DIR` 指向同一目录** |
 | seed values 和 parameters | tpl repo `.mise/tasks/` 中的参数化脚本 (`make_template.py`) |
 | exclude / no_render 规则 | 同上 |
 | tpl 版本号 | tpl repo `pyproject.toml` |

@@ -49,11 +49,13 @@
 - skill frontmatter 的 `allowed-tools` 只能让工具免确认, **不能禁用工具**. 只靠 skill 文本无法阻止 agent 执行命令.
 - deny 规则是基于命令前缀的匹配, 覆盖不了所有写法 (例如通过其他脚本间接执行). 只靠 settings 也不完整.
 
+deny 规则按命令前缀匹配整个子命令, 所以被 deny 的 git 子命令的只读用法也会被拦下, 例如 `git tag --list`, `git stash list`. 需要这类信息时改用不受影响的只读命令: 用 `git describe --tags` 或 `git for-each-ref refs/tags` 查 tag, 用 `git branch --list` 查分支.
+
 deny 规则优先于 allow 规则. 即使 settings 中 allow 了 `Bash(mise *)`, deny 中的 `mise run publish-template*` 仍然生效.
 
 ### Seed Access
 
-agent 需要在 tpl repo 的会话中直接读写 seed. 为此, tpl repo 的 `.claude/settings.json` 用 `permissions.additionalDirectories` 加入 seed 目录. 这个路径必须与 `mise.toml` 中的 `CCTPL_SEED_DIR` 指向同一目录 (见 `02-repo-layout.md` 的 "Where Facts Live").
+agent 需要在 tpl repo 的会话中直接读写 seed. 为此, tpl repo 的 `.claude/settings.json` 用 `permissions.additionalDirectories` 加入 seed 目录. 路径写成相对 tpl repo 根目录的形式 (例如 `../<seed repo>`): Claude Code 文档明确支持相对路径, 但没有说明是否展开 `~`. 这个路径必须与 `mise.toml` 中的 `CCTPL_SEED_DIR` 指向同一目录 (见 `02-repo-layout.md` 的 "Where Facts Live").
 
 
 ## Handoff Format

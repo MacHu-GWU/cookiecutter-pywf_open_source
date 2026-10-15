@@ -57,11 +57,21 @@ seed value 是参数化的 "锚点". 选择原则:
 
 ## File Filtering
 
-seed 中的每个文件, 在模板中只有三种命运:
+### Input: Git-Visible Files
+
+**参数化的输入是 seed 中 git 认可的文件**: 已被 git 跟踪的文件, 加上未被 `.gitignore` 忽略的新文件 (相当于 `git ls-files --cached --others --exclude-standard`). 被 seed 的 `.gitignore` 忽略的东西 (虚拟环境, 缓存, 构建产物, IDE 配置, 系统文件, 本地私有配置) 从一开始就不进入参数化.
+
+原因: seed 是一个真实项目, 它的 `.gitignore` 本来就准确描述了 "哪些是项目内容, 哪些是本地垃圾". 直接遍历目录再靠手写的 exclude 列表过滤, 每当 seed 多出一种本地缓存 (例如 `.ruff_cache/`, `.DS_Store`), 就会漏进模板. 让 git 来决定输入, exclude 列表就只需要处理 "进了 git 但不该进模板" 的少数文件.
+
+包含未跟踪但未忽略的文件, 是为了让 Sync 能在 seed 尚未提交时运行 (Change → Sync 的循环中, seed 的改动通常还没有 commit).
+
+### Three Fates
+
+git 认可的每个文件, 在模板中只有三种命运:
 
 | 命运 | 适用于 | 例子 |
 | :--- | :--- | :--- |
-| **exclude** (不进入模板) | 不属于 template content 的东西: 版本控制数据, 虚拟环境, 缓存, 构建产物, 本地私有配置, 草稿文件, 以及由 hooks 生成的文件 | `.git`, `.venv`, `dist`, `.claude/settings.local.json`, `LICENSE.txt`, `uv.lock` |
+| **exclude** (不进入模板) | 进了 git 但不属于 template content 的东西: 由 hooks 生成的文件, 只对 seed 自己有意义的文件 | `LICENSE.txt`, `uv.lock` |
 | **no_render** (原样拷贝) | 必须逐字节保持一致, 或体积大且不需要替换的文件; 本身就是 Jinja 模板的文件 | 导出的 requirements 文件, `*.jinja`, `*.html` |
 | **render** (默认) | 其他所有文件 | 源码, 配置, 文档 |
 
