@@ -92,6 +92,11 @@ def main() -> int:
 
     presets = cctpl.load_presets()
     branches = sys.argv[1:] or ["main"] + [f"{cctpl.PRESET_BRANCH_PREFIX}{n}" for n in presets]
+    for branch in branches:
+        if branch != "main" and not branch.startswith(cctpl.PRESET_BRANCH_PREFIX):
+            raise cctpl.TaskError(
+                f"can only verify 'main' or '{cctpl.PRESET_BRANCH_PREFIX}<name>' branches, got {branch!r}"
+            )
 
     cctpl.reset_dir(cctpl.dir_verify)
     dir_clones = cctpl.dir_verify / "_clones"

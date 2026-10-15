@@ -36,6 +36,8 @@ class SeedValues:
     package_name = "cookiecutter_pywf_open_source_demo"
     package_name_slug = "cookiecutter-pywf-open-source-demo"
     github_username = "MacHu-GWU"
+    # Not a parameter: only scanned for leaks (UNIQUE_SEED_VALUES).
+    pypi_username = "machugwu"
 
     # --- license
     license = "MIT"
@@ -79,8 +81,9 @@ PARAMETERS = [
         in_cookiecutter_json=False,
     ),
     # The seed also links to the maintainer's own projects (plugin marketplace,
-    # home_secret_toml, docfly). Those links must stay literal, so the files that
-    # only mention them are excluded from this parameter.
+    # home_secret_toml, docfly) and credits the template's author in
+    # AUTHORS.rst. Those must stay literal, so the files that only mention them
+    # are excluded from this parameter.
     Parameter(
         selector=[SeedValues.github_username],
         name="github_username",
@@ -90,21 +93,31 @@ PARAMETERS = [
             ".claude/settings.local.json.example",
             ".claude/skills/pywf-oss-base/references/01-secrets.md",
             ".claude/skills/pywf-oss-base/references/14-docfly.md",
+            "AUTHORS.rst",
         ],
     ),
     # Generic value: only the project license field in pyproject.toml.
+    # That field is an SPDX expression (PEP 639), and "Proprietary" is not a
+    # valid SPDX identifier: setuptools refuses to build with it. The choice
+    # keeps the friendly label; only pyproject.toml gets "LicenseRef-Proprietary".
     Parameter(
         selector=[f'license = "{SeedValues.license}"', SeedValues.license],
         name="license",
         choice=["MIT", "AGPL-3.0-or-later", "Proprietary"],
         prompt="Pick an open source license, see https://choosealicense.com/ for details",
+        custom_placeholder=(
+            "{{ 'LicenseRef-Proprietary' if cookiecutter.license == 'Proprietary' "
+            "else cookiecutter.license }}"
+        ),
         include=["pyproject.toml"],
     ),
+    # AUTHORS.rst is the template author's bio, kept as is (LEGAL_RESIDUES).
     Parameter(
         selector=[SeedValues.author],
         name="author",
         default="Firstname Lastname",
         prompt="Author name for pyproject.toml",
+        exclude=["AUTHORS.rst"],
     ),
     Parameter(
         selector=[SeedValues.author_email],
@@ -119,6 +132,15 @@ PARAMETERS = [
         default="0.1.1",
         prompt="Semantic Version, in {major}.{minor}.{micro} (e.g. 0.1.1)",
         include=["pyproject.toml"],
+    ),
+    # The first release-history.rst entry follows the project version. The seed
+    # keeps that entry equal to its pyproject.toml version; check-seed-values
+    # reports this parameter as unmatched when the two drift apart.
+    Parameter(
+        selector=[f"{SeedValues.version} (", SeedValues.version],
+        name="version",
+        in_cookiecutter_json=False,
+        include=["release-history.rst"],
     ),
     # Generic value: only the dev Python pin in mise.toml.
     Parameter(
@@ -197,6 +219,7 @@ UNIQUE_SEED_VALUES = {
     "package_name": SeedValues.package_name,
     "package_name_slug": SeedValues.package_name_slug,
     "github_username": SeedValues.github_username,
+    "pypi_username": SeedValues.pypi_username,
     "author": SeedValues.author,
     "author_email": SeedValues.author_email,
     "github_token_field": SeedValues.github_token_field,
@@ -206,6 +229,7 @@ UNIQUE_SEED_VALUES = {
 }
 
 _MAINTAINER_LINK = "links to the maintainer's own project, must stay literal"
+_TEMPLATE_AUTHOR = "credits the template's author, not the generated project's"
 
 # Unique seed values that may legally remain in the template, consumed by
 # check-seed-values. Each entry: (seed value name, template-relative file, reason).
@@ -213,6 +237,9 @@ LEGAL_RESIDUES: list[tuple[str, str, str]] = [
     ("github_username", ".claude/settings.local.json.example", _MAINTAINER_LINK),
     ("github_username", ".claude/skills/pywf-oss-base/references/01-secrets.md", _MAINTAINER_LINK),
     ("github_username", ".claude/skills/pywf-oss-base/references/14-docfly.md", _MAINTAINER_LINK),
+    ("github_username", "AUTHORS.rst", _TEMPLATE_AUTHOR),
+    ("pypi_username", "AUTHORS.rst", _TEMPLATE_AUTHOR),
+    ("author", "AUTHORS.rst", _TEMPLATE_AUTHOR),
 ]
 
 

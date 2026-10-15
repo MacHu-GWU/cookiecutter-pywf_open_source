@@ -121,6 +121,7 @@ preset 分支完全由 `main` + 覆盖文件决定, 不接受直接修改. 想�
 | seed repo 的本地路径 | tpl repo `mise.toml` 的 `[env] CCTPL_SEED_DIR` |
 | 同上, 供 Claude Code 访问 | tpl repo `.claude/settings.json` 的 `permissions.additionalDirectories`, 写成相对 tpl repo 根目录的路径 (例如 `../<seed repo>`). **必须与 `CCTPL_SEED_DIR` 指向同一目录** |
 | seed values, parameters, 以及参数化的各类声明 (exclude, no_render, hooks 产物, 需要逐个可选值测试的变量, 独特值, 允许原样保留的位置) | tpl repo 的参数化脚本 `.mise/tasks/make_template.py` 中的模块级常量 |
+| 生成项目支持的 Python 版本 (对 `dev_python_version` 的校验) | `hooks/pre_gen_project.py` 的 `SUPPORTED_PYTHON_VERSIONS`, 必须与 seed 的 `requires-python` 和 CI matrix 一致 |
 | 本地试用 (`try-template`) 在生成的项目中运行哪些 task | `.mise/tasks/try_template.py` 的 `PROJECT_TASKS` |
 | tpl repo `README.rst` 的说明文字 | `.mise/tasks/cctpl/README.rst.jinja` |
 | tpl 版本号 | tpl repo `pyproject.toml`. make-template 把它写入 `cookiecutter.json` 的私有变量 `_template_version`, apply-template 把它写入 `README.rst` |

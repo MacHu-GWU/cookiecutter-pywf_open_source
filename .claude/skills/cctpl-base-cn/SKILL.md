@@ -45,4 +45,4 @@ cctpl 家族负责维护一对 cookiecutter 仓库: seed repo (可运行的具�
 
 ## Implementation Status
 
-07 中的全部 task 已按 2.0 规范落地. 尚待完成: 第一次 2.0 发布 (2.0.0) 只完成了一部分, `main` 和 `preset/sanhe` 已推送, 但还没有 `2.0.0` tag 和 GitHub release, 需要重新运行 `publish-template` 并通过 Verify; 之后由人手动删除远端旧的 `sanhe` 分支. 全部完成后删除本节.
+07 中的全部 task 已按 2.0 规范落地. 尚待完成: 2.0.0 只做过测试发布 (之后手动删除了 tag 和 release), 还需要正式发布一次并通过 Verify; 之后由人手动删除远端旧的 `sanhe` 分支. 全部完成后删除本节.

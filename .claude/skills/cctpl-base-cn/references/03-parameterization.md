@@ -48,7 +48,9 @@ seed value 是参数化的 "锚点". 选择原则:
   - **file scope**: 只在指定文件中替换, 例如只在 `pyproject.toml` 和 `_version.py` 中.
 - **同一个变量需要多处 context 时**, 拆成多个 parameter. 只有其中一个写入 `cookiecutter.json`, 其余不写入 (否则 `cookiecutter.json` 中会出现重复变量).
 
-带 context 或 file scope 的 selector 一旦与 seed 的写法脱节 (例如格式化改变了空格), 就会一处都匹配不上, 而且不会报错. `check-seed-values` 会报告零命中的 parameter.
+带 context 或 file scope 的 selector 一旦与 seed 的写法脱节 (例如格式化改变了空格), 就会一处都匹配不上, 而且不会报错. `check-seed-values` 会逐个检查每个 parameter 自己的替换结果 (包括 context) 是否在 template dir 中出现, 报告零命中的 parameter. 因此, 同一个变量的多处 context 在 seed 中必须保持一致: 例如项目版本号同时出现在 `pyproject.toml` 和 changelog 的第一个条目中, seed 改版本号时两处要一起改, 否则 changelog 那个 parameter 会零命中.
+
+通用值有时还需要按变量的值换算. 例如 `pyproject.toml` 的 `license` 字段是 SPDX 表达式, 而 `Proprietary` 不是合法的 SPDX 标识符, 必须写成 `LicenseRef-Proprietary`. 这时让 choice 保留使用者看得懂的值, 用 custom placeholder 在这一处换算, 不改变使用者的输入方式.
 
 参数化脚本是 seed values 和 parameters 的唯一定义处. `cookiecutter.json` 的变量, 默认值, 可选值, prompt 都由它生成, 不手改 `cookiecutter.json` (preset 的默认值由 `presets/*.json` 覆盖, 见 `02-repo-layout.md` 的 Preset Branches).
 
@@ -117,6 +119,7 @@ hooks 处理字符串替换做不到的事情:
 - 根据变量选择内容, 例如根据 license 选择生成哪份 license 文件.
 - 生成计算出来的内容, 例如当前年份.
 - 根据变量增删文件.
+- 在生成之前拒绝生成的项目无法使用的输入 (`pre_gen_project.py`), 例如不受支持的 Python 版本.
 
 规则:
 

@@ -20,8 +20,7 @@ Follow those docs to do the work.
    - seed 未提交或未 push: 按 04 的格式打印提交并 push seed 的命令, 停下.
    - artifact 不是最新: 运行 `mise run sync`. 如果它在 artifact 上产生了新的 diff, 停下, 请用户先 review 这份 diff.
    - 没有待发布的模板产物变化: 告诉用户本次属于 "不发布", 停下.
-   - 上一次发布没有完成 (`pyproject.toml` 的版本号已有 changelog 条目, 但 `git ls-remote --tags` 中没有同名 tag, 或 `gh release view <version>` 查不到): 不 bump 版本号. 报告缺了哪一步, 停下, 由用户决定先排查原因还是直接重新运行 `publish-template`.
-2. **建议版本号.** 汇总 tpl repo 自上一个 tag 以来的变化, 以及 seed 自 `release-history.rst` 中上一次记录的 seed commit 以来的变化. 按 08 的 Bump Rules 给出建议级别, 新版本号, 以及决定这个级别的具体改动. **等用户确认** 后修改 `pyproject.toml`, 然后运行 `mise run sync`, 让 `_template_version` 和 `README.rst` 带上新版本号 (08 的 Release Prep). Sync 失败就停下报告.
+2. **确定版本号.** 先用 `git ls-remote --tags origin <version>` 查 `pyproject.toml` 当前的版本号是否已有远端 tag, 再按 08 的 "确定版本号" 决定是直接使用还是 bump. 需要 bump 时, 汇总 tpl repo 自上一个 tag 以来的变化, 以及 seed 自 `release-history.rst` 中上一次记录的 seed commit 以来的变化, 按 08 的 Bump Rules 给出建议级别, 新版本号, 以及决定这个级别的具体改动. **等用户确认** 后修改 `pyproject.toml`, 然后运行 `mise run sync`, 让 `_template_version` 和 `README.rst` 带上新版本号 (08 的 Release Prep). Sync 失败就停下报告.
 3. **更新 changelog.** 运行 `/py-changelog`. 检查生成的条目是写给模板使用者看的 (08 的要求), 必要时改写. 在当前版本条目开头写入 seed commit 记录 (格式见 08 的 Seed Commit Record).
 4. **打印发布命令.** 按 04 的 Handoff Format 打印 `publish-template` 的运行命令 (完整路径, 可单独复制). 说明它会做什么 (08 的 Publish), 以及执行完后运行 `/cctpl-verify-cn`.
 

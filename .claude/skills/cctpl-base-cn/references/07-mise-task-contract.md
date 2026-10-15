@@ -30,11 +30,11 @@
 | Task | Level | 读 | 写 | 成功条件 |
 | :--- | :--- | :--- | :--- | :--- |
 | `make-template` | A | seed 工作区中 git 认可的文件 (`CCTPL_SEED_DIR`, 见 `03-parameterization.md` 的 Input), 参数化脚本, `hooks/` | `tmp/cctpl/stage/`, `tmp/cctpl/template/` (先清空) | 生成完整的 cookiecutter 模板根目录: `cookiecutter.json` (含私有变量 `_template_version` = tpl 版本号), `hooks/`, template dir |
-| `check-seed-values` | A | `tmp/cctpl/template/` | 无 | template dir 中 (文件名和文件内容) 不存在任何 **独特** seed value, 已声明为合法残留的除外; 每个 parameter 至少命中一次 (零命中说明 selector 已与 seed 脱节) |
+| `check-seed-values` | A | `tmp/cctpl/template/` | 无 | template dir 中 (文件名和文件内容) 不存在任何 **独特** seed value, 已声明为合法残留的除外; 每个 parameter 自己的替换结果 (`Parameter.placeholder`, 含 context) 在 template dir 中至少出现一次 (零命中说明 selector 已与 seed 脱节). 不扫描 `hooks/`: hooks 本来就引用变量, 会掩盖零命中 |
 | `test-template` | A | `tmp/cctpl/template/` | `tmp/cctpl/output/` (先清空) | `cookiecutter --no-input` 用默认值成功生成一个项目; 影响 hooks 或模板分支的 choice 变量, 每个可选值至少生成一次 (见 `03-parameterization.md` 的 Choice Coverage) |
 | `check-output` | A | `tmp/cctpl/output/` (含 `choices/` 下的项目) | 无 | 生成的项目中 (文件名和文件内容) 不存在未解析的 `cookiecutter.` 变量引用. 不检查一般的 `{{` / `{%`: 它们可能来自 seed 原本的内容 (见 `03-parameterization.md` 的 Jinja Conflicts) |
 | `check-roundtrip` | A | `tmp/cctpl/template/`, 参数化脚本中的 seed values, seed 工作区 | `tmp/cctpl/roundtrip/` (先清空) | 用 seed values 渲染模板, 结果与 seed 一致; 允许的差异只有 `EXCLUDE` 中的文件只出现在 seed 一侧, 以及 `HOOK_OUTPUTS` 中的文件内容不同或只出现在一侧 (定义见 `03-parameterization.md` 的 Round Trip). 不比较文件权限 |
-| `test-output` | A | `tmp/cctpl/output/` 中生成的项目 | 该项目的 `.venv/`, 测试产物 | 在生成的项目中安装依赖并运行其测试, 全部通过. 不依赖任何 secret (见 `06-verification.md` 的 Secrets) |
+| `test-output` | A | `tmp/cctpl/output/` 中生成的项目 | 这些项目的 `.venv/`, `dist/`, 测试产物 | 默认值项目安装依赖并运行测试, 全部通过; `choices/` 下的每个项目都能构建 wheel. 不依赖任何 secret (见 `06-verification.md` 的 Secrets) |
 | `check-presets` | A | `presets/*.json`, `tmp/cctpl/template/cookiecutter.json` | 无 | 每个 preset 覆盖的变量都存在于新的 `cookiecutter.json` 中; choice 变量的覆盖值是合法的可选值 |
 | `apply-template` | A | `tmp/cctpl/template/` | tpl repo 根目录的 `cookiecutter.json`, template dir (整体替换) 和 `README.rst` (从 `.mise/tasks/cctpl/README.rst.jinja` 渲染) | 模板产物两者 **一起** 被替换, `README.rst` 重新渲染. 不改动 `hooks/` (它是 source) |
 | `sync` | A | 同上 | 同上 | 按顺序运行 `make-template` → `check-seed-values` → `test-template` → `check-output` → `check-roundtrip` → `check-presets` → `apply-template`, 任何一步失败立即停止并返回非 0 |
@@ -64,8 +64,8 @@
 
 | Task | Level | 读 | 写 | 成功条件 |
 | :--- | :--- | :--- | :--- | :--- |
-| `publish-template` | **U** | tpl repo 工作区, `pyproject.toml` 中的 tpl 版本号 | git 历史, GitHub | 当前分支必须是 `main`, 否则立即失败; commit 并 push `main`; 按 `presets/*.json` 从 `main` 重新生成每个 `preset/*` 分支并覆盖推送 (方式见 `02-repo-layout.md` 的 Preset Branches); 切回 `main`; 报告远端多余的 `preset/*` 分支; 在 `main` 的最新 commit 上以 tpl 版本号创建或更新 tag 和 GitHub release |
-| `verify-release` | A | GitHub 上已发布的模板 | `tmp/cctpl/verify/` (先清空) | 对 `main` 和每个指定的 `preset/*` 分支, 用 `cookiecutter gh:<owner>/<repo> --checkout <branch> --no-input` 生成项目, 与本地结果比较, 并在其中运行测试, 全部通过 (步骤见 `06-verification.md` 的 L5) |
+| `publish-template` | **U** | tpl repo 工作区, `pyproject.toml` 中的 tpl 版本号 | git 历史, GitHub | 当前分支必须是 `main`, `GITHUB_TOKEN` 不能为空, 否则在推送任何东西之前立即失败; commit 并 push `main`; 按 `presets/*.json` 从 `main` 重新生成每个 `preset/*` 分支并覆盖推送 (方式见 `02-repo-layout.md` 的 Preset Branches); 切回 `main`; 报告远端多余的 `preset/*` 分支; 在 `main` 的最新 commit 上以 tpl 版本号创建或更新 tag 和 GitHub release |
+| `verify-release` | A | GitHub 上已发布的模板 | `tmp/cctpl/verify/` (先清空) | 对 `main` 和每个指定的 `preset/*` 分支 (参数只接受这两种, 其他分支名立即失败), 用 `cookiecutter gh:<owner>/<repo> --checkout <branch> --no-input` 生成项目, 与本地结果比较, 并在其中运行测试, 全部通过 (步骤见 `06-verification.md` 的 L5) |
 
 说明:
 

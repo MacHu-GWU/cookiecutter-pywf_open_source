@@ -44,16 +44,15 @@ def main() -> int:
         print(f"WARNING: stale legal residue, no longer present: [{name}] {path}")
 
     # Every parameter must hit at least once; a context selector that no
-    # longer matches the seed fails silently otherwise.
-    corpus = [str(p.relative_to(cctpl.dir_template)) for p in cctpl.dir_template.rglob("*")]
-    corpus.extend(text for _, text in cctpl.iter_text_files(cctpl.dir_template))
+    # longer matches the seed fails silently otherwise. Look for each
+    # parameter's own replacement (its context included), and only in the
+    # template dir: hooks/ mention variables too, and two parameters may share
+    # a name (one variable, several contexts).
+    corpus = [str(p.relative_to(dir_template)) for p in dir_template.rglob("*")]
+    corpus.extend(text for _, text in cctpl.iter_text_files(dir_template))
     corpus = "\n".join(corpus)
     for param in make_template.PARAMETERS:
-        if param.custom_placeholder:
-            needle = param.custom_placeholder
-        else:
-            needle = f"cookiecutter.{param.name}"
-        if needle not in corpus:
+        if param.placeholder not in corpus:
             problems.append(
                 f"[{param.name}] parameter matched nothing in the seed "
                 f"(selector {param.selector[0]!r})"

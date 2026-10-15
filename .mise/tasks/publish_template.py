@@ -12,7 +12,9 @@ Publish the template. USER ONLY: agents print this command, never run it
    they are not deleted automatically.
 4. Switch back to ``main``.
 5. Create or update the GitHub release on the latest ``main`` commit, named
-   after the tpl repo's own version (``pyproject.toml``).
+   after the tpl repo's own version (``pyproject.toml``). Publishing the same
+   version again moves its tag and release to the new commit on purpose: a
+   publish is also a test, and bumping the version afterwards freezes it.
 
 Spec: 08-versioning-and-release.md.
 """
@@ -42,6 +44,14 @@ def main() -> int:
     branch = git("rev-parse", "--abbrev-ref", "HEAD", capture=True).strip()
     if branch != "main":
         raise cctpl.TaskError(f"publish from 'main', current branch is {branch!r}")
+    # mise.toml reads the token with '|| true', so a missing secret arrives as
+    # an empty string; fail now, before anything is pushed.
+    token = os.environ.get("GITHUB_TOKEN", "")
+    if not token:
+        raise cctpl.TaskError(
+            "GITHUB_TOKEN is empty: the secret in mise.toml [env] could not be read. "
+            "The GitHub release step needs it."
+        )
 
     print(f"Template version: {version}")
     print(f"Presets: {', '.join(presets) or '(none)'}")
@@ -69,12 +79,17 @@ def main() -> int:
             git("checkout", "-B", branch_name, "main")
             path_json.write_text(json.dumps(data, indent=4, ensure_ascii=False) + "\n", encoding="utf-8")
             git("add", "cookiecutter.json")
-            git("commit", "-m", f"Preset {name} for {version}")
+            # A preset whose overrides all equal main's defaults leaves no
+            # diff; its branch is then just main.
+            if git("status", "--porcelain", capture=True).strip():
+                git("commit", "-m", f"Preset {name} for {version}")
             git("push", "--force", "origin", branch_name)
             print(f"Published {branch_name}")
     finally:
-        # 4. back to main, whatever happened above
-        git("checkout", "main")
+        # 4. back to main, whatever happened above. -f drops a half-written
+        # preset cookiecutter.json: preset branches are derived, nothing is lost,
+        # and a dirty tree must not block the switch and hide the real error.
+        git("checkout", "-f", "main")
 
     # 3. stale preset branches
     remote = git("ls-remote", "--heads", "origin", f"{cctpl.PRESET_BRANCH_PREFIX}*", capture=True)
@@ -85,7 +100,7 @@ def main() -> int:
 
     # 5. release
     gh_repo = BaseGitHubRepo(
-        github_kwargs=dict(login_or_token=os.environ["GITHUB_TOKEN"]),
+        github_kwargs=dict(login_or_token=token),
         owner_name=cctpl.GITHUB_OWNER,
         repo_name=cctpl.GITHUB_REPO,
     )

@@ -1,6 +1,8 @@
 # See claude code environment variables documents at https://code.claude.com/docs/en/settings
 [env]
-GITHUB_TOKEN = "{{ exec(command='uvx --from home-secret-toml hst get github.accounts.sh.users.sh.secrets.dev.value') }}"
+# Only publish-template needs it; '|| true' keeps every other task working
+# without the secret (publish-template fails early if it is empty).
+GITHUB_TOKEN = "{{ exec(command='uvx --from home-secret-toml hst get github.accounts.sh.users.sh.secrets.dev.value || true') }}"
 # The seed repo this template is made from. Keep in sync with permissions.additionalDirectories in .claude/settings.json
 CCTPL_SEED_DIR = "{{env.HOME}}/Documents/GitHub/cookiecutter_pywf_open_source_demo-project"
 

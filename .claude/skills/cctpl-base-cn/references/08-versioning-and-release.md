@@ -35,12 +35,13 @@ Release Prep 是 `05-workflow.md` 的阶段 6, 由 `cctpl-release-cn` 执行. �
 - seed 工作区干净, 当前 commit 已 push 到远端.
 - tpl repo 的 artifact 是最新的. 判断方法: 运行 `mise run sync`, 如果它在 artifact 上产生了新的 diff, 说明之前的 artifact 不是最新的. 此时停下, 先让人 review 这份新的 diff.
 - tpl repo 中有待发布的模板产物变化 (否则属于 "不发布").
-- 上一次发布已经完成. 如果 `pyproject.toml` 中的版本号已经有 `release-history.rst` 条目, 但远端没有同名 tag 或 GitHub release, 说明上一次 Publish 中途失败了. 此时不 bump 版本号: 先查清失败原因, 修好后重新执行 Publish.
 
 ### 2. 确定版本号
 
-- 汇总本次改动: tpl repo 自上一个 tag 以来的变化, 以及 seed 自上一次发布记录的 seed commit (见下文) 以来的变化.
-- 按 Bump Rules 给出建议的级别和新版本号, 附上理由 (哪些改动决定了这个级别).
+- 先看 `pyproject.toml` 当前的版本号在远端是否已有 tag:
+  - **没有 tag** (从未发布过, 或者测试发布之后 tag 被删除了): 这个版本号还没有被 "冻结", 直接使用它, 不再 bump. 只按 Bump Rules 检查它的级别是否足以覆盖本次改动, 不够时建议调整.
+  - **已有 tag**: 这个版本已经发布过. 默认需要 bump. 只有人明确说 "这次是同一版本的再次测试发布" 时才保持不变 (见下文 Publish 的重复发布).
+- 需要 bump 时: 汇总本次改动 (tpl repo 自上一个 tag 以来的变化, 以及 seed 自上一次发布记录的 seed commit (见下文) 以来的变化), 按 Bump Rules 给出建议的级别和新版本号, 附上理由 (哪些改动决定了这个级别).
 - 由人确认后, 修改 `pyproject.toml`.
 - 然后 **重新运行 `sync`**. 版本号会出现在两个 artifact 中: `cookiecutter.json` 的私有变量 `_template_version`, 以及 `README.rst` 中的版本示例. 只改 `pyproject.toml` 而不重新 Sync, 发布出去的这两处都还是旧版本号.
 
@@ -83,5 +84,7 @@ Publish 是阶段 7, 由人在 `main` 分支上运行 `publish-template` 完成 
 3. 切回 `main`.
 4. 报告远端存在, 但已经没有对应 `presets/*.json` 的 `preset/*` 分支, 由人决定是否删除.
 5. 在 `main` 的最新 commit 上, 以 tpl 版本号创建或更新 tag 和 GitHub release.
+
+**同一个版本可以重复发布.** 版本号不变时再次运行 `publish-template`, 它会把同名的 tag 和 release 删除后重建到 `main` 的最新 commit 上. 这是有意的: 发布本身也是一次测试 (只有发布到 GitHub, 才能做 Verify), 一个版本可能要发布多次才确认没问题. 确认没问题之后, 下一次改动再 bump 版本号, 这个版本从此不再被覆盖, 长期有效. 因此, 不要在一个已经对外宣布的版本上重复发布.
 
 preset 分支不打 tag. 原因: preset 分支每次发布都会被重写, 打在它上面的 tag 下一次发布后就指向一个不在任何分支上的 commit. 需要某个版本的 preset 时, 用 `main` 上的 tag 加上当时的 `presets/<name>.json` 即可还原.

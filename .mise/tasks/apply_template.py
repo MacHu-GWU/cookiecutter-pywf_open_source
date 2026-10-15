@@ -13,6 +13,7 @@ import json
 import shutil
 
 import cctpl
+import make_template
 
 
 def main() -> int:
@@ -31,7 +32,7 @@ def main() -> int:
     shutil.copytree(src_dir, dst_dir)
     shutil.copy2(src_json, dst_json)
 
-    seed_repo = next(p.name for p in cctpl.dir_stage.iterdir() if p.is_dir())
+    seed_repo = make_template.dir_seed.name
     readme = cctpl.render_readme(json.loads(src_json.read_text(encoding="utf-8")), seed_repo)
     (cctpl.dir_project_root / "README.rst").write_text(readme, encoding="utf-8")
 

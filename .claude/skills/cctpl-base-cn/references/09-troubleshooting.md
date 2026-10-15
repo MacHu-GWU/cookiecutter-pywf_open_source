@@ -55,6 +55,7 @@
 | 现象 | 原因 | 修法 |
 | :--- | :--- | :--- |
 | seed 自测通过, 生成项目测试失败 | 项目中写死了只对 seed 成立的东西 (例如 seed 的仓库地址, 文档站点名), 或默认值本身不合法 | 让该内容也参数化; 或修改默认值 |
+| `choices/` 下某个项目构建 wheel 失败 | 某个可选值渲染出的配置不合法 (例如 `license` 不是合法的 SPDX 表达式) | 用 custom placeholder 在出问题的位置换算这个值 (见 `03-parameterization.md` 的 Choosing Seed Values), 或修 hooks |
 | 依赖安装失败 | 生成项目没有 lock 文件, 全新 resolve 时某个依赖的最新版本不兼容 | 在 seed 的依赖声明中收紧版本范围, 在 seed 中验证后重新 Sync |
 
 
@@ -87,6 +88,7 @@
 | 现象 | 原因 | 修法 |
 | :--- | :--- | :--- |
 | 生成 preset 分支失败 | preset 覆盖了一个已不存在的变量, 或给 choice 变量设了非法值 | 修改 `presets/*.json`; Sync 阶段的 `check-presets` 应已提前发现 |
+| 一开始就报 `GITHUB_TOKEN is empty` | tpl repo `mise.toml` 读取 secret 失败 (读取命令带 `\|\| true`, 失败时得到空字符串) | 确认本机的 secret 存储能读到 token; 其他 task 不需要它 |
 | push 和 preset 分支都成功了, 但没有 tag 或 GitHub release | 最后一步创建 release 失败 (例如 `GITHUB_TOKEN` 读取失败或权限不足, 或 GitHub API 报错). 之前的步骤已经完成, 所以表面上看发布成功了 | 查看 `publish-template` 的完整输出. 不 bump 版本号, 修好原因后重新运行 `publish-template`: 前面的步骤可以重复执行, 不会产生副作用 |
 | 已发布的 `README.rst` 或 `cookiecutter.json` 的 `_template_version` 还是旧版本号 | bump 版本号之后没有重新运行 Sync | 重新运行 `sync`, 然后重新发布 |
 | release 指向的版本号不对 | 发布脚本读取了 seed 的版本号 | 改为读取 tpl repo `pyproject.toml` (见 `08-versioning-and-release.md`) |

@@ -37,9 +37,9 @@ tpl repo 中的每个 mise task 都按上述原则标注一个安全级别:
 | 运行 seed 自己的本地 task (安装, 测试, 构建文档) | 可以 | |
 | 运行 seed 自己的远端 task (发布到 PyPI, 创建 release, 配置 Codecov / Read the Docs, 修改 GitHub 元数据) | **只打印** | |
 | 只读 git 命令 (`status`, `diff`, `log`, `show`, `branch --list`, `rev-parse`, `describe`, `ls-remote`) | 可以 | 两个仓库都适用 |
-| 改动 index, 工作区分支或历史的 git 命令 (`add`, `commit`, `push`, `merge`, `tag`, `checkout` / `switch` 分支, `reset`, `rebase`, `stash`, `branch -d` / `-m`) | **只打印** | 两个仓库都适用 |
+| 改动 index, 工作区分支或历史的 git 命令 (`add`, `rm`, `mv`, `commit`, `push`, `pull`, `merge`, `tag`, `checkout` / `switch` 分支, `reset`, `rebase`, `cherry-pick`, `revert`, `am`, `stash`, `clean`, `update-ref`, `branch -d` / `-m`) | **只打印** | 两个仓库都适用 |
 | 只读 GitHub 查询 (例如查看 release, 拉取已发布模板) | 可以 | |
-| 写入 GitHub (`gh release`, `gh api` 写操作, `gh repo edit`) | **只打印** | |
+| 写入 GitHub (`gh release`, `gh api` 写操作, `gh repo edit` / `delete`, `gh pr create` / `merge`, `gh workflow run`) | **只打印** | |
 | 删除 `tmp/cctpl/` 下的内容 | 可以 | 仅通过对应 task, 或删除该步骤自己的子目录 |
 | 删除 `tmp/` 下其他位置的内容 | **不可以** | 那里属于人 |
 | 输出 token, 密码等 secret 的值 | **不可以** | `mise.toml` 的 env 会从 secret 存储中读取 token. 不 `echo`, 不打印这些环境变量 |
@@ -60,6 +60,8 @@ tpl repo 中的每个 mise task 都按上述原则标注一个安全级别:
 - deny 规则是基于命令前缀的匹配, 覆盖不了所有写法 (例如通过其他脚本间接执行). 只靠 settings 也不完整.
 
 deny 规则按命令前缀匹配整个子命令, 所以被 deny 的 git 子命令的只读用法也会被拦下, 例如 `git tag --list`, `git stash list`. 需要这类信息时改用不受影响的只读命令: 用 `git describe --tags` 或 `git for-each-ref refs/tags` 查 tag, 用 `git branch --list` 查分支.
+
+`git -c <key>=<value> ...` 整体被 deny, 因为它能绕过前缀匹配 (`git -c x=y commit` 不匹配 `git commit *`). 只读命令不要加 `-c`. `gh api` 带 `-f` / `-F` / `--field` / `--input` 时会隐式发 POST, 所以同样被 deny.
 
 同理, 通配模式 `Bash(*publish_template.py*)` 会拦下任何提到这个文件名的命令, 包括 `cat`, `grep` 这类只读命令. 需要读这个文件时, 用 Read 工具, 不用 shell 命令.
 
