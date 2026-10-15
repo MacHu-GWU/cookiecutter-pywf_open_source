@@ -22,6 +22,7 @@ cookiecutter-<name>/
 │       │   ├── hooks/
 │       │   └── {{ cookiecutter.package_name }}-project/
 │       ├── output/                        # test-template 用 template/ 生成的测试项目
+│       ├── roundtrip/                     # check-roundtrip 用 seed values 渲染的项目
 │       └── verify/                        # Verify 阶段从 GitHub 拉取已发布模板生成的项目
 └── .claude/
     ├── settings.json                      # deny 规则, additionalDirectories (见 06-safety-rules.md)
@@ -46,7 +47,7 @@ tpl repo 中的每个文件都属于以下三类之一. 改动前先判断类别
 ### workspace 规则
 
 - 构建流程只读写 `tmp/cctpl/`, 绝不清空或改动 `tmp/` 下的其他内容. `tmp/` 下的其他位置可以放任何临时东西, 例如草稿, 对比用的副本, 调试输出.
-- `tmp/cctpl/` 下的每个子目录只属于一个阶段. 每个阶段开始时只清空自己的子目录: make-template 清空 `template/`, test-template 清空 `output/`, Verify 清空 `verify/`. 这样重新生成模板不会顺带删掉上一次的 Verify 结果.
+- `tmp/cctpl/` 下的每个子目录只属于一个阶段. 每个阶段开始时只清空自己的子目录: make-template 清空 `template/`, test-template 清空 `output/`, check-roundtrip 清空 `roundtrip/`, Verify 清空 `verify/`. 这样重新生成模板不会顺带删掉上一次的 Verify 结果.
 
 
 ## seed repo

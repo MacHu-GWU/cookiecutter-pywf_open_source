@@ -88,13 +88,12 @@ seed 的包名, 仓库名都有独立的命名空间, 所以它们作为 seed va
 
 ## Where Skills Live
 
-与模板相关的 skill 有三个位置, 不能混淆:
+与模板相关的 skill 有两个位置, 不能混淆:
 
 | 位置 | 放什么 | 影响范围 |
 | :--- | :--- | :--- |
 | seed repo `.claude/skills/` | 每个生成的项目都应该有的 skill | 会被参数化进模板, 进入所有生成的项目 |
-| tpl repo `.claude/skills/` | 维护 seed → tpl → 发布这套流程的 skill, 即本家族 `cctpl-*-cn` | 只在 tpl repo 中生效, 不进入模板 |
-| user level (`~/.claude/skills/`) | 跨项目通用的工具 skill, 例如 `/pypi-cookiecutter_maker`, `/py-changelog` | 所有项目 |
+| tpl repo `.claude/skills/` | 维护 seed → tpl → 发布这套流程的 skill: 本家族 `cctpl-*-cn`, 以及它依赖的工具 skill (`/pypi-cookiecutter_maker`, `/py-changelog`) | 只在 tpl repo 中生效, 不进入模板 |
 
 **维护用的东西绝不放进 seed.** seed 的 `.claude/` 是模板内容的一部分, 放进去的任何东西都会被分发到每一个生成的项目.
 

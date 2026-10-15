@@ -14,9 +14,9 @@ cctpl 家族负责维护一对 cookiecutter 仓库: seed repo (可运行的具�
 | `references/02-repo-layout.md` | tpl repo 与 seed repo 的结构, 三类文件 (source / artifact / workspace), 分支, 每类具体值的位置 | done |
 | `references/03-workflow.md` | 8 个阶段的生命周期, 执行者, 入口与产出, 失败回退, 交接规则 | done |
 | `references/04-mise-task-contract.md` | 每个 mise task 的名称, 输入, 输出, 退出码, 安全级别 | done |
-| `references/05-parameterization.md` | seed value → parameter 的规则, selector, exclude / no_render, Jinja 冲突, hooks | planned |
+| `references/05-parameterization.md` | round trip 正确性定义, seed value 选择, selector 限定, 合法残留, exclude / no_render, Jinja 冲突, hooks | done |
 | `references/06-safety-rules.md` | agent 不执行 git 写操作, 标准 deny 列表, "Commands for you to run" 输出格式 | done |
-| `references/07-versioning-and-release.md` | tpl 版本号 bump 规则, `/py-changelog`, seed SHA 记录, preset 分支 merge | planned |
+| `references/07-versioning-and-release.md` | tpl 版本号 bump 规则, Release Prep 步骤, seed commit 记录, publish, preset 分支 (派生方案待确认) | done |
 | `references/08-verification.md` | 四个验证层级 | planned |
 | `references/09-troubleshooting.md` | 常见故障与修法 | planned |
 | `assets/settings-permissions.json` | 标准 `additionalDirectories` 与 deny 片段 | done |
@@ -34,6 +34,8 @@ cctpl 家族负责维护一对 cookiecutter 仓库: seed repo (可运行的具�
 阶段与 invoker 的对应关系见 `references/03-workflow.md`.
 
 ## External Skills
+
+以下两个 skill 与本家族放在同一个 tpl repo 的 `.claude/skills/` 下, 但不属于本家族:
 
 - `/pypi-cookiecutter_maker`: 参数化所用的 `cookiecutter_maker` 库的 API. 本家族不重复其内容.
 - `/py-changelog`: 维护 `release-history.rst`. Release Prep 阶段使用.

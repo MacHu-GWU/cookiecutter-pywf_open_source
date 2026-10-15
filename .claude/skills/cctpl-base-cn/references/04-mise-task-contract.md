@@ -35,10 +35,11 @@
 | `make-template` | A | seed 工作区 (`CCTPL_SEED_DIR`), 参数化脚本, `hooks/` | `tmp/cctpl/template/` (先清空) | 生成完整的 cookiecutter 模板根目录: `cookiecutter.json`, `hooks/`, template dir |
 | `check-seed-values` | A | `tmp/cctpl/template/` | 无 | template dir 中 (文件名和文件内容) 不存在任何 seed value, 已声明为合法残留的除外 |
 | `test-template` | A | `tmp/cctpl/template/` | `tmp/cctpl/output/` (先清空) | `cookiecutter --no-input` 用默认值成功生成一个项目 |
-| `check-output` | A | `tmp/cctpl/output/`, `cookiecutter.json` 的 `_copy_without_render` | 无 | 生成的项目中 (文件名和文件内容) 不存在未解析的 `{{ cookiecutter.` 和 `{%`. 按 `_copy_without_render` 原样拷贝的文件不检查 |
+| `check-output` | A | `tmp/cctpl/output/`, `cookiecutter.json` 的 `_copy_without_render` | 无 | 生成的项目中 (文件名和文件内容) 不存在未解析的 `cookiecutter.` 变量引用. 不检查一般的 `{{` / `{%`: 它们可能来自 seed 原本的内容 (见 `05-parameterization.md` 的 Jinja Conflicts) |
+| `check-roundtrip` | A | `tmp/cctpl/template/`, 参数化脚本中的 seed values, seed 工作区 | `tmp/cctpl/roundtrip/` (先清空) | 用 seed values 渲染模板, 结果与 seed 一致; 允许的差异只有 exclude 的文件, hooks 生成或修改的内容, 已声明的合法残留 (定义见 `05-parameterization.md` 的 Round Trip) |
 | `test-output` | A | `tmp/cctpl/output/` 中生成的项目 | 该项目的 `.venv/`, 测试产物 | 在生成的项目中安装依赖并运行其测试, 全部通过 |
 | `apply-template` | A | `tmp/cctpl/template/` | tpl repo 根目录的 `cookiecutter.json` 和 template dir (整体替换) | 两者 **一起** 被替换. 不改动 `hooks/` (它是 source) |
-| `sync` | A | 同上 | 同上 | 按顺序运行 `make-template` → `check-seed-values` → `test-template` → `check-output` → `apply-template`, 任何一步失败立即停止并返回非 0 |
+| `sync` | A | 同上 | 同上 | 按顺序运行 `make-template` → `check-seed-values` → `test-template` → `check-output` → `check-roundtrip` → `apply-template`, 任何一步失败立即停止并返回非 0 |
 
 说明:
 
@@ -51,7 +52,7 @@
 
 | Task | Level | 读 | 写 | 成功条件 |
 | :--- | :--- | :--- | :--- | :--- |
-| `publish-template` | **U** | tpl repo 工作区, `pyproject.toml` 中的 tpl 版本号 | git 历史, GitHub | commit 并 push `main`; 把 `main` merge 进所有 `preset/*` 分支并 push; 切回 `main`; 以 tpl 版本号创建或更新 GitHub release |
+| `publish-template` | **U** | tpl repo 工作区, `pyproject.toml` 中的 tpl 版本号 | git 历史, GitHub | commit 并 push `main`; 把 `main` 的变化带到所有 `preset/*` 分支并 push (方式见 `07-versioning-and-release.md`); 切回 `main`; 以 tpl 版本号创建或更新 GitHub release |
 | `verify-release` | A | GitHub 上已发布的模板 | `tmp/cctpl/verify/` (先清空) | 对 `main` 和每个指定的 `preset/*` 分支, 用 `cookiecutter gh:<owner>/<repo> --checkout <branch> --no-input` 生成项目, 并在其中运行测试, 全部通过 |
 
 说明:
