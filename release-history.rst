@@ -15,6 +15,38 @@ Backlog (TODO)
 **Miscellaneous**
 
 
+2.0.0 (2026-10-15)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Built from seed @ ``e988252``
+
+**Breaking Changes**
+
+- Removed the ``license_classifier`` variable. The generated ``pyproject.toml`` now uses an SPDX ``license`` expression (PEP 639) derived from ``license``, so drop ``license_classifier`` from any ``--extra-context`` or replay file
+- Generated projects now require Python 3.11+ (``requires-python = ">=3.11,<4.0"``); Python 3.10 is no longer supported
+
+**Features and Improvements**
+
+- New variable ``pypi_token_field`` (with a default): the generated ``mise.toml`` reads the PyPI token from ``home_secret.toml`` under this field instead of a hard-coded path
+- Generated projects ship a ``pywf-oss-*`` Claude Code skill family (add module, write test, write doc, changelog, release, audit, fix CI, setup machine / repo, upgrade deps, write PyPI skill, add community skill), backed by shared references and checker scripts; it replaces the old ``py-changelog`` and ``write-agent-skill`` skills
+- New ``mise run format`` and ``mise run lint`` tasks (ruff, plus a one-import-per-line check)
+- Sample code and tests: ``example_module_1``, ``example_package_1`` exposed through ``api.py``, with matching tests and API reference pages
+- Docs: new sphinx-design gallery page, expanded reStructuredText and notebook samples showing public imports and cross-references, and a ``.claude/launch.json`` to preview the built HTML docs on port 8765
+- Clearer cookiecutter prompts, including a prompt for ``github_username``; token prompts now refer to ``home_secret.toml``
+
+**Minor Improvements**
+
+- mise tasks that do not need credentials now run even when a secret cannot be read (missing secrets become empty strings)
+- uv and Read the Docs both use the mise-managed Python, so the docs Python version is set in one place (``mise.toml``)
+- CI: upgraded GitHub Actions, cache key now uses the full resolved Python version to avoid stale caches, updated Codecov input
+- Removed the ``01-Project-Overview`` and ``99-Maintainer-Guide`` sample doc pages; ``cli.py`` is excluded from generated API docs
+
+**Miscellaneous**
+
+- Dependency updates: pytest 9, ``httpx`` replaced with ``httpx2`` in the mise extra, newer Sphinx / Furo / nbsphinx bounds (Sphinx kept below 9)
+- ``uv.lock`` is no longer shipped in the template; it is created on first ``uv`` run
+- Template maintenance moved to the cctpl 2.0 workflow; ``preset/*`` branches (e.g. ``preset/sanhe``) are now regenerated from ``main`` plus ``presets/*.json`` on every release
+
+
 1.0.4 (2026-04-21)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 **Features and Improvements**
