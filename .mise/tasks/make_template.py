@@ -133,15 +133,6 @@ PARAMETERS = [
         prompt="Semantic Version, in {major}.{minor}.{micro} (e.g. 0.1.1)",
         include=["pyproject.toml"],
     ),
-    # The first release-history.rst entry follows the project version. The seed
-    # keeps that entry equal to its pyproject.toml version; check-seed-values
-    # reports this parameter as unmatched when the two drift apart.
-    Parameter(
-        selector=[f"{SeedValues.version} (", SeedValues.version],
-        name="version",
-        in_cookiecutter_json=False,
-        include=["release-history.rst"],
-    ),
     # Generic value: only the dev Python pin in mise.toml.
     Parameter(
         selector=[

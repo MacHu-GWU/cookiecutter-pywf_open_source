@@ -6,8 +6,6 @@ What this library does: see `README.rst`.
 
 Package: `{{ cookiecutter.package_name }}/` (import name `{{ cookiecutter.package_name }}`).
 
-This repo is also the seed of the pywf open-source template: changes to the template conventions are made here first, in `.claude/skills/pywf-oss-*`.
-
 <!-- END project block -->
 
 <!-- BEGIN pywf-oss template block: shared by every repo built from the template. Replace as a whole on template upgrade; do not edit per repo. -->
