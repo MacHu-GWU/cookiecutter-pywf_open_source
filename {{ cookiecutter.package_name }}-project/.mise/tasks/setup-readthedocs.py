@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 """
 Create a project on ReadTheDocs.org.
@@ -17,17 +18,15 @@ import os
 import sys
 
 try:
-    import httpx
+    import httpx2
 except ImportError:
-    print("Error: httpx not installed. Run: uv sync --extra mise")
+    print("Error: httpx2 not installed. Run: uv sync --extra mise")
     sys.exit(1)
 
-from utils import (
-    get_github_repo_url,
-    get_project_name,
-    get_readthedocs_slug,
-    get_readthedocs_url,
-)
+from utils import get_github_repo_url
+from utils import get_project_name
+from utils import get_readthedocs_slug
+from utils import get_readthedocs_url
 
 
 def main():
@@ -56,7 +55,7 @@ def main():
 
     # Check if project already exists (idempotent)
     check_url = f"{endpoint}/projects/{project_slug}/"
-    with httpx.Client(timeout=30) as client:
+    with httpx2.Client(timeout=30) as client:
         response = client.get(check_url, headers=headers)
 
         if response.status_code == 200:

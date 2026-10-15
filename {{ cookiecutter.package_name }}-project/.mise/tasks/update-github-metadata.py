@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 """
 Update GitHub repository metadata (description and homepage URL).
@@ -19,16 +20,16 @@ import os
 import sys
 
 try:
-    from github import Github, GithubException, Auth
+    from github import Github
+    from github import GithubException
+    from github import Auth
 except ImportError:
     print("Error: PyGithub not installed. Run: uv sync --extra mise")
     sys.exit(1)
 
-from utils import (
-    get_github_repo_info,
-    get_project_description,
-    get_readthedocs_url,
-)
+from utils import get_github_repo_info
+from utils import get_project_description
+from utils import get_readthedocs_url
 
 
 def main():

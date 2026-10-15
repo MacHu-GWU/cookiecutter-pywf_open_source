@@ -42,4 +42,4 @@ cctpl 家族负责维护一对 cookiecutter 仓库: seed repo (可运行的具�
 
 ## Implementation Status
 
-本家族正在从 1.0 的脚本迁移到 2.0 规范. 规范中描述的以下内容可能尚未在代码中落地, 使用前先检查仓库现状: `CCTPL_SEED_DIR` env, `tmp/cctpl/` 工作区, `sync` / `check-roundtrip` / `check-presets` / `apply-template` / `test-output` / `verify-release` 等 task, `presets/*.json` 与派生的 `preset/*` 分支, `uv.lock` exclude, `cookiecutter_maker` 1.1.0, settings 中的 deny 规则与 `additionalDirectories`. 全部落地后删除本节.
+本家族正在从 1.0 的脚本迁移到 2.0 规范. 04 中的全部 task 已落地. 尚待完成: 2.0 的 `publish-template` 还没有真实运行过一次; 旧的 `sanhe` 分支在第一次 2.0 发布生成 `preset/sanhe` 之后由人手动删除. 全部落地后删除本节.

@@ -693,7 +693,7 @@ specific requirements.
 if any, to sign a "copyright disclaimer" for the program, if necessary.
 For more information on this, and how to apply and follow the GNU AGPL, see
 <https://www.gnu.org/licenses/>.
-"""
+""".strip("\n")
 
 proprietary_license = """
 Copyright (c) {% now 'utc', '%Y' %} {{ cookiecutter.author }} <{{ cookiecutter.author_email }}>
@@ -704,8 +704,8 @@ This software is proprietary and confidential. Unauthorized copying, modificatio
 
 This software is provided "as is" without warranty of any kind, either express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and noninfringement.
 
-For licensing inquiries or commercial use, please contact: [your contact email or website].
-"""
+For licensing inquiries or commercial use, please contact: {{ cookiecutter.author_email }}.
+""".strip()
 
 license_mapping = {
     "MIT": mit_license,

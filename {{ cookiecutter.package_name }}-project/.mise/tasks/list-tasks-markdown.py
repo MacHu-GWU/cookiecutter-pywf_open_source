@@ -84,7 +84,11 @@ def main():
                 output.append(f"- Dependencies: {deps}")
 
             if task["run"]:
-                run_cmd = " ".join(task["run"]) if isinstance(task["run"], list) else task["run"]
+                run_cmd = (
+                    " ".join(task["run"])
+                    if isinstance(task["run"], list)
+                    else task["run"]
+                )
                 if len(run_cmd) < 100:
                     output.append(f"- Command: `{run_cmd}`")
 

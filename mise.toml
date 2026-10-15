@@ -47,14 +47,9 @@ run = ".venv/bin/python .mise/tasks/check_seed_values.py"
 depends = ["inst"]
 
 [tasks.test-template]
-description = "Test the generated template by running cookiecutter with default values"
+description = "Generate projects from the template with default values, plus one per extra value of each covered choice variable"
 depends = ["inst"]
-run = """
-rm -rf tmp/cctpl/output
-.venv/bin/cookiecutter tmp/cctpl/template --no-input --output-dir tmp/cctpl/output
-echo ""
-echo "Output: file://$(cd tmp/cctpl/output && pwd)"
-"""
+run = ".venv/bin/python .mise/tasks/test_template.py"
 
 [tasks.check-output]
 description = "Check if the generated output still contains unresolved cookiecutter placeholders"
@@ -68,17 +63,34 @@ run = ".venv/bin/python .mise/tasks/check_roundtrip.py"
 description = "Check presets/*.json against the generated cookiecutter.json"
 run = ".venv/bin/python .mise/tasks/check_presets.py"
 
+[tasks.test-output]
+description = "Install and test the default-value generated project with uv and pytest (no secrets needed); slow, not part of sync"
+depends = ["inst"]
+run = ".venv/bin/python .mise/tasks/test_output.py"
+
+[tasks.apply-template]
+description = "Replace cookiecutter.json and the template dir in the repo root with the generated ones"
+depends = ["inst"]
+run = ".venv/bin/python .mise/tasks/apply_template.py"
+
+[tasks.sync]
+description = "Make the template, run all checks, and apply the artifacts; stops at the first failure"
+run = [
+    "mise run make-template",
+    "mise run check-seed-values",
+    "mise run test-template",
+    "mise run check-output",
+    "mise run check-roundtrip",
+    "mise run check-presets",
+    "mise run apply-template",
+]
+
+[tasks.verify-release]
+description = "Verify the template published on GitHub: generate main and preset branches, compare with local, run tests (read-only)"
+depends = ["inst"]
+run = ".venv/bin/python .mise/tasks/verify_release.py"
+
 [tasks.publish-template]
-description = "Publish template: commit, push, merge branches, and create GitHub release"
+description = "USER ONLY. Publish: commit and push main, regenerate preset/* branches from presets/*.json, create the GitHub release"
 run = ".venv/bin/python .mise/tasks/publish_template.py"
 depends = ["inst"]
-
-[tasks.all]
-description = "All-in-one: make template, check seed values, test template, check output, and publish"
-run = """
-mise run make-template
-mise run check-seed-values
-mise run test-template
-mise run check-output
-mise run publish-template
-"""

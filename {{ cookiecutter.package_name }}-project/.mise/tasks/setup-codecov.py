@@ -29,10 +29,12 @@ import os
 import sys
 
 try:
-    from github import Github, GithubException, Auth
-    import httpx
+    from github import Github
+    from github import GithubException
+    from github import Auth
+    import httpx2
 except ImportError:
-    print("Error: PyGithub or httpx not installed. Run: uv sync --extra mise")
+    print("Error: PyGithub or httpx2 not installed. Run: uv sync --extra mise")
     sys.exit(1)
 
 from utils import get_github_repo_info
@@ -52,7 +54,7 @@ def get_codecov_upload_token(github_owner: str, repo_name: str, api_token: str) 
     }
     endpoint = "https://api.codecov.io/api/v2"
 
-    with httpx.Client(timeout=30) as client:
+    with httpx2.Client(timeout=30) as client:
         # First, check if repo exists and is public
         url = f"{endpoint}/github/{github_owner}/repos/{repo_name}/"
         response = client.get(url, headers=headers)
@@ -98,7 +100,9 @@ def main():
 
     if not codecov_api_token:
         print(f"Error: {ENV_CODECOV_API_TOKEN} environment variable not set")
-        print("Get your API token at: https://app.codecov.io/account/gh/<username>/access")
+        print(
+            "Get your API token at: https://app.codecov.io/account/gh/<username>/access"
+        )
         sys.exit(1)
 
     owner, repo_name = get_github_repo_info()

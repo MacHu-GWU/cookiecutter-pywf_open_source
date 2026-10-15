@@ -7,14 +7,15 @@ sphinx:
 build:
   os: ubuntu-24.04
   tools:
-    python: "3.12"
+    # Only runs pip and the mise.toml lookup below; the docs Python comes from mise.toml.
+    python: "3"
   jobs:
     pre_create_environment:
       # Install uv using pip
       - pip install uv
     create_environment:
-      # Create virtual environment in ReadTheDocs expected location
-      - uv venv "${READTHEDOCS_VIRTUALENV_PATH}"
+      # Create the virtualenv with the dev Python from mise.toml ``[tools] python``
+      - uv venv --python "$(python -c 'import tomllib; print(tomllib.load(open("mise.toml", "rb"))["tools"]["python"])')" "${READTHEDOCS_VIRTUALENV_PATH}"
     install:
       # Install project with doc dependencies using uv
       # UV_PROJECT_ENVIRONMENT tells uv to use ReadTheDocs venv instead of creating .venv

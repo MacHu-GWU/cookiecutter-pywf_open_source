@@ -15,6 +15,7 @@ class PathEnum:
     absolute paths to eliminate current directory dependencies and ensure consistent path
     resolution across different execution contexts and DevOps workflows.
     """
+
     @cached_property
     def dir_home(self):
         return Path.home()
@@ -24,10 +25,9 @@ class PathEnum:
 
     # Source Code
     dir_package = _dir_here
-    path_version_py = dir_package / "_version.py"
     path_pyproject_toml = dir_project_root / "pyproject.toml"
     path_requirements_txt = dir_project_root / "requirements.txt"
-    path_authors = dir_project_root / "AUTHORS.txt"
+    path_authors = dir_project_root / "AUTHORS.rst"
     path_license = dir_project_root / "LICENSE.txt"
     path_release_history = dir_project_root / "release-history.rst"
 

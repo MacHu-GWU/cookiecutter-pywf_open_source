@@ -37,10 +37,6 @@ Follow those docs to do the work.
 
 seed 没有改动 (只改了 tpl source) 时, 不给出 seed 的提交命令.
 
-## Migration Note
-
-base 的 Implementation Status 中列出的 task 尚未全部实现时 (例如还没有 `sync`, `check-roundtrip`), 逐个运行现有的等价 task, 并在输出中列出缺失的 task. 1.0 的 `check-seed-values` 不以退出码表达失败, 此时需要读取它的输出判断.
-
 ## Boundaries
 
 - 不手工编辑 artifact, 只通过 `apply-template` 更新.

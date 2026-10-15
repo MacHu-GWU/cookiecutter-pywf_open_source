@@ -8,19 +8,10 @@ This module provides common functions used across multiple mise task scripts.
 
 import re
 import sys
+import tomllib
 import subprocess
 from pathlib import Path
 from functools import cached_property
-
-# Use tomllib (3.11+) or tomli (3.10)
-if sys.version_info >= (3, 11):
-    import tomllib
-else:
-    try:
-        import tomli as tomllib
-    except ImportError:
-        print("Error: tomli not installed (required for Python 3.10). Run: uv sync --extra mise")
-        sys.exit(1)
 
 
 class ProjectConfig:
@@ -120,21 +111,27 @@ config = ProjectConfig()
 def get_project_root() -> Path:
     return config.project_root
 
+
 def get_github_repo_info() -> tuple[str, str]:
     """Returns (owner, repo_name)."""
     return config.github_owner, config.github_repo_name
 
+
 def get_github_repo_url() -> str:
     return config.github_repo_url
+
 
 def get_project_name() -> str:
     return config.project_name
 
+
 def get_project_description() -> str:
     return config.project_description
 
+
 def get_readthedocs_slug() -> str:
     return config.readthedocs_slug
+
 
 def get_readthedocs_url() -> str:
     return config.readthedocs_url

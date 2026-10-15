@@ -21,15 +21,15 @@ import os
 import sys
 
 try:
-    from github import Github, GithubException, Auth
+    from github import Github
+    from github import GithubException
+    from github import Auth
 except ImportError:
     print("Error: PyGithub not installed. Run: uv sync --extra mise")
     sys.exit(1)
 
-from utils import (
-    get_github_repo_info,
-    config,
-)
+from utils import get_github_repo_info
+from utils import config
 
 
 def get_package_version() -> str:
@@ -67,7 +67,9 @@ def main():
     # Check if release already exists
     try:
         existing_release = repo.get_release(release_name)
-        print(f"✅ Release {release_name!r} already exists: {existing_release.html_url}")
+        print(
+            f"✅ Release {release_name!r} already exists: {existing_release.html_url}"
+        )
         return
     except GithubException as e:
         if e.status == 404:
@@ -100,7 +102,9 @@ def main():
                 ref=f"refs/tags/{release_name}",
                 sha=tag.sha,
             )
-            print(f"✅ Created tag {release_name!r} on {default_branch} ({commit_sha[:7]})")
+            print(
+                f"✅ Created tag {release_name!r} on {default_branch} ({commit_sha[:7]})"
+            )
         else:
             print(f"Error: Failed to check tag")
             print(f"Details: {e}")

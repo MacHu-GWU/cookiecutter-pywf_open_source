@@ -51,7 +51,7 @@ L4 需要为生成的项目安装完整依赖, 耗时长, 所以按需运行. �
 
 ### Secrets
 
-生成项目的 `mise.toml` 可能在 `[env]` 中通过命令从 secret 存储读取 token. 用默认值生成的项目, token 字段名是占位值, 读取会失败, 进而可能导致任何会加载该配置的 mise 命令失败.
+生成项目的 `mise.toml` 可能在 `[env]` 中通过命令从 secret 存储读取 token. 用默认值生成的项目, token 字段名是占位值, 读取会失败, 导致任何会加载该配置的 mise 命令都失败, 连 `mise tasks ls` 也不例外 (2026-10-15 实测).
 
 规则: **L4 不依赖任何 secret.** 在生成的项目中直接调用工具链 (例如用 uv 安装, 直接运行 pytest), 而不是通过会加载 `[env]` 的 mise 命令. 需要 secret 才能验证的功能 (发布到 PyPI, 配置 Codecov 等) 不在 L4 的范围内, 它们由 seed 在真实环境中验证.
 
@@ -63,9 +63,8 @@ L5 是阶段 8 Verify 的内容, 由 `verify-release` 完成, 在 forked context
 对 `main` 和每个 `preset/*` 分支:
 
 1. **拉取.** 用 `cookiecutter gh:<owner>/<repo> --checkout <branch> --no-input` 生成项目到 `tmp/cctpl/verify/<branch>/`. 确保拿到的是刚发布的版本, 而不是 cookiecutter 本地缓存的旧克隆.
-2. **与本地比较 (仅 `main`).** 用默认值从已发布模板生成的项目, 应与 L2 从本地模板生成的项目一致. 不一致说明发布过程丢失或多出了文件, 例如 `cookiecutter.json` 没有随 template dir 一起更新.
-3. **检查 preset (仅 `preset/*`).** 生成的项目中, preset 覆盖的变量应当体现为 preset 的值, 其余变量为 `main` 的默认值.
-4. **运行.** 按 L4 的方式安装依赖并运行测试.
+2. **与本地比较.** 用本地 `tmp/cctpl/template/` 和该分支的默认值 (`main` 用 `cookiecutter.json` 的默认值, `preset/<name>` 用 `presets/<name>.json` 覆盖后的默认值) 再生成一次, 两者必须逐字节一致. 不一致说明发布过程丢失或多出了文件 (例如 `cookiecutter.json` 没有随 template dir 一起更新), 或 preset 分支没有正确生成.
+3. **运行.** 按 L4 的方式安装依赖并运行测试.
 
 ### Report
 

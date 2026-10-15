@@ -22,7 +22,8 @@
 
 import os
 from datetime import datetime
-from importlib.metadata import version as get_version, metadata
+from importlib.metadata import version as get_version
+from importlib.metadata import metadata
 
 # Get package metadata from installed package (via pyproject.toml)
 package_name = "{{ cookiecutter.package_name }}"
@@ -253,5 +254,6 @@ docfly.ApiDocGenerator(
         f"{package_name}.vendor",
         # Module
         f"{package_name}.paths",
+        f"{package_name}.cli",
     ],
 ).fly()

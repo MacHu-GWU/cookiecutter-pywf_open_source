@@ -9,7 +9,9 @@ The contract these tasks follow lives in
 
 import os
 import sys
+import json
 import shutil
+import tomllib
 import subprocess
 from pathlib import Path
 
@@ -25,6 +27,12 @@ dir_roundtrip = dir_cctpl / "roundtrip"
 dir_verify = dir_cctpl / "verify"
 
 TEMPLATE_DIR_NAME = "{{ cookiecutter.package_name }}-project"
+
+# --- release (07-versioning-and-release.md)
+GITHUB_OWNER = "MacHu-GWU"
+GITHUB_REPO = "cookiecutter-pywf_open_source"
+dir_presets = dir_project_root / "presets"
+PRESET_BRANCH_PREFIX = "preset/"
 
 
 class TaskError(Exception):
@@ -120,3 +128,66 @@ def run_task(main) -> None:
     except TaskError as e:
         print(f"ERROR: {e}", file=sys.stderr)
         sys.exit(1)
+
+
+def get_tpl_version() -> str:
+    """
+    The tpl repo's own version, from its ``pyproject.toml`` (never the seed's).
+    """
+    with open(dir_project_root / "pyproject.toml", "rb") as f:
+        return tomllib.load(f)["project"]["version"]
+
+
+def load_presets() -> dict[str, dict]:
+    """
+    Read every ``presets/<name>.json``, keyed by preset name.
+    """
+    if not dir_presets.is_dir():
+        return {}
+    return {
+        path.stem: json.loads(path.read_text(encoding="utf-8"))
+        for path in sorted(dir_presets.glob("*.json"))
+    }
+
+
+def apply_preset(cookiecutter_json: dict, overrides: dict) -> dict:
+    """
+    Return a copy of ``cookiecutter_json`` with the preset's defaults applied.
+    For a choice variable the chosen value moves to the front of the list,
+    which cookiecutter treats as the default; the rest keep their order.
+    """
+    data = json.loads(json.dumps(cookiecutter_json))
+    for key, value in overrides.items():
+        if key not in data or key.startswith("_"):
+            raise TaskError(f"preset overrides unknown variable {key!r}")
+        if isinstance(data[key], list):
+            if value not in data[key]:
+                raise TaskError(f"preset value {value!r} is not a choice of {key!r}")
+            data[key] = [value] + [v for v in data[key] if v != value]
+        else:
+            data[key] = value
+    return data
+
+
+def run_project_tests(dir_project: Path, python: str) -> bool:
+    """
+    Install a generated project with uv and run its tests with pytest,
+    bypassing mise (08-verification.md, "Secrets"). Return True on success.
+    """
+    env = {
+        k: v
+        for k, v in os.environ.items()
+        if k not in ("VIRTUAL_ENV", "UV_PROJECT_ENVIRONMENT")
+    }
+    steps = [
+        ["uv", "venv", "--allow-existing", "--python", python],
+        ["uv", "sync", "--all-extras"],
+        [".venv/bin/pytest", "tests", "-q"],
+    ]
+    for cmd in steps:
+        print(f"$ {' '.join(cmd)}  (in {dir_project})", flush=True)
+        res = subprocess.run(cmd, cwd=dir_project, env=env)
+        if res.returncode != 0:
+            print(f"FAILED: '{' '.join(cmd)}' exited {res.returncode}")
+            return False
+    return True

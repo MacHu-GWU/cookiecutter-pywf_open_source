@@ -6,11 +6,6 @@
         "AGPL-3.0-or-later",
         "Proprietary"
     ],
-    "license_classifier": [
-        "License :: OSI Approved :: MIT License",
-        "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
-        "License :: Other/Proprietary License"
-    ],
     "author": "Firstname Lastname",
     "author_email": "firstname.lastname@email.com",
     "version": "0.1.1",
@@ -20,28 +15,26 @@
     "readthedocs_token_field": "your_readthedocs_token_field",
     "__prompts__": {
         "package_name": "Your Python package name, in snake case (e.g. my_package)",
-        "license": "Pick an open source license for pyproject.toml file, see https://choosealicense.com/ for details",
-        "license_classifier": "Pick a license classifier, this has to match the previous one",
-        "author": "Author name for pyproject.toml file",
-        "author_email": "Author email for pyproject.toml file",
+        "github_username": "Your GitHub username, the owner of the new repo",
+        "license": "Pick an open source license, see https://choosealicense.com/ for details",
+        "author": "Author name for pyproject.toml",
+        "author_email": "Author email for pyproject.toml",
         "version": "Semantic Version, in {major}.{minor}.{micro} (e.g. 0.1.1)",
         "dev_python_version": "Python version for local development, in {major}.{minor} (e.g. 3.12)",
-        "github_token_field": "GitHub token field, Read https://github.com/MacHu-GWU/home_secret_toml-project to learn how to set up your GitHub token using home_secret.json",
-        "codecov_token_field": "Codecov.io token field, Read https://github.com/MacHu-GWU/home_secret_toml-project to learn how to set up your GitHub token using home_secret.json",
-        "readthedocs_token_field": "Readthedocs.org token field, Read https://github.com/MacHu-GWU/home_secret_toml-project to learn how to set up your GitHub token using home_secret.json"
+        "github_token_field": "GitHub token field. Read https://github.com/MacHu-GWU/home_secret_toml-project to learn how to set up your tokens using home_secret.toml",
+        "codecov_token_field": "Codecov.io token field. Read https://github.com/MacHu-GWU/home_secret_toml-project to learn how to set up your tokens using home_secret.toml",
+        "readthedocs_token_field": "Readthedocs.org token field. Read https://github.com/MacHu-GWU/home_secret_toml-project to learn how to set up your tokens using home_secret.toml"
     },
     "_copy_without_render": [
-        "*/vendor/**/*.*",
-        "poetry.lock",
-        "requirements.txt",
-        "requirements-automation.txt",
+        "docs/source/_static/{{ cookiecutter.package_name }}-favicon.ico",
+        "docs/source/_static/{{ cookiecutter.package_name }}-logo.png",
         "requirements-dev.txt",
         "requirements-doc.txt",
+        "requirements-mise.txt",
         "requirements-test.txt",
-        "requirements-poetry.txt",
-        "*.jinja",
-        "*.j2",
-        "*.html"
+        "requirements.txt",
+        "{{ cookiecutter.package_name }}/vendor/__init__.py",
+        "{{ cookiecutter.package_name }}/vendor/pytest_cov_helper.py"
     ],
     "_new_lines": "\n"
 }

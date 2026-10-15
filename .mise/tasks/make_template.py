@@ -168,6 +168,13 @@ NO_RENDER = [
     "*.html",
 ]
 
+# Choice variables whose values send hooks or the template down different
+# branches. test-template generates once per extra choice value
+# (08-verification.md, "Choice Coverage").
+CHOICE_COVERAGE = [
+    "license",  # hooks/post_gen_project.py writes a different LICENSE.txt per value
+]
+
 # Files the hooks create or rewrite in a generated project. check-roundtrip
 # allows them to differ from the seed.
 HOOK_OUTPUTS = [

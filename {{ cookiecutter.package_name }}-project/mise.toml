@@ -1,12 +1,16 @@
 # See claude code environment variables documents at https://code.claude.com/docs/en/settings
 [env]
-GITHUB_TOKEN = "{% raw %}{{{% endraw %} exec(command='uvx --from home-secret-toml hst get {{ cookiecutter.github_token_field }}') {% raw %}}}{% endraw %}"
-CODECOV_TOKEN = "{% raw %}{{{% endraw %} exec(command='uvx --from home-secret-toml hst get {{ cookiecutter.codecov_token_field }}') {% raw %}}}{% endraw %}"
-READTHEDOCS_TOKEN = "{% raw %}{{{% endraw %} exec(command='uvx --from home-secret-toml hst get {{ cookiecutter.readthedocs_token_field }}') {% raw %}}}{% endraw %}"
-PYPI_TOKEN = "{% raw %}{{{% endraw %} exec(command='uvx --from home-secret-toml hst get pypi.accounts.sh.token') {% raw %}}}{% endraw %}"
+# A secret that cannot be read becomes an empty string, so mise still loads and tasks report it as not set.
+GITHUB_TOKEN = "{% raw %}{{{% endraw %} exec(command='uvx --from home-secret-toml hst get {{ cookiecutter.github_token_field }} || true') {% raw %}}}{% endraw %}"
+CODECOV_TOKEN = "{% raw %}{{{% endraw %} exec(command='uvx --from home-secret-toml hst get {{ cookiecutter.codecov_token_field }} || true') {% raw %}}}{% endraw %}"
+READTHEDOCS_TOKEN = "{% raw %}{{{% endraw %} exec(command='uvx --from home-secret-toml hst get {{ cookiecutter.readthedocs_token_field }} || true') {% raw %}}}{% endraw %}"
+PYPI_TOKEN = "{% raw %}{{{% endraw %} exec(command='uvx --from home-secret-toml hst get pypi.accounts.sh.token || true') {% raw %}}}{% endraw %}"
+# Make uv use the mise Python below (first ``python`` on PATH), not a uv-managed one
+# or a global ``~/.config/uv/.python-version`` pin. ``[tools] python`` is the one dev version.
+UV_PYTHON = "python"
 
 [tools]
-python = "{{ cookiecutter.dev_python_version }}"
+python = "{{ cookiecutter.dev_python_version }}" # the dev Python; .readthedocs.yml reads it from here
 uv = "latest"
 claude = "latest"
 pandoc = "3.9" # Use pandoc 3.9 - latest stable major version as of 2026-04
@@ -52,6 +56,18 @@ depends = ["inst"]
 description = "👀📊 Open code coverage HTML report in browser (requires 'cov' task to run first)"
 run = "open htmlcov/index.html"
 
+# Code Quality
+[tasks.format]
+description = "🎨 Format all Python code with ruff (package, tests, mise task scripts, pywf-oss skill scripts)"
+run = "uvx ruff format {{ cookiecutter.package_name }} tests .mise/tasks .claude/skills/pywf-oss-base"
+
+[tasks.lint]
+description = "🔍 Lint Python code with ruff (unused/undefined names) and check one imported name per statement"
+run = """
+uvx ruff check --select F401,F821,F841 {{ cookiecutter.package_name }} tests .mise/tasks .claude/skills/pywf-oss-base
+python3 .claude/skills/pywf-oss-base/scripts/check_one_import_per_line.py --paths {{ cookiecutter.package_name }} tests .mise/tasks .claude/skills/pywf-oss-base
+"""
+
 # Documentation
 [tasks.build-doc]
 description = "📚 Build Sphinx documentation using sphinx-build (generates HTML in docs/build/html/)"
@@ -93,12 +109,12 @@ depends = ["inst"]
 
 # CI/CD Setup
 [tasks.setup-codecov]
-description = "⚙️ Setup Codecov upload token on GitHub Actions secrets using PyGithub and httpx"
+description = "⚙️ Setup Codecov upload token on GitHub Actions secrets using PyGithub and httpx2"
 run = ".venv/bin/python .mise/tasks/setup-codecov.py"
 depends = ["inst"]
 
 [tasks.setup-readthedocs]
-description = "⚙️ Setup ReadTheDocs project and GitHub webhook using httpx API client"
+description = "⚙️ Setup ReadTheDocs project and GitHub webhook using httpx2 API client"
 run = ".venv/bin/python .mise/tasks/setup-readthedocs.py"
 depends = ["inst"]
 

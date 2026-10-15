@@ -23,7 +23,7 @@ cookiecutter-<name>/
 │       │   ├── cookiecutter.json
 │       │   ├── hooks/
 │       │   └── {{ cookiecutter.package_name }}-project/
-│       ├── output/                        # test-template 用 template/ 生成的测试项目
+│       ├── output/                        # test-template 用 template/ 生成的测试项目 (默认值一个, choices/ 下每个额外可选值一个)
 │       ├── roundtrip/                     # check-roundtrip 用 seed values 渲染的项目
 │       └── verify/                        # Verify 阶段从 GitHub 拉取已发布模板生成的项目
 └── .claude/
@@ -87,6 +87,6 @@ seed repo 就是一个普通的, 由本模板 (或其前身) 生成的项目. �
 | exclude / no_render 规则 | 同上 |
 | tpl 版本号 | tpl repo `pyproject.toml` |
 | seed 版本号 | seed repo `pyproject.toml` (与 tpl 无关) |
-| GitHub owner 和 tpl repo 名 | tpl repo 的发布脚本 |
+| GitHub owner 和 tpl repo 名 | tpl repo 的 `.mise/tasks/cctpl/` (发布和 Verify 共用) |
 | 有哪些 preset, 各自覆盖了什么 | tpl repo `main` 上的 `presets/*.json` |
 | 可用的 mise task | tpl repo `mise.toml`, 或运行 `mise tasks ls` |
