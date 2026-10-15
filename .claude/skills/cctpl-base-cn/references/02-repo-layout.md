@@ -15,6 +15,7 @@ cookiecutter-<name>/
 ├── {{ cookiecutter.package_name }}-project/   # 发布产物 (template dir), 由参数化生成
 ├── pyproject.toml                         # tpl 版本号所在
 ├── release-history.rst                    # tpl 的 changelog
+├── README.rst                             # 生成产物, 由 apply-template 从 .mise/tasks/cctpl/README.rst.jinja 渲染
 ├── <python package>/                      # tpl repo 自身的辅助代码 (路径定义等)
 ├── tmp/                                   # gitignored. 只有 tmp/cctpl/ 属于构建流程, 其余归人自由使用
 │   └── cctpl/                             # workspace, 构建流程专属, 随时可能被清空
@@ -40,7 +41,7 @@ tpl repo 中的每个文件都属于以下三类之一. 改动前先判断类别
 | 类别 | 成员 | 规则 |
 | :--- | :--- | :--- |
 | source (手工维护) | `mise.toml`, `.mise/tasks/`, `hooks/`, `presets/`, `pyproject.toml`, `release-history.rst`, `.claude/` | 可以直接编辑 |
-| artifact (生成产物) | `cookiecutter.json`, template dir | **不手改**. 只能由 seed + 参数化逻辑重新生成, 再由 apply-template 从 `tmp/cctpl/template/` 拷贝过来 |
+| artifact (生成产物) | `cookiecutter.json`, template dir, `README.rst` | **不手改**. `cookiecutter.json` 和 template dir 只能由 seed + 参数化逻辑重新生成, 再由 apply-template 从 `tmp/cctpl/template/` 拷贝过来; `README.rst` 由 apply-template 从 `.mise/tasks/cctpl/README.rst.jinja` 渲染, 要改说明文字就改这个模板文件 |
 | workspace (工作区) | `tmp/cctpl/` | 随时可能被清空, 不存放任何需要保留的东西 |
 
 发布产物是 `cookiecutter.json` 和 template dir **两者一起**. 只更新其中一个会导致不一致: 例如 template dir 中新增了一个 no_render 文件, 但 `cookiecutter.json` 的 `_copy_without_render` 没有同步, 生成项目时这个文件会被当作 Jinja 模板渲染.
@@ -86,7 +87,7 @@ seed repo 就是一个普通的, 由本模板 (或其前身) 生成的项目. �
 | 同上, 供 Claude Code 访问 | tpl repo `.claude/settings.json` 的 `permissions.additionalDirectories`, 写成相对 tpl repo 根目录的路径 (例如 `../<seed repo>`). **必须与 `CCTPL_SEED_DIR` 指向同一目录** |
 | seed values 和 parameters | tpl repo `.mise/tasks/` 中的参数化脚本 (`make_template.py`) |
 | exclude / no_render 规则 | 同上 |
-| tpl 版本号 | tpl repo `pyproject.toml` |
+| tpl 版本号 | tpl repo `pyproject.toml`. make-template 把它写入 `cookiecutter.json` 的私有变量 `_template_version`, apply-template 把它写入 `README.rst` |
 | seed 版本号 | seed repo `pyproject.toml` (与 tpl 无关) |
 | GitHub owner 和 tpl repo 名 | tpl repo 的 `.mise/tasks/cctpl/` (发布和 Verify 共用) |
 | 有哪些 preset, 各自覆盖了什么 | tpl repo `main` 上的 `presets/*.json` |

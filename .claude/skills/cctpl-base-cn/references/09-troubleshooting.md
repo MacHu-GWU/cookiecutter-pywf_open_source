@@ -75,6 +75,7 @@
 | 现象 | 原因 | 修法 |
 | :--- | :--- | :--- |
 | 生成 preset 分支失败 | preset 覆盖了一个已不存在的变量, 或给 choice 变量设了非法值 | 修改 `presets/*.json`; Sync 阶段的 `check-presets` 应已提前发现 |
+| 已发布的 `README.rst` 或 `cookiecutter.json` 的 `_template_version` 还是旧版本号 | bump 版本号之后没有重新运行 Sync | 重新运行 `sync`, 然后重新发布 |
 | release 指向的版本号不对 | 发布脚本读取了 seed 的版本号 | 改为读取 tpl repo `pyproject.toml` (见 `07-versioning-and-release.md`) |
 
 

@@ -41,6 +41,8 @@ Release Prep 是 `03-workflow.md` 的阶段 6, 由 `cctpl-release-cn` 执行. �
 - 汇总本次改动: tpl repo 自上一个 tag 以来的变化, 以及 seed 自上一次发布记录的 seed commit (见下文) 以来的变化.
 - 按 Bump Rules 给出建议的级别和新版本号, 附上理由 (哪些改动决定了这个级别).
 - 由人确认后, 修改 `pyproject.toml`.
+- 然后 **重新运行 `sync`**. 版本号会出现在两个 artifact 中: `cookiecutter.json` 的私有变量 `_template_version`, 以及 `README.rst` 中的版本示例. 只改 `pyproject.toml` 而不重新 Sync, 发布出去的这两处都还是旧版本号.
+- `README.rst` 完全由 apply-template 生成 (版本号, cookiecutter 依赖版本, prompt 列表都来自仓库中的数据), 不手工修改. 要改它的说明文字, 改 `.mise/tasks/cctpl/README.rst.jinja`.
 
 ### 3. 更新 changelog
 

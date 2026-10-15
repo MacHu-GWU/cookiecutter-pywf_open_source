@@ -32,14 +32,14 @@
 
 | Task | Level | 读 | 写 | 成功条件 |
 | :--- | :--- | :--- | :--- | :--- |
-| `make-template` | A | seed 工作区中 git 认可的文件 (`CCTPL_SEED_DIR`, 见 `05-parameterization.md` 的 Input), 参数化脚本, `hooks/` | `tmp/cctpl/stage/`, `tmp/cctpl/template/` (先清空) | 生成完整的 cookiecutter 模板根目录: `cookiecutter.json`, `hooks/`, template dir |
+| `make-template` | A | seed 工作区中 git 认可的文件 (`CCTPL_SEED_DIR`, 见 `05-parameterization.md` 的 Input), 参数化脚本, `hooks/` | `tmp/cctpl/stage/`, `tmp/cctpl/template/` (先清空) | 生成完整的 cookiecutter 模板根目录: `cookiecutter.json` (含私有变量 `_template_version` = tpl 版本号), `hooks/`, template dir |
 | `check-seed-values` | A | `tmp/cctpl/template/` | 无 | template dir 中 (文件名和文件内容) 不存在任何 **独特** seed value, 已声明为合法残留的除外; 每个 parameter 至少命中一次 (零命中说明 selector 已与 seed 脱节) |
 | `test-template` | A | `tmp/cctpl/template/` | `tmp/cctpl/output/` (先清空) | `cookiecutter --no-input` 用默认值成功生成一个项目; 影响 hooks 或模板分支的 choice 变量, 每个可选值至少生成一次 (见 `08-verification.md` 的 Choice Coverage) |
 | `check-output` | A | `tmp/cctpl/output/`, `cookiecutter.json` 的 `_copy_without_render` | 无 | 生成的项目中 (文件名和文件内容) 不存在未解析的 `cookiecutter.` 变量引用. 不检查一般的 `{{` / `{%`: 它们可能来自 seed 原本的内容 (见 `05-parameterization.md` 的 Jinja Conflicts) |
 | `check-roundtrip` | A | `tmp/cctpl/template/`, 参数化脚本中的 seed values, seed 工作区 | `tmp/cctpl/roundtrip/` (先清空) | 用 seed values 渲染模板, 结果与 seed 一致; 允许的差异只有 exclude 的文件, hooks 生成或修改的内容, 已声明的合法残留 (定义见 `05-parameterization.md` 的 Round Trip) |
 | `test-output` | A | `tmp/cctpl/output/` 中生成的项目 | 该项目的 `.venv/`, 测试产物 | 在生成的项目中安装依赖并运行其测试, 全部通过. 不依赖任何 secret (见 `08-verification.md` 的 Secrets) |
 | `check-presets` | A | `presets/*.json`, `tmp/cctpl/template/cookiecutter.json` | 无 | 每个 preset 覆盖的变量都存在于新的 `cookiecutter.json` 中; choice 变量的覆盖值是合法的可选值 |
-| `apply-template` | A | `tmp/cctpl/template/` | tpl repo 根目录的 `cookiecutter.json` 和 template dir (整体替换) | 两者 **一起** 被替换. 不改动 `hooks/` (它是 source) |
+| `apply-template` | A | `tmp/cctpl/template/` | tpl repo 根目录的 `cookiecutter.json`, template dir (整体替换) 和 `README.rst` (从 `.mise/tasks/cctpl/README.rst.jinja` 渲染) | 两者 **一起** 被替换. 不改动 `hooks/` (它是 source) |
 | `sync` | A | 同上 | 同上 | 按顺序运行 `make-template` → `check-seed-values` → `test-template` → `check-output` → `check-roundtrip` → `check-presets` → `apply-template`, 任何一步失败立即停止并返回非 0 |
 
 说明:

@@ -3,11 +3,13 @@
 """
 Apply the generated artifacts to the tpl repo root: replace
 ``cookiecutter.json`` and the template dir **together** with the ones in
-``tmp/cctpl/template/``. ``hooks/`` is source and is never touched.
+``tmp/cctpl/template/``, and render ``README.rst`` from
+``.mise/tasks/cctpl/README.rst.jinja``. ``hooks/`` is source and is never touched.
 
 Run it only after the checks pass; ``mise run sync`` does that.
 """
 
+import json
 import shutil
 
 import cctpl
@@ -29,7 +31,11 @@ def main() -> int:
     shutil.copytree(src_dir, dst_dir)
     shutil.copy2(src_json, dst_json)
 
-    print(f"Applied {dst_json.name} and {dst_dir.name}/ from {cctpl.dir_template}")
+    seed_repo = next(p.name for p in cctpl.dir_stage.iterdir() if p.is_dir())
+    readme = cctpl.render_readme(json.loads(src_json.read_text(encoding="utf-8")), seed_repo)
+    (cctpl.dir_project_root / "README.rst").write_text(readme, encoding="utf-8")
+
+    print(f"Applied {dst_json.name}, {dst_dir.name}/ and README.rst from {cctpl.dir_template}")
     print("Review the artifact diff with: git diff --stat -- cookiecutter.json "
           f"'{cctpl.TEMPLATE_DIR_NAME}'")
     return 0

@@ -10,6 +10,7 @@ Rules: ``.claude/skills/cctpl-base-cn/references/05-parameterization.md``.
 """
 
 import sys
+import json
 import tomllib
 
 from cookiecutter_maker.api import Parameter, Maker
@@ -226,6 +227,21 @@ def get_seed_context() -> dict[str, str]:
     }
 
 
+def add_template_version(path_json) -> None:
+    """
+    Record the tpl repo's own version as the private variable
+    ``_template_version``: cookiecutter never prompts for it, but it is part of
+    every generation's context. It goes right after the last prompted variable.
+    """
+    data = json.loads(path_json.read_text(encoding="utf-8"))
+    result = {}
+    for key, value in data.items():
+        if key.startswith("_") and "_template_version" not in result:
+            result["_template_version"] = cctpl.get_tpl_version()
+        result[key] = value
+    path_json.write_text(json.dumps(result, indent=4, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
 def main() -> int:
     dir_stage_seed = cctpl.dir_stage / dir_seed.name
     cctpl.reset_dir(cctpl.dir_stage)
@@ -245,6 +261,7 @@ def main() -> int:
         verbose=False,
     )
     maker.make_template()
+    add_template_version(maker.path_cookiecutter_json)
     print(f"Template written to {cctpl.dir_template}")
     return 0
 

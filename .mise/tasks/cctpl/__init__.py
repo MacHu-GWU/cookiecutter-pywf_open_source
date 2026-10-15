@@ -236,3 +236,49 @@ class StepLog:
         seconds = time.monotonic() - start
         self.write(f"    -> exit {code} in {seconds:.1f}s")
         return code, seconds
+
+
+def format_prompts(cookiecutter_json: dict) -> str:
+    """
+    Render the interactive prompts cookiecutter shows for ``cookiecutter_json``,
+    answered with the defaults, as an indented RST code block body.
+    """
+    prompts = cookiecutter_json.get("__prompts__", {})
+    names = [k for k in cookiecutter_json if not k.startswith("_")]
+    lines = []
+    for i, name in enumerate(names, 1):
+        value = cookiecutter_json[name]
+        text = prompts.get(name, name)
+        if isinstance(value, list):
+            lines.append(f"    [{i}/{len(names)}] {text}")
+            for j, choice in enumerate(value, 1):
+                lines.append(f"      {j} - {choice}")
+            options = "/".join(str(j) for j in range(1, len(value) + 1))
+            lines.append(f"      Choose from [{options}] (1): 1")
+        else:
+            lines.append(f"    [{i}/{len(names)}] {text} ({value}): {value}")
+    return "\n".join(lines)
+
+
+def render_readme(cookiecutter_json: dict, seed_repo: str) -> str:
+    """
+    Render README.rst from ``README.rst.jinja``. README.rst is an artifact:
+    every fact in it comes from the repo, never typed by hand.
+    """
+    import jinja2
+
+    with open(dir_project_root / "pyproject.toml", "rb") as f:
+        dependencies = tomllib.load(f)["project"]["dependencies"]
+    requirement = next(d for d in dependencies if d.startswith("cookiecutter>") or d.startswith("cookiecutter="))
+    env = jinja2.Environment(keep_trailing_newline=True, undefined=jinja2.StrictUndefined)
+    template = env.from_string(
+        (Path(__file__).parent / "README.rst.jinja").read_text(encoding="utf-8")
+    )
+    return template.render(
+        owner=GITHUB_OWNER,
+        tpl_repo=GITHUB_REPO,
+        seed_repo=seed_repo,
+        version=get_tpl_version(),
+        cookiecutter_requirement=requirement,
+        prompts=format_prompts(cookiecutter_json),
+    )

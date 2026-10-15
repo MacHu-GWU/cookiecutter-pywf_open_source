@@ -1,8 +1,11 @@
+.. This file is the source of README.rst. Do not edit README.rst by hand:
+   apply-template (mise run sync) renders it from this file.
+
 .. image:: https://img.shields.io/badge/Release_History!--None.svg?style=social
     :target: https://github.com/MacHu-GWU/cookiecutter-pywf_open_source/blob/main/release-history.rst
 
 .. image:: https://img.shields.io/badge/STAR_Me_on_GitHub!--None.svg?style=social
-    :target: https://github.com/MacHu-GWU/pywf_open_source-pyproject
+    :target: https://github.com/MacHu-GWU/cookiecutter-pywf_open_source
 
 
 ``cookiecutter-pywf_open_source``
@@ -19,6 +22,7 @@ This template provides a ready-to-use structure for Python open source library p
 - **Complete CI/CD**: Pre-configured GitHub Actions, CodeCov, and ReadTheDocs integration
 - **Developer-friendly**: Simple commands like ``mise run test`` or ``mise run cov`` replace complex pytest invocations
 - **Documentation ready**: Sphinx documentation setup with auto-generation scripts
+- **AI ready**: Ships Claude Code skills that know the project's toolchain and workflows
 
 
 Disclaimer
@@ -34,41 +38,37 @@ Enter the following command to use the latest template version:
 
     pip install "cookiecutter>=2.6.0,<3.0.0" && cookiecutter https://github.com/MacHu-GWU/cookiecutter-pywf_open_source
 
-To use a specific released version (see the `full list of release at here <https://github.com/MacHu-GWU/cookiecutter-pywf_open_source/releases>`_).
+To use a specific released version (see the `full list of releases <https://github.com/MacHu-GWU/cookiecutter-pywf_open_source/releases>`_):
 
 .. code-block:: bash
 
     cookiecutter https://github.com/MacHu-GWU/cookiecutter-pywf_open_source --checkout tags/${version}
 
-For example, to use ``1.0.4`` (the latest as of 2026-04-21):
+For example, to use ``2.0.0``, the latest version:
 
 .. code-block:: bash
 
-    cookiecutter https://github.com/MacHu-GWU/cookiecutter-pywf_open_source --checkout tags/1.0.4
+    cookiecutter https://github.com/MacHu-GWU/cookiecutter-pywf_open_source --checkout tags/2.0.0
 
-You'll then be prompted to provide the following information:
+You'll then be prompted to provide the following information (defaults in parentheses):
 
 .. code-block:: bash
 
-    [1/10] Your Python package name, in snake case (e.g. my_package) (your_package_name): my_awesome_package
-    [2/10] github_username (your_github_username): my_github_username
-    [3/10] Pick an open source license for pyproject.toml file, see https://choosealicense.com/ for details
+    [1/11] Your Python package name, in snake case (e.g. my_package) (your_package_name): your_package_name
+    [2/11] Your GitHub username, the owner of the new repo (your_github_username): your_github_username
+    [3/11] Pick an open source license, see https://choosealicense.com/ for details
       1 - MIT
       2 - AGPL-3.0-or-later
       3 - Proprietary
       Choose from [1/2/3] (1): 1
-    [4/10] Pick a license classifier, this has to match the previous one
-      1 - License :: OSI Approved :: MIT License
-      2 - License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)
-      3 - License :: Other/Proprietary License
-      Choose from [1/2/3] (1): 1
-    [5/10] Author name for pyproject.toml file (Firstname Lastname): John Doe
-    [6/10] Author email for pyproject.toml file (firstname.lastname@email.com): john.doe@email.com
-    [7/10] Semantic Version, in {major}.{minor}.{micro} (e.g. 0.1.1) (0.1.1): 0.1.1
-    [8/10] Python version for local development, in {major}.{minor}.{micro} (e.g. 3.12) (3.12): 3.12
-    [9/11] GitHub token field, Read https://github.com/MacHu-GWU/home_secret_toml-project to learn how to set up your GitHub token using home_secret.json (your_github_token_field): my_github_token
-    [10/11] Codecov.io token field, Read https://github.com/MacHu-GWU/home_secret_toml-project to learn how to set up your GitHub token using home_secret.json (your_codecov_token_field): my_codecov_token
-    [11/11] Readthedocs.org token field, Read https://github.com/MacHu-GWU/home_secret_toml-project to learn how to set up your GitHub token using home_secret.json (your_readthedocs_token_field): my_readthedocs_token
+    [4/11] Author name for pyproject.toml (Firstname Lastname): Firstname Lastname
+    [5/11] Author email for pyproject.toml (firstname.lastname@email.com): firstname.lastname@email.com
+    [6/11] Semantic Version, in {major}.{minor}.{micro} (e.g. 0.1.1) (0.1.1): 0.1.1
+    [7/11] Python version for local development, in {major}.{minor} (e.g. 3.12) (3.12): 3.12
+    [8/11] GitHub token field. Read https://github.com/MacHu-GWU/home_secret_toml-project to learn how to set up your tokens using home_secret.toml (your_github_token_field): your_github_token_field
+    [9/11] Codecov.io token field. Read https://github.com/MacHu-GWU/home_secret_toml-project to learn how to set up your tokens using home_secret.toml (your_codecov_token_field): your_codecov_token_field
+    [10/11] Readthedocs.org token field. Read https://github.com/MacHu-GWU/home_secret_toml-project to learn how to set up your tokens using home_secret.toml (your_readthedocs_token_field): your_readthedocs_token_field
+    [11/11] PyPI token field. Read https://github.com/MacHu-GWU/home_secret_toml-project to learn how to set up your tokens using home_secret.toml (your_pypi_token_field): your_pypi_token_field
 
 This will generate a repository structure similar to `cookiecutter_pywf_open_source_demo-project <https://github.com/MacHu-GWU/cookiecutter_pywf_open_source_demo-project>`_.
 
@@ -79,31 +79,22 @@ Once generated, navigate to your project directory and explore the available aut
     cd your_package_name-project
     mise tasks ls  # List all available tasks
 
-Variations
-------------------------------------------------------------------------------
-For my personal open source Python projects, I use a custom branch:
-
-.. code-block:: bash
-
-    cookiecutter https://github.com/MacHu-GWU/cookiecutter-pywf_open_source --checkout sanhe
-
 
 Project Maintainer Note
 ------------------------------------------------------------------------------
-This project follows the best practice mentioned in `THIS DOCUMENT <https://dev-exp-share.readthedocs.io/en/latest/search.html?q=Creating+Reusable+Project+Templates%3A+From+Concept+to+Implementation&check_keywords=yes&area=default>`_.
-
 **Project Architecture:**
 
-- **Seed Repository**: `cookiecutter_pywf_open_source_demo-project <https://github.com/MacHu-GWU/cookiecutter_pywf_open_source_demo-project>`_ - A concrete project used as the source for template generation
+- **Seed Repository**: `cookiecutter_pywf_open_source_demo-project <https://github.com/MacHu-GWU/cookiecutter_pywf_open_source_demo-project>`_ - A concrete, runnable project used as the source for template generation
 - **Cookiecutter Template**: `cookiecutter-pywf_open_source <https://github.com/MacHu-GWU/cookiecutter-pywf_open_source>`_ - This repository
 
 **Maintenance Workflow:**
 
-This template is maintained using a "reverse engineering" approach:
+This template is maintained using a "reverse engineering" approach, driven by Claude Code skills (``.claude/skills/cctpl-*-cn``):
 
 1. Make changes in the Seed project (``cookiecutter_pywf_open_source_demo-project``)
-2. Run ``mise run make-template`` to convert the Seed into a template
-3. Run ``mise run publish-template`` to publish the template to GitHub
+2. Run ``mise run sync`` to convert the Seed into a template and check it
+3. Run ``mise run try-template`` to try a generated project locally
+4. Run ``mise run publish-template`` to publish the template to GitHub
 
 **Toolchain:**
 
@@ -111,4 +102,4 @@ This template is maintained using a "reverse engineering" approach:
 - **uv**: Fast Python package installer and resolver
 - **cookiecutter-maker**: Reverse-engineering tool that converts concrete projects into templates
 
-For detailed maintainer instructions, see `maintainer-guide.rst <./maintainer-guide.rst>`_.
+For the full maintenance specification, see `cctpl-base-cn <./.claude/skills/cctpl-base-cn/SKILL.md>`_.
