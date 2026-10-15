@@ -56,7 +56,7 @@ cctpl 家族的作用就是让 AI agent 承担这部分成本: 把流程写成�
 | parameter | 一个 cookiecutter 变量的完整定义: 名称, 匹配 seed value 的 selector, 默认值, 可选值, prompt |
 | `cookiecutter.json` | cookiecutter 读取的变量声明文件. 由参数化生成, 和 template dir 一起构成发布产物 |
 | hooks | cookiecutter 在生成项目前后执行的脚本 (例如生成 license 文件). 在 tpl repo 中手工维护 |
-| preset | 一套个人特化的 `cookiecutter.json` 默认值, 以 `preset/<name>` 分支的形式存在 |
+| preset | 一套个人特化的 `cookiecutter.json` 默认值. 在 `main` 上定义为 `presets/<name>.json`, 发布时生成同名的 `preset/<name>` 分支供使用者 checkout |
 | generated project | 用模板生成出来的项目. 用于验证模板, 也是最终用户拿到的东西 |
 
 

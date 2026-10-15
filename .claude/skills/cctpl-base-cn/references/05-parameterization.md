@@ -38,12 +38,14 @@ seed value 是参数化的 "锚点". 选择原则:
   - **file scope**: 只在指定文件中替换, 例如只在 `pyproject.toml` 和 `_version.py` 中.
 - **同一个变量需要多处 context 时**, 拆成多个 parameter. 只有其中一个写入 `cookiecutter.json`, 其余不写入 (否则 `cookiecutter.json` 中会出现重复变量).
 
-参数化脚本是 seed values 和 parameters 的唯一定义处. `cookiecutter.json` 的变量, 默认值, 可选值, prompt 都由它生成, 不手改 `cookiecutter.json` (preset 的例外见 `07-versioning-and-release.md`).
+参数化脚本是 seed values 和 parameters 的唯一定义处. `cookiecutter.json` 的变量, 默认值, 可选值, prompt 都由它生成, 不手改 `cookiecutter.json` (preset 的默认值由 `presets/*.json` 覆盖, 见 `07-versioning-and-release.md`).
 
 
 ## Legal Residue
 
-有时一个 seed value 在模板中保留是合理的. 例如原样拷贝的 lock 文件中包含 seed 的包名, 而生成的项目第一次安装依赖时会重新生成 lock 文件.
+有时一个 seed value 在模板中保留是合理的. 例如一个 no_render 文件必须逐字节保留, 其中又恰好包含 seed value, 而这个值在生成的项目中不会造成问题.
+
+合法残留应当很少见. 遇到残留时先考虑能否用 render, exclude 或 context 解决, 声明残留是最后的手段.
 
 规则:
 
@@ -59,8 +61,8 @@ seed 中的每个文件, 在模板中只有三种命运:
 
 | 命运 | 适用于 | 例子 |
 | :--- | :--- | :--- |
-| **exclude** (不进入模板) | 不属于 template content 的东西: 版本控制数据, 虚拟环境, 缓存, 构建产物, 本地私有配置, 草稿文件, 以及由 hooks 生成的文件 | `.git`, `.venv`, `dist`, `.claude/settings.local.json`, `LICENSE.txt` |
-| **no_render** (原样拷贝) | 必须逐字节保持一致, 或体积大且不需要替换的文件; 本身就是 Jinja 模板的文件 | lock 文件, 导出的 requirements 文件, `*.jinja`, `*.html` |
+| **exclude** (不进入模板) | 不属于 template content 的东西: 版本控制数据, 虚拟环境, 缓存, 构建产物, 本地私有配置, 草稿文件, 以及由 hooks 生成的文件 | `.git`, `.venv`, `dist`, `.claude/settings.local.json`, `LICENSE.txt`, `uv.lock` |
+| **no_render** (原样拷贝) | 必须逐字节保持一致, 或体积大且不需要替换的文件; 本身就是 Jinja 模板的文件 | 导出的 requirements 文件, `*.jinja`, `*.html` |
 | **render** (默认) | 其他所有文件 | 源码, 配置, 文档 |
 
 注意:
@@ -68,6 +70,7 @@ seed 中的每个文件, 在模板中只有三种命运:
 - no_render 的文件中, seed value **不会** 被替换. 把一个文件加入 no_render 之前, 确认它不含 seed value, 或者把其中的 seed value 声明为合法残留.
 - 新增一个 seed 文件时, 先判断它属于哪种命运. 默认是 render; 只有确实需要时才加入 exclude 或 no_render.
 - 文件和目录的 **名字** 总是会被参数化, 不受 no_render 影响.
+- **lock 文件 exclude, 不进入模板.** lock 文件中记录了 seed 自己的包名, 原样拷贝会留下错误的值, 而生成的项目第一次安装依赖时本来就要重新 lock. 生成的项目因此会 resolve 当时最新的依赖版本, 而不是 seed 测试时的版本; 这个差异由 L4 (见 `08-verification.md`) 覆盖, L4 正是在全新 resolve 的依赖上运行测试.
 
 
 ## Jinja Conflicts
@@ -105,5 +108,5 @@ hooks 处理字符串替换做不到的事情:
 - 是否有派生形态需要额外的 parameter.
 - 是否影响 hooks.
 - 是否需要声明合法残留.
-- 对 preset 的影响 (见 `07-versioning-and-release.md`).
+- 对 preset 的影响: 重命名或删除变量后, 修改引用它的 `presets/*.json` (见 `07-versioning-and-release.md`).
 - 对 tpl 版本号的影响: 新增变量是 minor, 重命名或删除变量是 major (见 `07-versioning-and-release.md`).

@@ -16,9 +16,9 @@ cctpl 家族负责维护一对 cookiecutter 仓库: seed repo (可运行的具�
 | `references/04-mise-task-contract.md` | 每个 mise task 的名称, 输入, 输出, 退出码, 安全级别 | done |
 | `references/05-parameterization.md` | round trip 正确性定义, seed value 选择, selector 限定, 合法残留, exclude / no_render, Jinja 冲突, hooks | done |
 | `references/06-safety-rules.md` | agent 不执行 git 写操作, 标准 deny 列表, "Commands for you to run" 输出格式 | done |
-| `references/07-versioning-and-release.md` | tpl 版本号 bump 规则, Release Prep 步骤, seed commit 记录, publish, preset 分支 (派生方案待确认) | done |
-| `references/08-verification.md` | 四个验证层级 | planned |
-| `references/09-troubleshooting.md` | 常见故障与修法 | planned |
+| `references/07-versioning-and-release.md` | tpl 版本号 bump 规则, Release Prep 步骤, seed commit 记录, publish, preset 分支从 `main` + `presets/*.json` 派生 | done |
+| `references/08-verification.md` | 五个验证层级 L1 – L5, choice coverage, L4 不依赖 secret, L5 的步骤与报告, 改动类型与所需层级 | done |
+| `references/09-troubleshooting.md` | 按出错位置列出的现象, 原因, 修法 | done |
 | `assets/settings-permissions.json` | 标准 `additionalDirectories` 与 deny 片段 | done |
 
 ## Invokers
@@ -42,4 +42,4 @@ cctpl 家族负责维护一对 cookiecutter 仓库: seed repo (可运行的具�
 
 ## Implementation Status
 
-本家族正在从 1.0 的脚本迁移到 2.0 规范. 规范中描述的以下内容可能尚未在代码中落地, 使用前先检查仓库现状: `CCTPL_SEED_DIR` env, `apply-template` task, `preset/*` 分支命名, settings 中的 deny 规则与 `additionalDirectories`. 全部落地后删除本节.
+本家族正在从 1.0 的脚本迁移到 2.0 规范. 规范中描述的以下内容可能尚未在代码中落地, 使用前先检查仓库现状: `CCTPL_SEED_DIR` env, `tmp/cctpl/` 工作区, `sync` / `check-roundtrip` / `check-presets` / `apply-template` / `test-output` / `verify-release` 等 task, `presets/*.json` 与派生的 `preset/*` 分支, `uv.lock` exclude, `cookiecutter_maker` 1.1.0, settings 中的 deny 规则与 `additionalDirectories`. 全部落地后删除本节.

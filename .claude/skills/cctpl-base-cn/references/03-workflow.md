@@ -38,7 +38,7 @@ flowchart TD
 | 4 | Review | 你 | 阶段 3 通过 | 你认可 tpl repo 中 artifact 的 diff | — |
 | 5 | Commit Seed | 你 | 阶段 4 通过 | seed 工作区干净, 已 push | — (agent 打印命令) |
 | 6 | Release Prep | agent | seed 干净且已 push | tpl 版本号已 bump, `release-history.rst` 已更新并记录 seed SHA, 发布命令已打印 | `cctpl-release-cn` |
-| 7 | Publish | 你 | 阶段 6 完成 | tpl commit + push, `preset/*` 已 merge, GitHub release 已创建 | — (执行打印的命令) |
+| 7 | Publish | 你 | 阶段 6 完成 | tpl commit + push, `preset/*` 已重新生成并推送, GitHub release 已创建 | — (执行打印的命令) |
 | 8 | Verify | agent | 阶段 7 完成 | 从 GitHub 拉取已发布模板生成项目, 测试通过 | `cctpl-verify-cn` |
 
 ### 1 Change
@@ -96,7 +96,7 @@ flowchart TD
 
 ### 7 Publish
 
-你执行阶段 6 打印的命令: tpl commit, push `main`, 把 `main` merge 进所有 `preset/*` 分支并 push, 创建 GitHub release. agent 不执行其中任何一步, 见 `06-safety-rules.md`.
+你执行阶段 6 打印的命令: tpl commit, push `main`, 从 `main` 重新生成所有 `preset/*` 分支并推送, 创建 GitHub release. agent 不执行其中任何一步, 见 `06-safety-rules.md`.
 
 ### 8 Verify
 

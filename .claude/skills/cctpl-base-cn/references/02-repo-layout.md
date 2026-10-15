@@ -10,6 +10,7 @@ cookiecutter-<name>/
 ├── mise.toml                              # 工具版本, env (含 CCTPL_SEED_DIR), task 定义
 ├── .mise/tasks/                           # 自动化脚本, 契约见 04-mise-task-contract.md
 ├── hooks/                                 # cookiecutter hooks, 手工维护的源头
+├── presets/<name>.json                    # 每个 preset 的覆盖值, 发布时用来生成 preset/<name> 分支
 ├── cookiecutter.json                      # 发布产物, 由参数化生成
 ├── {{ cookiecutter.package_name }}-project/   # 发布产物 (template dir), 由参数化生成
 ├── pyproject.toml                         # tpl 版本号所在
@@ -36,11 +37,11 @@ tpl repo 中的每个文件都属于以下三类之一. 改动前先判断类别
 
 | 类别 | 成员 | 规则 |
 | :--- | :--- | :--- |
-| source (手工维护) | `mise.toml`, `.mise/tasks/`, `hooks/`, `pyproject.toml`, `release-history.rst`, `.claude/` | 可以直接编辑 |
+| source (手工维护) | `mise.toml`, `.mise/tasks/`, `hooks/`, `presets/`, `pyproject.toml`, `release-history.rst`, `.claude/` | 可以直接编辑 |
 | artifact (生成产物) | `cookiecutter.json`, template dir | **不手改**. 只能由 seed + 参数化逻辑重新生成, 再由 apply-template 从 `tmp/cctpl/template/` 拷贝过来 |
 | workspace (工作区) | `tmp/cctpl/` | 随时可能被清空, 不存放任何需要保留的东西 |
 
-发布产物是 `cookiecutter.json` 和 template dir **两者一起**. 只更新其中一个会导致不一致: 例如 template dir 中新增了 `uv.lock`, 但 `cookiecutter.json` 的 `_copy_without_render` 没有同步, 生成项目时 `uv.lock` 会被当作 Jinja 模板渲染.
+发布产物是 `cookiecutter.json` 和 template dir **两者一起**. 只更新其中一个会导致不一致: 例如 template dir 中新增了一个 no_render 文件, 但 `cookiecutter.json` 的 `_copy_without_render` 没有同步, 生成项目时这个文件会被当作 Jinja 模板渲染.
 
 `hooks/` 是 source: make-template 把它拷贝到 `tmp/cctpl/template/hooks/` 供测试使用, 但真正维护的位置是 tpl repo 根目录的 `hooks/`.
 
@@ -67,7 +68,7 @@ seed repo 就是一个普通的, 由本模板 (或其前身) 生成的项目. �
 | 仓库 | 分支 | 用途 |
 | :--- | :--- | :--- |
 | tpl repo | `main` | 面向所有人的模板. 所有开发都在这里 |
-| tpl repo | `preset/<name>` | 个人特化. 与 `main` 的差异只应在 `cookiecutter.json` 的默认值. 发布时由 `main` merge 进来, 不在上面直接开发 |
+| tpl repo | `preset/<name>` | 个人特化. 完全由 `main` + `presets/<name>.json` 派生, 每次发布时重新生成并覆盖推送. 不在上面直接修改 (见 `07-versioning-and-release.md`) |
 | seed repo | `main` | 唯一分支 |
 
 用户通过 `cookiecutter gh:<owner>/<tpl repo> --checkout preset/<name>` 使用某个 preset.
@@ -86,5 +87,5 @@ seed repo 就是一个普通的, 由本模板 (或其前身) 生成的项目. �
 | tpl 版本号 | tpl repo `pyproject.toml` |
 | seed 版本号 | seed repo `pyproject.toml` (与 tpl 无关) |
 | GitHub owner 和 tpl repo 名 | tpl repo 的发布脚本 |
-| 有哪些 preset | tpl repo 中所有 `preset/*` 分支 |
+| 有哪些 preset, 各自覆盖了什么 | tpl repo `main` 上的 `presets/*.json` |
 | 可用的 mise task | tpl repo `mise.toml`, 或运行 `mise tasks ls` |

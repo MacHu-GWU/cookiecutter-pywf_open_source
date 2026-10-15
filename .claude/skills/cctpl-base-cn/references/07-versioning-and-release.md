@@ -1,6 +1,6 @@
 # Versioning and Release
 
-本文定义 tpl 的版本号规则, Release Prep 阶段的具体做法, 以及 preset 分支如何跟随 `main`. 前置阅读: `01-background-and-concepts.md`, `03-workflow.md`, `06-safety-rules.md`.
+本文定义 tpl 的版本号规则, Release Prep 阶段的具体做法, 以及 preset 分支如何从 `main` 派生. 前置阅读: `01-background-and-concepts.md`, `03-workflow.md`, `06-safety-rules.md`.
 
 
 ## Version Number
@@ -77,33 +77,39 @@ Built from seed @ ``abc1234``
 Publish 是阶段 7, 由人运行 `publish-template` 完成 (契约见 `04-mise-task-contract.md`):
 
 1. commit tpl repo 的全部改动, push `main`.
-2. 把 `main` 的变化带到每个 `preset/*` 分支并 push (方式见下一节).
+2. 按 `presets/*.json` 从 `main` 重新生成每个 `preset/*` 分支并覆盖推送 (方式见下一节).
 3. 切回 `main`.
 4. 在 `main` 的最新 commit 上, 以 tpl 版本号创建或更新 tag 和 GitHub release. preset 分支不打 tag.
 
 
 ## Preset Branches
 
-> **待确认.** 本节描述的方案尚未与人确认, 确认前保持 1.0 的做法 (`main` merge 进每个 preset 分支).
-
-### 问题
+### 为什么不用 merge
 
 preset 分支与 `main` 的唯一差异是 `cookiecutter.json` 中的默认值. 1.0 的做法是每次发布时把 `main` merge 进 preset 分支.
 
-但在 2.0 中, `cookiecutter.json` 是每次自动生成的 artifact (见 `02-repo-layout.md`). 只要 `main` 上的 `cookiecutter.json` 有任何变化 (新增变量, 修改 prompt, `_copy_without_render` 变化), merge 进 preset 分支时就会和 preset 修改过的默认值冲突. 冲突需要人手工解决, 而且每个 preset 都要解决一次.
+在 2.0 中, `cookiecutter.json` 是每次自动生成的 artifact (见 `02-repo-layout.md`). 只要 `main` 上的 `cookiecutter.json` 有任何变化 (新增变量, 修改 prompt, `_copy_without_render` 变化), merge 进 preset 分支时就会和 preset 修改过的默认值冲突, 而且每个 preset 都要手工解决一次. 所以 preset 分支改为从 `main` 派生.
 
-### 方案: 从 `main` 派生 preset 分支
+### 定义
 
-- 在 `main` 上保存每个 preset 的覆盖值, 例如 `presets/<name>.json`, 只列出与默认值不同的变量.
-- 发布时, 每个 preset 分支都 **重新生成**: 从 `main` 的最新 commit 出发, 把覆盖值写入 `cookiecutter.json`, 提交, 覆盖推送到 `preset/<name>`.
-- preset 分支不再接受直接修改, 它完全由 `main` + 覆盖值决定.
+- 每个 preset 在 `main` 上有一个覆盖文件 `presets/<name>.json`, 是 tpl repo 的 source.
+- 文件内容是一个扁平的对象: 变量名 → 该 preset 希望的默认值. 只列出与 `main` 默认值不同的变量.
+- 对于 choice 变量, 覆盖值是其中一个可选值. 生成 preset 分支时, 这个值被移到列表第一位 (cookiecutter 把第一个可选值当作默认值), 其余可选值保持原有顺序.
+- 覆盖文件引用的变量必须存在于 `main` 的 `cookiecutter.json` 中, choice 覆盖值必须合法. 这由 `check-presets` 在 Sync 阶段检查 (见 `04-mise-task-contract.md`).
 
-效果:
+### 生成
+
+发布时, 对每个 `presets/<name>.json`:
+
+1. 从 `main` 的最新 commit 出发, 创建或重置 `preset/<name>` 分支.
+2. 把覆盖值写入 `cookiecutter.json`, 提交.
+3. 覆盖推送到远端的 `preset/<name>`.
+
+preset 分支完全由 `main` + 覆盖文件决定, 不接受直接修改. 想改 preset, 改 `main` 上的覆盖文件. 新增 preset 就是新增一个覆盖文件; 删除 preset 时删除覆盖文件, 远端分支由人手动删除 (发布脚本只报告, 不删除).
+
+### 效果与代价
 
 - 不会再有 merge 冲突.
-- 新增变量时, preset 自动继承 `main` 的默认值; 只有需要不同默认值时才修改覆盖文件.
-- 所有 preset 的内容都在 `main` 上可见, 新增或修改 preset 只需要改 `main` 上的一个文件.
-
-代价:
-
-- preset 分支的历史会被覆盖推送重写. 使用者通过 `--checkout preset/<name>` 拉取的始终是最新状态, 不受影响; 但不能在 preset 分支上保留独立的提交.
+- 新增变量时, preset 自动继承 `main` 的默认值; 只有需要不同默认值时才改覆盖文件.
+- 所有 preset 的内容都在 `main` 上可见, 可以 review.
+- 代价: preset 分支的历史每次发布都会被重写. 使用者通过 `--checkout preset/<name>` 拿到的始终是最新状态, 不受影响.
