@@ -33,6 +33,7 @@ Follow those docs to do the work.
 - 每一层的结果 (L1 – L3, 以及是否运行了 L4).
 - 为修复问题而改过的参数化相关文件.
 - artifact 的 diff 摘要.
+- 推荐: 想亲眼看看生成项目的效果时, 运行 `/cctpl-try-cn` (可带 preset 名).
 - 下一步: 请用户 review artifact 的 diff. review 通过后, 按 06 的 Handoff Format 给出提交并 push seed 的命令 (commit message 由你起草), 并说明之后运行 `/cctpl-release-cn`.
 
 seed 没有改动 (只改了 tpl source) 时, 不给出 seed 的提交命令.

@@ -4,7 +4,7 @@
 GITHUB_TOKEN = "{% raw %}{{{% endraw %} exec(command='uvx --from home-secret-toml hst get {{ cookiecutter.github_token_field }} || true') {% raw %}}}{% endraw %}"
 CODECOV_TOKEN = "{% raw %}{{{% endraw %} exec(command='uvx --from home-secret-toml hst get {{ cookiecutter.codecov_token_field }} || true') {% raw %}}}{% endraw %}"
 READTHEDOCS_TOKEN = "{% raw %}{{{% endraw %} exec(command='uvx --from home-secret-toml hst get {{ cookiecutter.readthedocs_token_field }} || true') {% raw %}}}{% endraw %}"
-PYPI_TOKEN = "{% raw %}{{{% endraw %} exec(command='uvx --from home-secret-toml hst get pypi.accounts.sh.token || true') {% raw %}}}{% endraw %}"
+PYPI_TOKEN = "{% raw %}{{{% endraw %} exec(command='uvx --from home-secret-toml hst get {{ cookiecutter.pypi_token_field }} || true') {% raw %}}}{% endraw %}"
 # Make uv use the mise Python below (first ``python`` on PATH), not a uv-managed one
 # or a global ``~/.config/uv/.python-version`` pin. ``[tools] python`` is the one dev version.
 UV_PYTHON = "python"

@@ -50,6 +50,19 @@
 - **`apply-template` 是 Sync 的最后一步**, 运行后 tpl repo 的 git diff 就是本次迭代的全部 artifact 变化, 供 Review 阶段查看.
 
 
+## Trial Task
+
+| Task | Level | 读 | 写 | 成功条件 |
+| :--- | :--- | :--- | :--- | :--- |
+| `try-template` | A | seed 工作区, 参数化脚本, `presets/<name>.json` (可选) | `tmp/cctpl/stage/`, `tmp/cctpl/template/`, `tmp/cctpl/try/<label>/`, `tmp/cctpl/try/<label>.log` | 生成模板, 用默认值或指定 preset 渲染一个项目, 在其中通过 mise 依次运行 `venv-create`, `inst`, `cov`, `build-doc`, 全部通过 |
+
+说明:
+
+- 用法: `mise run try-template` (默认值) 或 `mise run try-template <preset>`.
+- 它是推荐的人工试用机制, 不在 `sync` 中, 不做任何检查, 也不应用 artifact. 定义见 `08-verification.md` 的 Local Trial.
+- 每一步都输出带 `[try i/n]` 前缀的关键日志, 同时写入日志文件, 供人和 agent 排查.
+
+
 ## Release Tasks
 
 | Task | Level | 读 | 写 | 成功条件 |

@@ -13,6 +13,7 @@
     "github_token_field": "your_github_token_field",
     "codecov_token_field": "your_codecov_token_field",
     "readthedocs_token_field": "your_readthedocs_token_field",
+    "pypi_token_field": "your_pypi_token_field",
     "__prompts__": {
         "package_name": "Your Python package name, in snake case (e.g. my_package)",
         "github_username": "Your GitHub username, the owner of the new repo",
@@ -23,7 +24,8 @@
         "dev_python_version": "Python version for local development, in {major}.{minor} (e.g. 3.12)",
         "github_token_field": "GitHub token field. Read https://github.com/MacHu-GWU/home_secret_toml-project to learn how to set up your tokens using home_secret.toml",
         "codecov_token_field": "Codecov.io token field. Read https://github.com/MacHu-GWU/home_secret_toml-project to learn how to set up your tokens using home_secret.toml",
-        "readthedocs_token_field": "Readthedocs.org token field. Read https://github.com/MacHu-GWU/home_secret_toml-project to learn how to set up your tokens using home_secret.toml"
+        "readthedocs_token_field": "Readthedocs.org token field. Read https://github.com/MacHu-GWU/home_secret_toml-project to learn how to set up your tokens using home_secret.toml",
+        "pypi_token_field": "PyPI token field. Read https://github.com/MacHu-GWU/home_secret_toml-project to learn how to set up your tokens using home_secret.toml"
     },
     "_copy_without_render": [
         "docs/source/_static/{{ cookiecutter.package_name }}-favicon.ico",

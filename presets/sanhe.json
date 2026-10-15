@@ -4,5 +4,6 @@
     "author_email": "husanhe@gmail.com",
     "github_token_field": "github.accounts.sh.users.sh.secrets.dev.value",
     "codecov_token_field": "codecov_io.accounts.sh.users.sh.secrets.dev.value",
-    "readthedocs_token_field": "readthedocs.accounts.sh.users.sh.secrets.dev.value"
+    "readthedocs_token_field": "readthedocs.accounts.sh.users.sh.secrets.dev.value",
+    "pypi_token_field": "pypi.accounts.sh.token"
 }

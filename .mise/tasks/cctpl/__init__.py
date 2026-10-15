@@ -11,6 +11,7 @@ import os
 import sys
 import json
 import shutil
+import time
 import tomllib
 import subprocess
 from pathlib import Path
@@ -25,6 +26,7 @@ dir_template = dir_cctpl / "template"
 dir_output = dir_cctpl / "output"
 dir_roundtrip = dir_cctpl / "roundtrip"
 dir_verify = dir_cctpl / "verify"
+dir_try = dir_cctpl / "try"
 
 TEMPLATE_DIR_NAME = "{{ cookiecutter.package_name }}-project"
 
@@ -191,3 +193,46 @@ def run_project_tests(dir_project: Path, python: str) -> bool:
             print(f"FAILED: '{' '.join(cmd)}' exited {res.returncode}")
             return False
     return True
+
+
+class StepLog:
+    """
+    Key progress lines for humans and agents: every line is printed and also
+    appended to a log file, prefixed with ``[<task> i/n]`` and a timestamp.
+    """
+
+    def __init__(self, task: str, total: int, path_log: Path):
+        self.task = task
+        self.total = total
+        self.index = 0
+        self.path_log = path_log
+        path_log.parent.mkdir(parents=True, exist_ok=True)
+        path_log.write_text("", encoding="utf-8")
+
+    def write(self, line: str) -> None:
+        print(line, flush=True)
+        with self.path_log.open("a", encoding="utf-8") as f:
+            f.write(line + "\n")
+
+    def step(self, title: str) -> None:
+        self.index += 1
+        stamp = time.strftime("%H:%M:%S")
+        self.write(f"[{self.task} {self.index}/{self.total}] {stamp} {title}")
+
+    def run(self, cmd: list[str], cwd: Path, env: dict | None = None) -> tuple[int, float]:
+        """
+        Run ``cmd``, streaming its output into the log. Return (exit code, seconds).
+        """
+        self.write(f"    $ {' '.join(cmd)}")
+        self.write(f"    cwd: {cwd}")
+        start = time.monotonic()
+        proc = subprocess.Popen(
+            cmd, cwd=cwd, env=env, text=True,
+            stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+        )
+        for line in proc.stdout:
+            self.write(f"    | {line.rstrip()}")
+        code = proc.wait()
+        seconds = time.monotonic() - start
+        self.write(f"    -> exit {code} in {seconds:.1f}s")
+        return code, seconds

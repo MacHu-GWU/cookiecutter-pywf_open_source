@@ -28,6 +28,7 @@ cctpl 家族负责维护一对 cookiecutter 仓库: seed repo (可运行的具�
 | `cctpl-change-cn` | 归类改动需求, 在 seed 或 tpl source 中实施, 跑 seed 自测, 接着执行 sync | 01, 02, 03, 05, 06 | agent 或用户 |
 | `cctpl-sync-cn` | 生成模板, 全部检查, 应用 artifact; 诊断并修复参数化问题 | 02, 04, 05, 06, 08, 09 | agent 或用户 |
 | `cctpl-add-param-cn` | 新增或修改一个 cookiecutter parameter, 两边联动 | 01, 04, 05, 06 | agent 或用户 |
+| `cctpl-try-cn` | 本地试用: 生成模板, 渲染项目, 通过 mise 跑 venv-create / inst / cov / build-doc, 报告日志 | 02, 04, 06, 08, 09 | agent 或用户 |
 | `cctpl-release-cn` | 前置检查, 版本 bump, changelog, 记录 seed SHA, 打印发布命令 | 03, 04, 06, 07 | 仅用户 |
 | `cctpl-verify-cn` | 从 GitHub 拉取已发布模板, 生成项目并测试 (forked context) | 04, 08, 09 | 仅用户 |
 

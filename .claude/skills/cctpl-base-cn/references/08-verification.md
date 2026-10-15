@@ -56,6 +56,29 @@ L4 需要为生成的项目安装完整依赖, 耗时长, 所以按需运行. �
 规则: **L4 不依赖任何 secret.** 在生成的项目中直接调用工具链 (例如用 uv 安装, 直接运行 pytest), 而不是通过会加载 `[env]` 的 mise 命令. 需要 secret 才能验证的功能 (发布到 PyPI, 配置 Codecov 等) 不在 L4 的范围内, 它们由 seed 在真实环境中验证.
 
 
+## Local Trial
+
+除了五个层级, 还有一个 **推荐的人工试用机制** `try-template`: 用和人手工测试完全相同的方式试用模板. 它从 seed 当前的工作区生成模板, 渲染一个项目, 再进入项目通过 mise 运行 `venv-create`, `inst`, `cov`, `build-doc`.
+
+与 L4 的区别:
+
+| | L4 (`test-output`) | Local Trial (`try-template`) |
+| :--- | :--- | :--- |
+| 经过 mise | 否, 直接调用 uv 和 pytest | 是, 运行生成项目自己的 mise task |
+| 覆盖范围 | 依赖安装, 单元测试 | 生成项目的 `mise.toml`, 工具版本, task 脚本, 测试覆盖率, 文档构建 |
+| 渲染所用的值 | 默认值 | 默认值, 或任意一个 preset |
+| 是否依赖 secret | 否 | preset 的 token 字段指向真实 secret 时会读取 (只进入环境变量, 不打印) |
+| 在流程中的位置 | Sync 阶段按需运行 | 任何时候, 尤其是 Review 前想亲眼看看效果时 |
+
+隔离规则:
+
+- 生成项目的 `mise.toml` 只在本次运行中被信任 (`MISE_TRUSTED_CONFIG_PATHS`), 不写入 mise 的信任记录.
+- 用 `MISE_CEILING_PATHS` 阻止 mise 向上加载 tpl repo 自己的 `mise.toml`, 让试用环境与一个独立的新项目一致.
+- 人想接着手工操作时, 进入项目目录, 自己运行一次 `mise trust`. 注意手工操作时 mise 会同时加载上层 tpl repo 的配置.
+
+日志: 每一步输出 `[try i/n] <时间> <步骤>`, 子命令的输出以 `|` 缩进, 每个命令结束时输出退出码和耗时; 最后输出每个 task 的 PASS / FAIL / SKIP 汇总. 全部内容同时写入 `tmp/cctpl/try/<label>.log`.
+
+
 ## L5: After Publish
 
 L5 是阶段 8 Verify 的内容, 由 `verify-release` 完成, 在 forked context 中运行 (见 `cctpl-verify-cn`).

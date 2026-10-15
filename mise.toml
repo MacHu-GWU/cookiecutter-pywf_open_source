@@ -85,6 +85,11 @@ run = [
     "mise run apply-template",
 ]
 
+[tasks.try-template]
+description = "Local trial: make the template, render a project (optionally with a preset: 'mise run try-template sanhe'), then run its venv-create, inst, cov, build-doc through mise, logging every step"
+depends = ["inst"]
+run = ".venv/bin/python .mise/tasks/try_template.py"
+
 [tasks.verify-release]
 description = "Verify the template published on GitHub: generate main and preset branches, compare with local, run tests (read-only)"
 depends = ["inst"]
