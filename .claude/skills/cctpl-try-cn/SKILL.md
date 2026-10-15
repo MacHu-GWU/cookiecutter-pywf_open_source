@@ -1,9 +1,9 @@
 ---
 name: cctpl-try-cn
-description: "Try the cookiecutter template locally the way a human would: make it from the seed, render a project with default values or a preset, and run the project's own mise tasks (venv-create, inst, cov, build-doc) with step-by-step logs. Use when the user wants to test or see the generated project locally (本地测一测, 本地试用模板, 生成一个项目看看效果, 跑一下 cov 和 build-doc, try the template)."
+description: "Try the cookiecutter template locally the way a human would: make it from the seed, render a project with default values or a preset, and run the project's own mise tasks (such as install, test coverage, docs build) with step-by-step logs. Use when the user wants to test or see the generated project locally (本地测一测, 本地试用模板, 生成一个项目看看效果, 跑一下 cov 和 build-doc, try the template)."
 argument-hint: "[preset name]"
 ---
-本地试用模板: 从 seed 生成模板, 用默认值或指定 preset 渲染一个项目, 再在项目里通过 mise 运行 `venv-create`, `inst`, `cov`, `build-doc`, 并报告每一步的结果. 这是 `06-verification.md` 中推荐的 Local Trial 机制, 不属于 8 个阶段中的任何一个, 可以随时使用.
+本地试用模板: 从 seed 生成模板, 用默认值或指定 preset 渲染一个项目, 再在项目里通过 mise 运行 `.mise/tasks/cctpl/pair.py` 的 `PROJECT_TASKS` 中列出的 task, 并报告每一步的结果. 这是 `06-verification.md` 中推荐的 Local Trial 机制, 不属于 8 个阶段中的任何一个, 可以随时使用.
 
 Read ../cctpl-base-cn/SKILL.md, then:
 

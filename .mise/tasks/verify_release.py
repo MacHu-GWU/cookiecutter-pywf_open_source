@@ -78,7 +78,7 @@ def verify(branch: str, overrides: dict, base_json: dict, config_file: Path) -> 
     )
     problems = [f"compare: {p}" for p in _compare(out_local, out_remote)]
 
-    python = cctpl.apply_preset(base_json, overrides)["dev_python_version"]
+    python = cctpl.apply_preset(base_json, overrides)[cctpl.PYTHON_VERSION_VARIABLE]
     if not cctpl.run_project_tests(out_remote, python):
         problems.append("tests: install or tests failed (see output above)")
     return problems

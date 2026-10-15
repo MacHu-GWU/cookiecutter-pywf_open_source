@@ -28,11 +28,18 @@ dir_roundtrip = dir_cctpl / "roundtrip"
 dir_verify = dir_cctpl / "verify"
 dir_try = dir_cctpl / "try"
 
-TEMPLATE_DIR_NAME = "{{ cookiecutter.package_name }}-project"
+# Pair-specific facts live in pair.py; re-exported here for the task scripts.
+from .pair import (
+    GITHUB_OWNER,
+    GITHUB_REPO,
+    TEMPLATE_DIR_NAME,
+    PYTHON_VERSION_VARIABLE,
+    INSTALL_COMMAND,
+    TEST_COMMAND,
+    PROJECT_TASKS,
+)
 
 # --- release (08-versioning-and-release.md)
-GITHUB_OWNER = "MacHu-GWU"
-GITHUB_REPO = "cookiecutter-pywf_open_source"
 dir_presets = dir_project_root / "presets"
 PRESET_BRANCH_PREFIX = "preset/"
 
@@ -173,8 +180,8 @@ def apply_preset(cookiecutter_json: dict, overrides: dict) -> dict:
 
 def run_project_tests(dir_project: Path, python: str) -> bool:
     """
-    Install a generated project with uv and run its tests with pytest,
-    bypassing mise (06-verification.md, "Secrets"). Return True on success.
+    Create a uv virtual environment for a generated project, then run
+    ``INSTALL_COMMAND`` and ``TEST_COMMAND`` from ``pair.py``, bypassing mise (06-verification.md, "Secrets"). Return True on success.
     """
     env = {
         k: v
@@ -183,8 +190,8 @@ def run_project_tests(dir_project: Path, python: str) -> bool:
     }
     steps = [
         ["uv", "venv", "--allow-existing", "--python", python],
-        ["uv", "sync", "--all-extras"],
-        [".venv/bin/pytest", "tests", "-q"],
+        INSTALL_COMMAND,
+        TEST_COMMAND,
     ]
     for cmd in steps:
         print(f"$ {' '.join(cmd)}  (in {dir_project})", flush=True)

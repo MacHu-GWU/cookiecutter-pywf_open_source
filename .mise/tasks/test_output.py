@@ -6,7 +6,7 @@ then build a wheel of every choice-coverage project (``output/choices/``),
 so a choice value that breaks packaging (e.g. an invalid license expression)
 is caught too.
 
-Uses uv and pytest directly, never mise (06-verification.md, "Secrets").
+Uses ``INSTALL_COMMAND`` / ``TEST_COMMAND`` from ``cctpl/pair.py`` directly, never mise (06-verification.md, "Secrets").
 There is no uv.lock (it is excluded from the template), so dependencies
 resolve fresh, as they will for a new user.
 
@@ -39,7 +39,7 @@ def main() -> int:
     variables = json.loads(
         (cctpl.dir_template / "cookiecutter.json").read_text(encoding="utf-8")
     )
-    if not cctpl.run_project_tests(dir_project, variables["dev_python_version"]):
+    if not cctpl.run_project_tests(dir_project, variables[cctpl.PYTHON_VERSION_VARIABLE]):
         return 1
     print(f"OK: generated project installs and its tests pass ({dir_project}).")
 
@@ -48,7 +48,7 @@ def main() -> int:
     projects = sorted(dir_choices.glob("*/*/")) if dir_choices.is_dir() else []
     failed = []
     for dir_choice in projects:
-        cmd = ["uv", "build", "--wheel", "--python", variables["dev_python_version"]]
+        cmd = ["uv", "build", "--wheel", "--python", variables[cctpl.PYTHON_VERSION_VARIABLE]]
         print(f"$ {' '.join(cmd)}  (in {dir_choice})", flush=True)
         if subprocess.run(cmd, cwd=dir_choice, env=env).returncode != 0:
             failed.append(str(dir_choice.relative_to(cctpl.dir_output)))

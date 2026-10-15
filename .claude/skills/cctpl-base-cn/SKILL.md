@@ -30,11 +30,12 @@ cctpl 家族负责维护一对 cookiecutter 仓库: seed repo (可运行的具�
 | `cctpl-change-cn` | 归类改动需求, 在 seed 或 tpl source 中实施, 跑 seed 自测, 接着执行 sync | 01, 02, 03, 04, 05 | agent 或用户 |
 | `cctpl-sync-cn` | 生成模板, 全部检查, 应用 artifact; 诊断并修复参数化问题 | 02, 03, 04, 05, 06, 07, 08, 09 | agent 或用户 |
 | `cctpl-add-param-cn` | 新增或修改一个 cookiecutter parameter, 两边联动 | 01, 02, 03, 04, 06, 07, 08 | agent 或用户 |
-| `cctpl-try-cn` | 本地试用: 生成模板, 渲染项目, 通过 mise 跑 venv-create / inst / cov / build-doc, 报告日志 | 02, 04, 06, 07, 09 | agent 或用户 |
+| `cctpl-try-cn` | 本地试用: 生成模板, 渲染项目, 通过 mise 跑项目自己的 task, 报告日志 | 02, 04, 06, 07, 09 | agent 或用户 |
 | `cctpl-release-cn` | 前置检查, 版本 bump, changelog, 记录 seed SHA, 打印发布命令 | 04, 05, 07, 08 | 仅用户 |
 | `cctpl-verify-cn` | 从 GitHub 拉取已发布模板, 生成项目并测试 (forked context) | 02, 06, 07, 08, 09 | 仅用户 |
+| `cctpl-fork-cn` | 把本家族一次性复制到另一对仓库, 改写其中与本仓库对绑定的内容. 复制之后两边彻底独立 | 01, 02, 03, 04, 06, 07, 09 | 仅用户 |
 
-阶段与 invoker 的对应关系见 `references/05-workflow.md`.
+阶段与 invoker 的对应关系见 `references/05-workflow.md`. `cctpl-fork-cn` 不属于任何阶段.
 
 ## External Skills
 
@@ -43,6 +44,4 @@ cctpl 家族负责维护一对 cookiecutter 仓库: seed repo (可运行的具�
 - `/pypi-cookiecutter_maker`: 参数化所用的 `cookiecutter_maker` 库的 API. 本家族不重复其内容.
 - `/py-changelog`: 维护 `release-history.rst`. Release Prep 阶段使用.
 
-## Implementation Status
-
-07 中的全部 task 已按 2.0 规范落地. 尚待完成: 2.0.0 只做过测试发布 (之后手动删除了 tag 和 release), 还需要正式发布一次并通过 Verify; 之后由人手动删除远端旧的 `sanhe` 分支. 全部完成后删除本节.
+这对仓库自己的当前状态 (未完成的事项) 不写在本 skill 中, 而是写在 tpl repo `CLAUDE.md` 的 Current Status 一节.

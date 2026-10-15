@@ -116,16 +116,20 @@ preset 分支完全由 `main` + 覆盖文件决定, 不接受直接修改. 想�
 
 本家族的文档不写任何具体值, 只规定具体值放在哪里. 需要某个值时, 去对应位置读取.
 
-| 事实 | 位置 |
-| :--- | :--- |
-| seed repo 的本地路径 | tpl repo `mise.toml` 的 `[env] CCTPL_SEED_DIR` |
-| 同上, 供 Claude Code 访问 | tpl repo `.claude/settings.json` 的 `permissions.additionalDirectories`, 写成相对 tpl repo 根目录的路径 (例如 `../<seed repo>`). **必须与 `CCTPL_SEED_DIR` 指向同一目录** |
-| seed values, parameters, 以及参数化的各类声明 (exclude, no_render, hooks 产物, 需要逐个可选值测试的变量, 独特值, 允许原样保留的位置) | tpl repo 的参数化脚本 `.mise/tasks/make_template.py` 中的模块级常量 |
-| 生成项目支持的 Python 版本 (对 `dev_python_version` 的校验) | `hooks/pre_gen_project.py` 的 `SUPPORTED_PYTHON_VERSIONS`, 必须与 seed 的 `requires-python` 和 CI matrix 一致 |
-| 本地试用 (`try-template`) 在生成的项目中运行哪些 task | `.mise/tasks/try_template.py` 的 `PROJECT_TASKS` |
-| tpl repo `README.rst` 的说明文字 | `.mise/tasks/cctpl/README.rst.jinja` |
-| tpl 版本号 | tpl repo `pyproject.toml`. make-template 把它写入 `cookiecutter.json` 的私有变量 `_template_version`, apply-template 把它写入 `README.rst` |
-| seed 版本号 | seed repo `pyproject.toml` (与 tpl 无关) |
-| GitHub owner 和 tpl repo 名 | `.mise/tasks/cctpl/__init__.py` 的 `GITHUB_OWNER`, `GITHUB_REPO` (发布, 发布后验证, README 共用) |
-| 有哪些 preset, 各自覆盖了什么 | tpl repo `main` 上的 `presets/*.json` |
-| 可用的 mise task | tpl repo `mise.toml`, 或运行 `mise tasks ls` |
+"fork 时" 一列说明: 用 `cctpl-fork-cn` 把本家族复制到另一对仓库时, 这项事实怎么处理. **改写** 指换成目标仓库对的值; **沿用目标** 指保留目标仓库已有的值. 本表之外的 cctpl 文件 (`.claude/skills/` 下的 skill, `.mise/tasks/` 中的其余代码, `mise.toml` 中 cctpl 的 task, deny 规则) 对任何仓库对都适用, fork 时逐字拷贝.
+
+| 事实 | 位置 | fork 时 |
+| :--- | :--- | :--- |
+| seed repo 的本地路径 | tpl repo `mise.toml` 的 `[env] CCTPL_SEED_DIR` | 改写 |
+| 同上, 供 Claude Code 访问 | tpl repo `.claude/settings.json` 的 `permissions.additionalDirectories`, 写成相对 tpl repo 根目录的路径 (例如 `../<seed repo>`). **必须与 `CCTPL_SEED_DIR` 指向同一目录** | 改写 |
+| seed values, parameters, 以及参数化的各类声明 (exclude, no_render, hooks 产物, 需要逐个可选值测试的变量, 独特值, 允许原样保留的位置) | tpl repo 的参数化脚本 `.mise/tasks/make_template.py` 中的模块级常量. 该文件的其余部分 (生成模板的流程) 是通用的 | 改写声明部分 |
+| GitHub owner 和 tpl repo 名, template dir 的名字, 生成项目用哪个变量决定 Python 版本, 生成项目的安装和测试命令, 本地试用运行哪些 task | `.mise/tasks/cctpl/pair.py`. 通用代码只从这里读取这些值 | 改写 |
+| 对 cookiecutter 输入的额外校验 (例如只接受受支持的 Python 版本) | `hooks/pre_gen_project.py` | 沿用目标, 按需新增 |
+| hooks 生成的内容 (例如 license 文件) | `hooks/post_gen_project.py` | 沿用目标, 按需新增 |
+| tpl repo `README.rst` 的说明文字 | `.mise/tasks/cctpl/README.rst.jinja`. 其中 Overview 和 Disclaimer 两节与仓库对相关, 其余是通用的 | 改写这两节 |
+| 这对仓库的当前状态 (未完成的事项) | tpl repo `CLAUDE.md` 的 Current Status 一节 | 清空 |
+| tpl 版本号 | tpl repo `pyproject.toml`. make-template 把它写入 `cookiecutter.json` 的私有变量 `_template_version`, apply-template 把它写入 `README.rst` | 沿用目标 |
+| tpl 的 changelog | tpl repo `release-history.rst` | 沿用目标 |
+| seed 版本号 | seed repo `pyproject.toml` (与 tpl 无关) | 不涉及 |
+| 有哪些 preset, 各自覆盖了什么 | tpl repo `main` 上的 `presets/*.json` | 改写 (目标是 1.0 仓库时, 由它的 preset 分支生成) |
+| 可用的 mise task | tpl repo `mise.toml`, 或运行 `mise tasks ls` | cctpl 的 task 逐字拷贝 |

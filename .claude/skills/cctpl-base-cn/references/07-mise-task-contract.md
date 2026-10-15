@@ -50,7 +50,7 @@
 
 | Task | Level | 读 | 写 | 成功条件 |
 | :--- | :--- | :--- | :--- | :--- |
-| `try-template` | A | seed 工作区, 参数化脚本, `presets/<name>.json` (可选) | `tmp/cctpl/stage/`, `tmp/cctpl/template/`, `tmp/cctpl/try/<label>/`, `tmp/cctpl/try/<label>.log` | 生成模板, 用默认值或指定 preset 渲染一个项目, 在其中通过 mise 依次运行 `try_template.py` 的 `PROJECT_TASKS`, 全部通过 |
+| `try-template` | A | seed 工作区, 参数化脚本, `presets/<name>.json` (可选) | `tmp/cctpl/stage/`, `tmp/cctpl/template/`, `tmp/cctpl/try/<label>/`, `tmp/cctpl/try/<label>.log` | 生成模板, 用默认值或指定 preset 渲染一个项目, 在其中通过 mise 依次运行 `cctpl/pair.py` 的 `PROJECT_TASKS`, 全部通过 |
 
 说明:
 

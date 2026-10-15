@@ -8,7 +8,7 @@ Local trial: try the template the way a human would.
 
 1. Make the template from the seed's current working tree.
 2. Render one project with the chosen values into ``tmp/cctpl/try/<label>/``.
-3. In that project run its own mise tasks: venv-create, inst, cov, build-doc.
+3. In that project run its own mise tasks, ``PROJECT_TASKS`` in ``cctpl/pair.py``.
 
 Unlike test-output this goes through mise, so it exercises the generated
 mise.toml, its tools, and its task scripts. mise is isolated from the tpl
@@ -28,8 +28,6 @@ from cookiecutter.main import cookiecutter
 
 import cctpl
 
-PROJECT_TASKS = ["venv-create", "inst", "cov", "build-doc"]
-
 
 def main() -> int:
     preset = sys.argv[1] if len(sys.argv) > 1 else None
@@ -41,7 +39,7 @@ def main() -> int:
     label = preset or "default"
     overrides = presets.get(preset, {}) if preset else {}
 
-    log = cctpl.StepLog("try", 2 + len(PROJECT_TASKS), cctpl.dir_try / f"{label}.log")
+    log = cctpl.StepLog("try", 2 + len(cctpl.PROJECT_TASKS), cctpl.dir_try / f"{label}.log")
 
     # 1. template from the seed
     log.step("make the template from the seed (CCTPL_SEED_DIR)")
@@ -77,7 +75,7 @@ def main() -> int:
     env["MISE_TRUSTED_CONFIG_PATHS"] = str(dir_project)
     env["MISE_CEILING_PATHS"] = str(dir_project.parent)
     results = []
-    for task in PROJECT_TASKS:
+    for task in cctpl.PROJECT_TASKS:
         log.step(f"mise run {task}")
         code, seconds = log.run(["mise", "run", task], cwd=dir_project, env=env)
         results.append((task, code, seconds))
@@ -88,12 +86,12 @@ def main() -> int:
     log.write(f"=== Try result ({label})")
     for task, code, seconds in results:
         log.write(f"{'PASS' if code == 0 else 'FAIL'}  mise run {task}  ({seconds:.1f}s)")
-    for task in PROJECT_TASKS[len(results):]:
+    for task in cctpl.PROJECT_TASKS[len(results):]:
         log.write(f"SKIP  mise run {task}")
     log.write(f"Project: {dir_project}")
     log.write(f"Log:     {log.path_log}")
     log.write("To continue by hand: cd into the project, run 'mise trust' once, then any mise task.")
-    return 0 if all(code == 0 for _, code, _ in results) and len(results) == len(PROJECT_TASKS) else 1
+    return 0 if all(code == 0 for _, code, _ in results) and len(results) == len(cctpl.PROJECT_TASKS) else 1
 
 
 if __name__ == "__main__":
