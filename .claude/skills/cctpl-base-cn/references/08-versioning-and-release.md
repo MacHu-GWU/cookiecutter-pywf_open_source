@@ -5,7 +5,7 @@
 
 ## Version Number
 
-- tpl 版本号保存在 tpl repo 的 `pyproject.toml` 中, 使用 `major.minor.patch` 格式. 如果 `pyproject.toml` 注释中指出还有其他位置需要同步, 一并修改.
+- tpl 版本号只保存在 tpl repo 的 `pyproject.toml` 一处, 使用 `major.minor.patch` 格式. 其他用到它的地方 (`cookiecutter.json` 的 `_template_version`, `README.rst`) 都由 `sync` 从这里生成, 不手工同步.
 - tpl 版本号与 seed 版本号无关 (见 `01-background-and-concepts.md`). 判断 bump 级别时, 不参考 seed 版本号的变化.
 - tag, GitHub release 名称, `release-history.rst` 中的版本条目都使用 tpl 版本号.
 
@@ -19,7 +19,7 @@
 | major | 使用者的输入方式不兼容: 已有的调用方式, 配置, preset 可能失效; 或生成项目的核心工具链被替换 | 重命名或删除一个变量, 改变某个变量的含义, 更换包管理器 |
 | minor | 向后兼容地增加能力 | 新增一个带默认值的变量, 生成项目新增一个 task, 文档章节, CI 步骤, skill |
 | patch | 修复与小幅调整, 生成项目的能力不变 | 修复参数化错误, 修正文档措辞, 升级依赖版本, 调整默认值 |
-| 不发布 | artifact (`cookiecutter.json`, template dir) 没有变化 | 只改了 cctpl 文档, `.mise/tasks/`, tpl repo 自身配置 |
+| 不发布 | 模板产物 (`cookiecutter.json`, template dir) 没有变化 | 只改了 cctpl 文档, `.mise/tasks/`, `README.rst.jinja` (因而只有 `README.rst` 变化), tpl repo 自身配置 |
 
 一次发布包含多种改动时, 取最高级别. "不发布" 的改动照常由人 commit, 但不 bump 版本, 不创建 release.
 
@@ -33,8 +33,9 @@ Release Prep 是 `05-workflow.md` 的阶段 6, 由 `cctpl-release-cn` 执行. �
 全部满足才继续, 任何一项不满足就停下并说明:
 
 - seed 工作区干净, 当前 commit 已 push 到远端.
-- tpl repo 的 artifact 是最新的: 当前 seed 状态下重新运行 Sync 不会产生新的 diff.
-- tpl repo 中有待发布的 artifact 变化 (否则属于 "不发布").
+- tpl repo 的 artifact 是最新的. 判断方法: 运行 `mise run sync`, 如果它在 artifact 上产生了新的 diff, 说明之前的 artifact 不是最新的. 此时停下, 先让人 review 这份新的 diff.
+- tpl repo 中有待发布的模板产物变化 (否则属于 "不发布").
+- 上一次发布已经完成. 如果 `pyproject.toml` 中的版本号已经有 `release-history.rst` 条目, 但远端没有同名 tag 或 GitHub release, 说明上一次 Publish 中途失败了. 此时不 bump 版本号: 先查清失败原因, 修好后重新执行 Publish.
 
 ### 2. 确定版本号
 
@@ -42,7 +43,6 @@ Release Prep 是 `05-workflow.md` 的阶段 6, 由 `cctpl-release-cn` 执行. �
 - 按 Bump Rules 给出建议的级别和新版本号, 附上理由 (哪些改动决定了这个级别).
 - 由人确认后, 修改 `pyproject.toml`.
 - 然后 **重新运行 `sync`**. 版本号会出现在两个 artifact 中: `cookiecutter.json` 的私有变量 `_template_version`, 以及 `README.rst` 中的版本示例. 只改 `pyproject.toml` 而不重新 Sync, 发布出去的这两处都还是旧版本号.
-- `README.rst` 完全由 apply-template 生成 (版本号, cookiecutter 依赖版本, prompt 列表都来自仓库中的数据), 不手工修改. 要改它的说明文字, 改 `.mise/tasks/cctpl/README.rst.jinja`.
 
 ### 3. 更新 changelog
 
@@ -76,9 +76,12 @@ Built from seed @ ``abc1234``
 
 ## Publish
 
-Publish 是阶段 7, 由人运行 `publish-template` 完成 (契约见 `07-mise-task-contract.md`):
+Publish 是阶段 7, 由人在 `main` 分支上运行 `publish-template` 完成 (契约见 `07-mise-task-contract.md`):
 
 1. commit tpl repo 的全部改动, push `main`.
 2. 按 `presets/*.json` 从 `main` 重新生成每个 `preset/*` 分支并覆盖推送 (方式见 `02-repo-layout.md` 的 Preset Branches).
 3. 切回 `main`.
-4. 在 `main` 的最新 commit 上, 以 tpl 版本号创建或更新 tag 和 GitHub release. preset 分支不打 tag.
+4. 报告远端存在, 但已经没有对应 `presets/*.json` 的 `preset/*` 分支, 由人决定是否删除.
+5. 在 `main` 的最新 commit 上, 以 tpl 版本号创建或更新 tag 和 GitHub release.
+
+preset 分支不打 tag. 原因: preset 分支每次发布都会被重写, 打在它上面的 tag 下一次发布后就指向一个不在任何分支上的 commit. 需要某个版本的 preset 时, 用 `main` 上的 tag 加上当时的 `presets/<name>.json` 即可还原.

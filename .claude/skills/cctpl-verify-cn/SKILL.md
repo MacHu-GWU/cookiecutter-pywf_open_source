@@ -15,6 +15,7 @@ Read ../cctpl-base-cn/SKILL.md, then:
 - ../cctpl-base-cn/references/02-repo-layout.md
 - ../cctpl-base-cn/references/06-verification.md
 - ../cctpl-base-cn/references/07-mise-task-contract.md
+- ../cctpl-base-cn/references/08-versioning-and-release.md
 - ../cctpl-base-cn/references/09-troubleshooting.md
 
 Follow those docs to do the work.
@@ -25,7 +26,7 @@ Follow those docs to do the work.
 
 参数为空时, 验证 `main` 和 tpl repo `presets/*.json` 对应的全部 `preset/*` 分支.
 
-1. 本地 `tmp/cctpl/template/` 不存在时, 先运行 `mise run make-template`. 它必须对应刚发布的那次 Sync; 不确定时向主会话报告, 不要猜.
+1. **准备本地对照物.** L5 拿已发布的模板与本地 `tmp/cctpl/template/` 比较, 所以本地模板必须由刚发布的 seed commit 生成. 先确认两点: seed 的 HEAD (`git -C <seed> rev-parse --short HEAD`, seed 路径来自 `CCTPL_SEED_DIR`) 等于 tpl repo `release-history.rst` 最新版本条目中记录的 seed commit (08 的 Seed Commit Record); seed 工作区干净 (`git -C <seed> status --porcelain` 为空). 两点都满足时, **总是** 运行 `mise run make-template`, 不复用已有的 `template/` (它可能已被 `try-template` 或之后的 Sync 覆盖). 任何一点不满足时, 不运行验证, 直接报告原因.
 2. 从 tpl repo 根目录运行 `mise run verify-release`, 有指定分支时作为参数传入 (例如 `mise run verify-release main`). 它按 06 的 L5 步骤完成拉取, 与本地比较, 安装和测试, 并用私有的 clone 缓存避开 `~/.cookiecutters`.
 3. 读取它最后的 `=== Verify result` 一节, 对每个失败按 09 判断可能的原因.
 
@@ -47,5 +48,5 @@ Follow those docs to do the work.
 
 ## Boundaries
 
-- 只读写 `tmp/cctpl/verify/` (以及需要时生成的 `tmp/cctpl/output/`). 不修改任何其他文件, 不尝试修复问题: 修复从主会话的 Change 阶段重新开始.
+- 只读写 `tmp/cctpl/verify/`, 以及 make-template 写入的 `tmp/cctpl/stage/` 和 `tmp/cctpl/template/`. 不修改任何其他文件, 不尝试修复问题: 修复从主会话的 Change 阶段重新开始.
 - 不执行任何 git 写操作, 不写入 GitHub, 见 ../cctpl-base-cn/references/04-safety-rules.md.

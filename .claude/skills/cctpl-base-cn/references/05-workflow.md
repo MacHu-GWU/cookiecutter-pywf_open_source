@@ -53,7 +53,7 @@ flowchart TD
 
 ### 2 Seed Self-Test
 
-在 seed 中运行它自己的测试. 改动涉及文档时也构建文档. 目的是保证进入参数化的素材本身是对的, 把 "seed 本身有 bug" 和 "参数化有 bug" 两类问题分开.
+在 seed 中运行它自己的测试 task; 改动涉及文档时, 也运行它的文档构建 task. 具体 task 名见 seed 的 `mise.toml`, 不同的仓库对各不相同. 只运行本地 task, 不运行发布类 task (见 `04-safety-rules.md`). 目的是保证进入参数化的素材本身是对的, 把 "seed 本身有 bug" 和 "参数化有 bug" 两类问题分开.
 
 只改了 template mechanism 时跳过本阶段.
 
@@ -72,7 +72,7 @@ flowchart TD
 
 ### 4 Review
 
-你查看 tpl repo 中 artifact (`cookiecutter.json`, template dir) 的 git diff. diff 应该只包含本次改动预期的变化. 出现意外变化 (例如大量无关文件被重新渲染) 时退回阶段 3 排查.
+你查看 tpl repo 中 artifact (`cookiecutter.json`, template dir, `README.rst`) 的 git diff. diff 应该只包含本次改动预期的变化. 出现意外变化 (例如大量无关文件被重新渲染) 时退回阶段 3 排查.
 
 ### 5 Commit Seed
 
@@ -82,34 +82,29 @@ flowchart TD
 
 ### 6 Release Prep
 
-前置检查:
+agent 确认 seed 已提交并 push, 并且模板产物 (`cookiecutter.json` + template dir) 确实有待发布的变化; 然后建议新的 tpl 版本号, 由你确认; 改完版本号后重新运行 `sync` (版本号也写在 artifact 里, 不重新生成, 发布出去的仍是旧版本号); 更新 tpl 的 `release-history.rst` 并记录 seed commit; 最后打印阶段 7 需要你执行的全部命令.
 
-- seed 工作区干净, 当前 commit 已 push.
-- tpl repo 的 artifact 确实有变化 (或者有值得发布的 source 改动).
-
-然后:
-
-1. 根据本次改动类型给出 tpl 版本号的 bump 建议, 你确认后修改 `pyproject.toml`.
-2. 用 `/py-changelog` 更新 tpl 的 `release-history.rst`.
-3. 在当前版本条目中记录 seed commit SHA.
-4. 打印阶段 7 需要你执行的全部命令.
-
-第 1 步改了版本号之后必须重新运行 `sync`: 版本号也写在 artifact 里, 不重新生成, 发布出去的仍是旧版本号.
+只改了 tpl repo 自身 (cctpl 文档, `.mise/tasks/` 等) 而模板产物没有变化时, 不进入本阶段: 改动照常由你 commit, 但不发布.
 
 ### 7 Publish
 
-你执行阶段 6 打印的命令: tpl commit, push `main`, 从 `main` 重新生成所有 `preset/*` 分支并推送, 创建 GitHub release. agent 不执行其中任何一步, 见 `04-safety-rules.md`.
+你执行阶段 6 打印的发布命令. 它会提交并推送 tpl repo, 重新生成 preset 分支, 创建 tag 和 GitHub release. agent 不执行其中任何一步, 见 `04-safety-rules.md`.
 
 ### 8 Verify
 
-从 GitHub 拉取刚发布的模板 (包括 `main` 和需要验证的 `preset/*`), 生成项目到 `tmp/cctpl/verify/`, 在生成的项目中运行测试和文档构建. 这是唯一一个验证 "用户实际拿到的东西" 的阶段: 前面所有检查用的都是本地 `tmp/cctpl/template/` 中的模板.
+从 GitHub 拉取刚发布的模板 (包括 `main` 和需要验证的 `preset/*`), 生成项目到 `tmp/cctpl/verify/`, 与本地模板生成的结果逐字节比较, 再在生成的项目中安装依赖并运行测试. 这是唯一一个验证 "用户实际拿到的东西" 的阶段: 前面所有检查用的都是本地 `tmp/cctpl/template/` 中的模板.
 
 失败时, 修复从阶段 1 重新开始, 作为下一个 patch 版本发布.
 
 
 ## Handoff Rules
 
-- **agent 自动串联的范围:** 阶段 1 → 2 → 3 可以在同一会话中连续执行. 阶段 3 结束后必须停下.
-- **只能由你触发的阶段:** 6 (`/cctpl-release-cn`) 和 8 (`/cctpl-verify-cn`). agent 不自动进入.
+- **agent 自动串联的范围:** 阶段 1 → 2 → 3 可以在同一会话中连续执行. 阶段 3 结束后必须停下. 原因: Review 是你的质量关口. 你必须在 seed 提交之前看到 artifact 的 diff, 否则问题会被一起提交, 甚至进入发布.
+- **只能由你触发的阶段:** 6 (`/cctpl-release-cn`) 和 8 (`/cctpl-verify-cn`). agent 不自动进入. 原因: 阶段 6 决定 "发不发布, 发哪个版本", 发布之后无法撤回; 阶段 8 必须在你执行完阶段 7 之后才有意义, 只有你知道发布是否已经完成.
 - **每次停下时**, agent 说清楚三件事: 当前完成到哪个阶段, 结果如何, 下一步由谁做什么 (需要你执行命令时, 按 `04-safety-rules.md` 的格式给出).
 - **一次迭代可以包含多次 Change.** 阶段 1 → 3 可以反复循环, 攒够一批改动再进入阶段 4.
+
+
+## Outside the Stages: Local Trial
+
+`mise run try-template` (或 `mise run try-template <preset>`) 从 seed 当前的工作区生成模板, 用默认值或某个 preset 渲染一个项目, 再在项目中运行它自己的 mise task (安装, 测试覆盖率, 文档构建). 它不检查也不应用 artifact, 不属于任何阶段, 随时可用. 最常见的用途是 Review 之前亲眼看看生成项目的效果.

@@ -4,7 +4,7 @@ description: "Shared knowledge for the cctpl-*-cn skills that maintain a cookiec
 ---
 cctpl 家族负责维护一对 cookiecutter 仓库: seed repo (可运行的具体项目) 和 tpl repo (把 seed 参数化成模板并发布). 本 skill 是家族的 base, 只存放共享规范, 不绑定任何单一动作, 也不绑定任何具体的仓库对. 具体值 (seed 路径, parameters, 版本号) 一律从仓库中读取, 位置见 `references/02-repo-layout.md` 的 "Where Facts Live".
 
-本家族文档正文为中文, 标题, 文件名, 术语为英文. `references/` 是唯一的 source of truth: `.mise/tasks/` 的实现, `CLAUDE.md`, `maintainer-guide.rst` 与之冲突时, 以本 skill 为准, 并修正对方.
+本家族文档正文为中文, 标题, 文件名, 术语为英文. `references/` 是唯一的 source of truth: `.mise/tasks/` 的实现或 tpl repo 的 `CLAUDE.md` 与之冲突时, 以本 skill 为准, 并修正对方. `CLAUDE.md` 只指向本家族, 不重复其中的规则.
 
 ## Files
 
@@ -28,11 +28,11 @@ cctpl 家族负责维护一对 cookiecutter 仓库: seed repo (可运行的具�
 | Invoker | 做什么 | 读取的 base 文件 | 触发 |
 | :--- | :--- | :--- | :--- |
 | `cctpl-change-cn` | 归类改动需求, 在 seed 或 tpl source 中实施, 跑 seed 自测, 接着执行 sync | 01, 02, 03, 04, 05 | agent 或用户 |
-| `cctpl-sync-cn` | 生成模板, 全部检查, 应用 artifact; 诊断并修复参数化问题 | 02, 03, 04, 05, 06, 07, 09 | agent 或用户 |
+| `cctpl-sync-cn` | 生成模板, 全部检查, 应用 artifact; 诊断并修复参数化问题 | 02, 03, 04, 05, 06, 07, 08, 09 | agent 或用户 |
 | `cctpl-add-param-cn` | 新增或修改一个 cookiecutter parameter, 两边联动 | 01, 02, 03, 04, 06, 07, 08 | agent 或用户 |
 | `cctpl-try-cn` | 本地试用: 生成模板, 渲染项目, 通过 mise 跑 venv-create / inst / cov / build-doc, 报告日志 | 02, 04, 06, 07, 09 | agent 或用户 |
 | `cctpl-release-cn` | 前置检查, 版本 bump, changelog, 记录 seed SHA, 打印发布命令 | 04, 05, 07, 08 | 仅用户 |
-| `cctpl-verify-cn` | 从 GitHub 拉取已发布模板, 生成项目并测试 (forked context) | 02, 06, 07, 09 | 仅用户 |
+| `cctpl-verify-cn` | 从 GitHub 拉取已发布模板, 生成项目并测试 (forked context) | 02, 06, 07, 08, 09 | 仅用户 |
 
 阶段与 invoker 的对应关系见 `references/05-workflow.md`.
 
@@ -45,4 +45,4 @@ cctpl 家族负责维护一对 cookiecutter 仓库: seed repo (可运行的具�
 
 ## Implementation Status
 
-本家族正在从 1.0 的脚本迁移到 2.0 规范. 07 中的全部 task 已落地. 尚待完成: 2.0 的 `publish-template` 还没有真实运行过一次; 旧的 `sanhe` 分支在第一次 2.0 发布生成 `preset/sanhe` 之后由人手动删除. 全部落地后删除本节.
+07 中的全部 task 已按 2.0 规范落地. 尚待完成: 第一次 2.0 发布 (2.0.0) 只完成了一部分, `main` 和 `preset/sanhe` 已推送, 但还没有 `2.0.0` tag 和 GitHub release, 需要重新运行 `publish-template` 并通过 Verify; 之后由人手动删除远端旧的 `sanhe` 分支. 全部完成后删除本节.

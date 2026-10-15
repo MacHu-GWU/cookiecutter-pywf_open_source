@@ -19,17 +19,17 @@ Follow those docs to do the work.
 1. **归类.** 按 01 的 "Two Kinds of Change" 判断: template content (改 seed), template mechanism (改 tpl source), 还是两者都有. 涉及新增或修改 parameter 时, 改用 `cctpl-add-param-cn`. 需求被表述为 "改 template dir 中的某个文件" 时, 翻译成 seed 中的对应文件.
 2. **说明计划.** 改动跨两个仓库, 或要删除文件时, 先用几行说明打算改哪些文件, 等用户确认. 只改一两个文件的简单改动直接做.
 3. **实施.** seed 的位置从 tpl repo `mise.toml` 的 `CCTPL_SEED_DIR` 读取. 只改 seed 和 tpl source, 不碰 artifact. 新增文件时, 按 03 的 File Filtering 判断它在模板中的命运.
-4. **seed 自测.** 改了 seed 时, 在 seed 中运行它自己的测试; 改动涉及文档时也构建文档. 只运行本地 task. 失败就在 seed 中修复, 直到通过. 只改了 mechanism 时跳过.
+4. **seed 自测.** 改了 seed 时, 按 05 的 Seed Self-Test 运行 seed 的测试 task, 改动涉及文档时也运行文档构建 task (task 名从 seed 的 `mise.toml` 中找). 失败就在 seed 中修复, 直到通过. 只改了 mechanism 时跳过.
 5. **同步.** 在同一会话中接着执行 `cctpl-sync-cn`, 不需要再问用户.
 
 ## Output
 
-`cctpl-sync-cn` 结束后, 给出一份总结:
+`cctpl-sync-cn` 结束后, 只输出一份合并的报告, 不分两次输出:
 
 - 本次改动的归类.
 - 两个仓库中各改了哪些文件 (删除的文件单独列出).
-- seed 自测和 Sync 的结果.
-- 下一步: 由用户 review artifact 的 diff, 然后提交 seed (命令由 `cctpl-sync-cn` 按 04 的格式给出).
+- seed 自测的结果 (运行了哪些 task, 是否通过).
+- `cctpl-sync-cn` 的 Output 中的全部内容 (各层结果, artifact diff 摘要, 下一步与提交命令). 提交命令只出现这一次.
 
 ## Boundaries
 

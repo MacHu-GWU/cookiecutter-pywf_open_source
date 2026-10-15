@@ -16,7 +16,7 @@ cookiecutter-<name>/
 ├── pyproject.toml                         # tpl 版本号所在
 ├── release-history.rst                    # tpl 的 changelog
 ├── README.rst                             # 生成产物, 从 .mise/tasks/cctpl/README.rst.jinja 渲染
-├── <python package>/                      # tpl repo 自身的辅助代码 (路径定义等)
+├── CLAUDE.md                              # agent 的入口: 只指向本家族, 不重复规则
 ├── tmp/                                   # gitignored. 只有 tmp/cctpl/ 属于构建流程, 其余归人自由使用
 │   └── cctpl/                             # workspace, 构建流程专属, 随时可能被清空
 │       ├── stage/                         # 参数化的输入: seed 中 git 认可的文件的副本
@@ -40,18 +40,20 @@ tpl repo 中的每个文件都属于以下三类之一. 改动前先判断类别
 
 | 类别 | 成员 | 规则 |
 | :--- | :--- | :--- |
-| source (手工维护) | `mise.toml`, `.mise/tasks/`, `hooks/`, `presets/`, `pyproject.toml`, `release-history.rst`, `.claude/` | 可以直接编辑 |
+| source (手工维护) | `mise.toml`, `.mise/tasks/`, `hooks/`, `presets/`, `pyproject.toml`, `release-history.rst`, `CLAUDE.md`, `.claude/` | 可以直接编辑 |
 | artifact (生成产物) | `cookiecutter.json`, template dir, `README.rst` | **不手改**. `cookiecutter.json` 和 template dir 只能由 seed + 参数化逻辑重新生成, 再由应用步骤 (`apply-template`) 从 `tmp/cctpl/template/` 拷贝过来; `README.rst` 由同一步骤从 `.mise/tasks/cctpl/README.rst.jinja` 渲染, 要改说明文字就改这个模板文件 |
 | workspace (工作区) | `tmp/cctpl/` | 随时可能被清空, 不存放任何需要保留的东西 |
 
-发布产物是 `cookiecutter.json` 和 template dir **两者一起**. 只更新其中一个会导致不一致: 例如 template dir 中新增了一个需要原样拷贝 (no_render, 不经 Jinja 渲染) 的文件, 但 `cookiecutter.json` 的 `_copy_without_render` 没有同步, 生成项目时这个文件会被当作 Jinja 模板渲染.
+artifact 中, `cookiecutter.json` 和 template dir 合称 **模板产物**: cookiecutter 使用者拿到的就是它们. `README.rst` 只是仓库的说明页, 不影响生成的项目.
+
+模板产物必须 **两者一起** 更新. 只更新其中一个会导致不一致: 例如 template dir 中新增了一个需要原样拷贝 (no_render, 不经 Jinja 渲染) 的文件, 但 `cookiecutter.json` 的 `_copy_without_render` 没有同步, 生成项目时这个文件会被当作 Jinja 模板渲染.
 
 `hooks/` 是 source: 参数化时它被拷贝到 `tmp/cctpl/template/hooks/` 供测试使用, 但真正维护的位置是 tpl repo 根目录的 `hooks/`.
 
 ### workspace 规则
 
 - 构建流程只读写 `tmp/cctpl/`, 绝不清空或改动 `tmp/` 下的其他内容. `tmp/` 下的其他位置可以放任何临时东西, 例如草稿, 对比用的副本, 调试输出.
-- `tmp/cctpl/` 下的每个子目录只属于一个步骤. 每个步骤开始时只清空自己的子目录, 不碰其他子目录. 这样重新生成模板不会顺带删掉上一次发布后验证的结果. 每个子目录归哪个 task 所有, 见 task 契约.
+- `tmp/cctpl/` 下的每个子目录只属于一个步骤. 每个步骤开始时只清空自己的子目录, 不碰其他子目录. 这样重新生成模板不会顺带删掉上一次发布后验证的结果.
 
 
 ## seed repo
@@ -61,9 +63,9 @@ seed repo 就是一个普通的, 由本模板 (或其前身) 生成的项目. �
 本家族只对 seed 提出以下约束:
 
 - **不放任何维护逻辑.** 不放 `cctpl-*-cn`, 不放维护用的 settings, 不放参数化脚本. seed 的 `.claude/` 会进入模板.
-- **不维护 changelog, 不打 tag.** seed 的 `release-history.rst` 是 template content (生成项目的 changelog 起点), 不记录 seed 自己的迭代.
+- **不维护 changelog, 不打 tag.** seed 的 `release-history.rst` 是 template content (生成项目的 changelog 起点), 不记录 seed 自己的迭代. 原因: seed 的版本号只用来测试发布流程, 不代表模板的版本 (见 01 的 Two Independent Versions); 模板的迭代历史记在 tpl repo.
 - **seed value 必须足够独特.** 每个 seed value 在 seed 中只应出现在 "需要被参数化" 的位置. 如果某个 seed value 恰好也出现在无关位置 (例如版本号字符串碰巧等于某个依赖的版本), 会被误替换. 包名, 仓库名这类值靠 `_demo` 命名空间天然独特 (见 01 的 Naming Convention); 版本号, license 这类通用值无法独特, 由参数化规则限定替换范围.
-- **不参与模板的文件**由 tpl repo 的参数化配置中的 exclude 规则排除 (例如 `.git`, `.venv`, 构建产物, `.claude/settings.local.json`), 而不是从 seed 中删除.
+- **不参与模板的文件不从 seed 中删除.** 被 seed 的 `.gitignore` 忽略的文件 (`.venv`, 缓存, 构建产物, 本地私有配置) 天然不进入参数化, 不需要任何处理. 进了 git 但不该进模板的少数文件 (例如由 hooks 重新生成的 `LICENSE.txt`), 由 tpl repo 的参数化脚本排除. seed 需要它们才能作为真实项目运行, 所以不能删.
 
 
 ## Branches
@@ -118,10 +120,11 @@ preset 分支完全由 `main` + 覆盖文件决定, 不接受直接修改. 想�
 | :--- | :--- |
 | seed repo 的本地路径 | tpl repo `mise.toml` 的 `[env] CCTPL_SEED_DIR` |
 | 同上, 供 Claude Code 访问 | tpl repo `.claude/settings.json` 的 `permissions.additionalDirectories`, 写成相对 tpl repo 根目录的路径 (例如 `../<seed repo>`). **必须与 `CCTPL_SEED_DIR` 指向同一目录** |
-| seed values 和 parameters | tpl repo `.mise/tasks/` 中的参数化脚本 (`make_template.py`) |
-| exclude / no_render 规则 | 同上 |
+| seed values, parameters, 以及参数化的各类声明 (exclude, no_render, hooks 产物, 需要逐个可选值测试的变量, 独特值, 允许原样保留的位置) | tpl repo 的参数化脚本 `.mise/tasks/make_template.py` 中的模块级常量 |
+| 本地试用 (`try-template`) 在生成的项目中运行哪些 task | `.mise/tasks/try_template.py` 的 `PROJECT_TASKS` |
+| tpl repo `README.rst` 的说明文字 | `.mise/tasks/cctpl/README.rst.jinja` |
 | tpl 版本号 | tpl repo `pyproject.toml`. make-template 把它写入 `cookiecutter.json` 的私有变量 `_template_version`, apply-template 把它写入 `README.rst` |
 | seed 版本号 | seed repo `pyproject.toml` (与 tpl 无关) |
-| GitHub owner 和 tpl repo 名 | tpl repo 的 `.mise/tasks/cctpl/` (发布和发布后验证共用) |
+| GitHub owner 和 tpl repo 名 | `.mise/tasks/cctpl/__init__.py` 的 `GITHUB_OWNER`, `GITHUB_REPO` (发布, 发布后验证, README 共用) |
 | 有哪些 preset, 各自覆盖了什么 | tpl repo `main` 上的 `presets/*.json` |
 | 可用的 mise task | tpl repo `mise.toml`, 或运行 `mise tasks ls` |

@@ -49,14 +49,19 @@ L4 需要为生成的项目安装完整依赖, 耗时长, 所以按需运行. �
 
 ### Secrets
 
-生成项目的 `mise.toml` 可能在 `[env]` 中通过命令从 secret 存储读取 token. 用默认值生成的项目, token 字段名是占位值, 读取会失败, 导致任何会加载该配置的 mise 命令都失败, 连 `mise tasks ls` 也不例外 (2026-10-15 实测).
+生成项目的 `mise.toml` 可能在 `[env]` 中通过命令从 secret 存储读取 token. 用默认值生成的项目, token 字段名是占位值, 读取一定失败. seed 的写法让读取失败时得到空字符串, 所以 mise 本身还能运行, 但每次加载配置都会执行一遍读取命令 (可能需要网络和外部工具).
 
-规则: **L4 不依赖任何 secret.** 在生成的项目中直接调用工具链 (例如用 uv 安装, 直接运行 pytest), 而不是通过会加载 `[env]` 的 mise 命令. 需要 secret 才能验证的功能 (发布到 PyPI, 配置 Codecov 等) 不在 L4 的范围内, 它们由 seed 在真实环境中验证.
+规则: **L4 不依赖任何 secret, 也不经过 mise.** 在生成的项目中直接调用工具链 (例如用 uv 安装, 直接运行 pytest). 原因:
+
+- L4 要回答的问题是 "生成的项目能不能安装, 测试能不能通过". 它的结果不应该取决于本机有没有 secret 存储, 网络是否可用.
+- 读取失败被静默转成空字符串, 如果 L4 经过 mise, secret 相关的问题既不会让 L4 失败, 也不会被报告, 只会让结果更难解释.
+
+经过 mise 的完整试用由 Local Trial 负责 (见下文). 需要真实 secret 才能验证的功能 (发布到 PyPI, 配置 Codecov 等) 不在 L4 的范围内, 它们由 seed 在真实环境中验证.
 
 
 ## Local Trial
 
-除了五个层级, 还有一个 **推荐的人工试用机制** `try-template`: 用和人手工测试完全相同的方式试用模板. 它从 seed 当前的工作区生成模板, 渲染一个项目, 再进入项目通过 mise 运行 `venv-create`, `inst`, `cov`, `build-doc`.
+除了五个层级, 还有一个 **推荐的人工试用机制** `try-template`: 用和人手工测试完全相同的方式试用模板. 它从 seed 当前的工作区生成模板, 渲染一个项目, 再进入项目通过 mise 运行 `try_template.py` 的 `PROJECT_TASKS` 中列出的 task (通常是创建虚拟环境, 安装, 测试覆盖率, 文档构建).
 
 与 L4 的区别:
 
@@ -73,6 +78,7 @@ L4 需要为生成的项目安装完整依赖, 耗时长, 所以按需运行. �
 - 生成项目的 `mise.toml` 只在本次运行中被信任 (`MISE_TRUSTED_CONFIG_PATHS`), 不写入 mise 的信任记录.
 - 用 `MISE_CEILING_PATHS` 阻止 mise 向上加载 tpl repo 自己的 `mise.toml`, 让试用环境与一个独立的新项目一致.
 - 人想接着手工操作时, 进入项目目录, 自己运行一次 `mise trust`. 注意手工操作时 mise 会同时加载上层 tpl repo 的配置.
+- 它会先重新生成模板, 覆盖 `tmp/cctpl/stage/` 和 `tmp/cctpl/template/`. 所以之后运行 L4 或 L5 前, `template/` 对应的是 seed 当前的工作区, 而不一定是最近一次 Sync 或发布时的 seed 状态.
 
 日志: 每一步输出 `[try i/n] <时间> <步骤>`, 子命令的输出以 `|` 缩进, 每个命令结束时输出退出码和耗时; 最后输出每个 task 的 PASS / FAIL / SKIP 汇总. 全部内容同时写入 `tmp/cctpl/try/<label>.log`.
 
@@ -81,7 +87,7 @@ L4 需要为生成的项目安装完整依赖, 耗时长, 所以按需运行. �
 人在本地测试模板的推荐顺序. 所有命令都在 tpl repo 根目录开始.
 
 1. **从 seed 重新生成并检查** (推荐, 但可省略): `mise run sync`. 它跑完 L1 – L3 并把 artifact 应用到 tpl repo, 之后 `git diff` 就能看到本次改动. 只想看效果, 不想动 artifact 时跳过这一步: 第 2 步自己会从 seed 重新生成模板.
-2. **生成项目并自动跑一圈**: `mise run try-template` (默认值) 或 `mise run try-template <preset>`. 它从 seed 当前的工作区生成模板 (包括尚未 commit 的改动), 渲染项目, 并在项目中通过 mise 运行 `venv-create`, `inst`, `cov`, `build-doc`. 看最后的 `=== Try result`.
+2. **生成项目并自动跑一圈**: `mise run try-template` (默认值) 或 `mise run try-template <preset>`. 它从 seed 当前的工作区生成模板 (包括尚未 commit 的改动), 渲染项目, 并在项目中通过 mise 运行 `PROJECT_TASKS` 中的 task. 看最后的 `=== Try result`.
 3. **进入项目亲手看** (可选): 进入 `tmp/cctpl/try/<label>/<project>/`, 第一次先运行 `mise trust`, 然后运行任何想看的 task, 例如 `mise run view-cov`, `mise run view-doc` 在浏览器中查看覆盖率报告和文档, 或者重跑 `mise run cov`.
 
 seed 改了之后, 从第 1 步 (或第 2 步) 重新开始即可; 第 2 步每次都会清空并重建 `tmp/cctpl/try/<label>/`.
@@ -113,9 +119,9 @@ L5 在 forked context 中运行, 只把结论带回主会话:
 | seed 中的文档, 注释 | 是 | 是 | 是 | 否 | 发布后 |
 | seed 中的源码, 测试 | 是 | 是 | 是 | 否 (seed 自测已覆盖) | 发布后 |
 | seed 中的依赖, 构建, 测试, CI 配置, mise task | 是 | 是 | 是 | 是 | 发布后 |
-| parameter 新增或修改 | 是 | 是 + choice coverage | 是 | 是 | 发布后 |
-| hooks | 是 | 是 + choice coverage | 是 | 是 | 发布后 |
+| parameter 新增或修改 | 是 | 是, 并检查 `CHOICE_COVERAGE` 是否需要更新 | 是 | 是 | 发布后 |
+| hooks | 是 | 是, 并检查 `CHOICE_COVERAGE` 是否需要更新 | 是 | 是 | 发布后 |
 | exclude / no_render 规则 | 是 | 是 | 是 | 否 | 发布后 |
-| 只改 tpl repo 自身 (cctpl 文档, `.mise/tasks/`) | 是 (确认 artifact 无变化) | 是 | 是 | 否 | 不发布 |
+| 只改 tpl repo 自身 (cctpl 文档, `.mise/tasks/`) | 是 (确认模板产物无变化) | 是 | 是 | 否 | 不发布 |
 
 改 `.mise/tasks/` 时也要跑 L1 – L3: 不是为了验证模板, 而是为了确认改过的 task 本身仍然工作, 并且 artifact 没有意外变化.

@@ -30,7 +30,7 @@ tpl repo 中的每个 mise task 都按上述原则标注一个安全级别:
 | 读取两个仓库中的任何文件 | 可以 | |
 | 编辑 seed 中的文件 (含新增, 删除) | 可以 | 删除文件时在总结中明确列出 |
 | 编辑 tpl repo 中的 source | 可以 | source 的定义见 `02-repo-layout.md` |
-| 手工编辑 artifact (`cookiecutter.json`, template dir) | **不可以** | 只能通过 `apply-template` 更新 |
+| 手工编辑 artifact (`cookiecutter.json`, template dir, `README.rst`) | **不可以** | 只能通过 `apply-template` 更新 |
 | 修改 tpl 版本号 (`pyproject.toml`) | 可以, 需先确认 | 只在准备发布时, 由人确认 bump 级别后修改 |
 | 运行 A 级 task | 可以 | 级别定义见上文 Safety Levels |
 | 运行 U 级 task | **只打印** | |
@@ -61,7 +61,9 @@ tpl repo 中的每个 mise task 都按上述原则标注一个安全级别:
 
 deny 规则按命令前缀匹配整个子命令, 所以被 deny 的 git 子命令的只读用法也会被拦下, 例如 `git tag --list`, `git stash list`. 需要这类信息时改用不受影响的只读命令: 用 `git describe --tags` 或 `git for-each-ref refs/tags` 查 tag, 用 `git branch --list` 查分支.
 
-deny 规则优先于 allow 规则. 即使 settings 中 allow 了 `Bash(mise *)`, deny 中的 `mise run publish-template*` 仍然生效.
+同理, 通配模式 `Bash(*publish_template.py*)` 会拦下任何提到这个文件名的命令, 包括 `cat`, `grep` 这类只读命令. 需要读这个文件时, 用 Read 工具, 不用 shell 命令.
+
+deny 规则优先于 allow 规则. 即使 settings 中 allow 了 `Bash(mise *)`, deny 中的 `mise run publish*` 仍然生效.
 
 ### Seed Access
 

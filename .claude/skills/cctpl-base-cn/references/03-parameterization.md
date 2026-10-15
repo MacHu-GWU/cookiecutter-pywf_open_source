@@ -19,8 +19,9 @@ flowchart LR
 "一致" 允许以下差异, 除此之外的任何差异都是参数化错误:
 
 - 被 exclude 的文件 (它们本来就不进模板).
-- 由 hooks 生成的文件 (例如 license 文件), 以及 hooks 有意修改的内容.
-- 已声明的合法残留所在的文件 (见下文).
+- 在参数化脚本中声明为 hooks 产物的文件 (例如 license 文件): hooks 会生成或改写它们, 内容可以与 seed 不同.
+
+合法残留 (见下文) 不需要放行: 残留就是 seed value 原样留在模板中, 用 seed 的值渲染回来不会变.
 
 round trip 能发现 "替换之后渲染不回原样" 的问题: 派生形态的计算结果与 seed 不同, Jinja 转义出错, 文件丢失或多出, 换行符变化. 这些是 "没有残留的 seed value" 和 "没有未解析的占位符" 两项检查发现不了的.
 
@@ -33,7 +34,7 @@ round trip **发现不了过度替换** (不该替换的被替换了). 例如 `M
 - **预防**: 通用值必须用 context 或 file scope 限定 (见下一节). 这是规则, 不是建议.
 - **发现**: 人工查看 template dir 的 diff 时, 留意新出现的 `{{ cookiecutter.xxx }}`. 一个通用变量的占位符出现在意料之外的文件中, 就是过度替换.
 
-round trip 所需的 seed values 就是参数化脚本中声明的 seed values, 不另外维护一份.
+round trip 所需的 seed values 就是参数化脚本中声明的 seed values, 不另外维护一份. 具体做法: 对每个写入 `cookiecutter.json` 的 parameter, 按它的 `name` 从 `SeedValues` 中取同名属性作为渲染值. 因此 **`SeedValues` 中必须有与 parameter `name` 同名的属性**, 否则 round trip 无法运行.
 
 
 ## Choosing Seed Values
@@ -54,17 +55,20 @@ seed value 是参数化的 "锚点". 选择原则:
 
 ## Legal Residue
 
-有时一个 seed value 在模板中保留是合理的. 例如一个 no_render 文件必须逐字节保留, 其中又恰好包含 seed value, 而这个值在生成的项目中不会造成问题.
+有时一个独特的 seed value 在模板中保留是合理的: 它在生成的项目中也应该保持原值. 残留有两种来源:
+
+- **parameter 跳过了某些文件**: 用 parameter 的 `exclude` 让它不替换这些文件. 例如 seed 中指向维护者本人项目的链接含有 GitHub 用户名, 这些链接在生成的项目中也必须指向维护者, 不能变成使用者的用户名.
+- **no_render 文件**: 文件必须逐字节保留, 其中又恰好包含 seed value.
 
 合法残留应当很少见. 遇到残留时先考虑能否用 render, exclude 或 context 解决, 声明残留是最后的手段.
 
 规则:
 
-- 参数化脚本声明哪些 seed value 是 **独特** 的. 只有独特的 seed value 会被 `check-seed-values` 扫描残留; 通用值的正确性靠 context / file scope 规则和人工查看 diff 保证.
-- 合法残留必须在参数化脚本中 **显式声明**: 哪个 seed value, 在哪些文件中, 为什么可以保留.
-- `check-seed-values` 读取这份声明, 只对未声明的残留报错.
+- 参数化脚本在 `UNIQUE_SEED_VALUES` 中声明哪些 seed value 是 **独特** 的. 只有独特的 seed value 会被 `check-seed-values` 扫描残留; 通用值的正确性靠 context / file scope 规则和人工查看 diff 保证.
+- 合法残留必须在参数化脚本的 `LEGAL_RESIDUES` 中 **显式声明**, 每条是 (seed value 名, 文件, 原因). seed value 名是 `UNIQUE_SEED_VALUES` 中的键.
+- `check-seed-values` 读取这份声明, 只对未声明的残留报错. 声明了但已经不存在的残留, 它会给出警告, 提示删除这条声明.
 - 不允许通过 "忽略检查输出" 的方式接受残留. 没有声明的残留一律视为错误.
-- 声明要尽量窄: 指定到具体文件, 而不是整个目录或整类文件.
+- 声明要尽量窄: 指定到具体文件, 而不是整个目录或整类文件. 原因: 声明范围内的任何残留都不再被检查, 范围越宽, 以后真正漏掉的值越可能被一起放过.
 
 
 ## File Filtering
@@ -118,7 +122,7 @@ hooks 处理字符串替换做不到的事情:
 
 - hooks 是 tpl repo 的 source, 维护在根目录的 `hooks/` 中 (见 `02-repo-layout.md`).
 - 能用参数化解决的, 不用 hooks. hooks 的逻辑在 seed 中无法运行和测试, 越少越好.
-- 由 hooks 生成的文件, 在 seed 中也存在 (seed 需要它), 但必须加入 exclude, 并在参数化脚本中声明为 hooks 的产物, round trip 才会允许它的差异.
+- 由 hooks 生成的文件, 在 seed 中也存在 (seed 需要它), 但必须加入 `EXCLUDE` (否则模板里会有一份带 seed 值的旧文件), 并加入 `HOOK_OUTPUTS` (否则 round trip 会把 hooks 生成的不同内容报为错误).
 - 有可选值 (choice) 的变量如果会影响 hooks 的行为, 必须声明 choice coverage (见下一节).
 
 ### Choice Coverage
@@ -141,4 +145,23 @@ hooks 处理字符串替换做不到的事情:
 - 是否影响 hooks.
 - 是否需要声明合法残留.
 - 是否需要 choice coverage.
+- 下文 Declarations 表中的每个声明是否需要跟着改.
 - 对 preset 的影响: 重命名或删除变量后, 修改引用它的 `presets/*.json` (格式见 `02-repo-layout.md` 的 Preset Branches).
+
+
+## Declarations
+
+参数化脚本 (`.mise/tasks/make_template.py`) 用以下模块级常量声明本文的全部规则. 它们是这些规则在代码中的唯一落点, 检查类 task 都从这里读取, 不另外维护.
+
+| 声明 | 内容 | 对应本文的规则 | 读取者 |
+| :--- | :--- | :--- | :--- |
+| `SeedValues` | seed 中的具体值, 属性名与 parameter `name` 相同 | Choosing Seed Values, Round Trip | 参数化, round trip |
+| `PARAMETERS` | 每个 cookiecutter 变量的 selector, 默认值或可选值, prompt, file scope | Choosing Seed Values | 参数化, `check-seed-values` (零命中检查) |
+| `EXCLUDE` | 进了 git 但不进入模板的文件 | Three Fates | 参数化, round trip |
+| `NO_RENDER` | 原样拷贝的文件 | Three Fates | 参数化 |
+| `HOOK_OUTPUTS` | hooks 生成或改写的文件 | Hooks | round trip |
+| `CHOICE_COVERAGE` | 需要逐个可选值生成一次的 choice 变量 | Choice Coverage | 生成测试项目 (`test-template`) |
+| `UNIQUE_SEED_VALUES` | 独特的 seed value, 名字 → 值 | Legal Residue | `check-seed-values` (残留扫描) |
+| `LEGAL_RESIDUES` | 合法残留: (seed value 名, 文件, 原因) | Legal Residue | `check-seed-values` |
+
+新增一个 parameter 时, 逐行检查这张表, 判断每个声明是否需要跟着改.

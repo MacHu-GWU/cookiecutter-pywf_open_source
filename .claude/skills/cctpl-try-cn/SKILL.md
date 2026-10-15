@@ -30,6 +30,6 @@ Follow those docs to do the work.
 
 ## Boundaries
 
-- 不修改 seed 或 tpl repo 的任何文件; 只写 `tmp/cctpl/` 下的试用目录.
+- 不修改 seed 或 tpl repo 的任何文件; 只写 `tmp/cctpl/`. 注意它会覆盖 `tmp/cctpl/stage/` 和 `tmp/cctpl/template/` (见 06 的 Local Trial): 之后要运行 `test-output` 或 `verify-release` 时, 先确认 `template/` 对应的 seed 状态是对的.
 - 不打印任何环境变量的值. 用 preset 试用时, 项目的 mise 会读取真实 secret.
 - 不执行任何 git 写操作, 见 04.

@@ -94,7 +94,8 @@ This template is maintained using a "reverse engineering" approach, driven by Cl
 1. Make changes in the Seed project (``cookiecutter_pywf_open_source_demo-project``)
 2. Run ``mise run sync`` to convert the Seed into a template and check it
 3. Run ``mise run try-template`` to try a generated project locally
-4. Run ``mise run publish-template`` to publish the template to GitHub
+4. Run ``/cctpl-release-cn`` to bump the version and update the changelog, then ``mise run publish-template`` to publish the template to GitHub
+5. Run ``/cctpl-verify-cn`` to verify the published template
 
 **Toolchain:**
 

@@ -1,6 +1,6 @@
 # Troubleshooting
 
-本文按出错的位置列出常见故障: 现象, 原因, 修法. 修法遵守 `03-parameterization.md` 和 `04-safety-rules.md`; 本文只给方向, 不重复规则. 前置阅读: `07-mise-task-contract.md`, `03-parameterization.md`, `06-verification.md`.
+本文按出错的位置列出常见故障: 现象, 原因, 修法. 修法遵守 `03-parameterization.md` 和 `04-safety-rules.md`; 本文只给方向, 不重复规则. 前置阅读: `03-parameterization.md`, `06-verification.md`, `07-mise-task-contract.md`, `08-versioning-and-release.md`.
 
 总的排查原则:
 
@@ -48,16 +48,28 @@
 | 文件缺失 | 文件被 exclude 规则误伤 | 收窄 exclude 规则 |
 | 文件多出 | seed 中的临时文件或本地文件没有被 exclude | 补充 exclude 规则, 或把文件从 seed 中清理掉 |
 | 只有换行符或文件末尾换行不同 | 参数化统一写成 LF, 而 seed 中的文件是 CRLF | 统一 seed 中的换行符 (seed 的 `.gitattributes`) |
-| 文件内容相同但权限不同 | 可执行权限在生成过程中丢失 | 用 hooks 恢复权限, 或在 round trip 比较中声明该差异 |
 
 
 ## L4: test-output
 
 | 现象 | 原因 | 修法 |
 | :--- | :--- | :--- |
-| 任何 mise 命令都失败, 报 secret 或 token 相关错误 | 生成项目的 `[env]` 用占位的 token 字段名读取 secret | 按 `06-verification.md` 的 Secrets 规则, 绕过 mise 直接调用工具链 |
 | seed 自测通过, 生成项目测试失败 | 项目中写死了只对 seed 成立的东西 (例如 seed 的仓库地址, 文档站点名), 或默认值本身不合法 | 让该内容也参数化; 或修改默认值 |
 | 依赖安装失败 | 生成项目没有 lock 文件, 全新 resolve 时某个依赖的最新版本不兼容 | 在 seed 的依赖声明中收紧版本范围, 在 seed 中验证后重新 Sync |
+
+
+## Local Trial: try-template
+
+先看输出最后的 `=== Try result`, 找到第一个 FAIL 的 task, 再看日志文件中这一步的 `[try i/n]` 日志块.
+
+| 现象 | 原因 | 修法 |
+| :--- | :--- | :--- |
+| 第 1 步 (生成模板) 失败 | 与 make-template 相同 | 见上文 make-template 一节 |
+| 安装类 task 失败 | 与 L4 的 "依赖安装失败" 相同; 或本机无法下载 mise 指定的 Python 版本 | 依赖问题在 seed 中收紧版本范围; 网络或工具问题与模板无关, 告诉用户 |
+| 测试或覆盖率 task 失败, seed 自测通过 | 与 L4 的 "seed 自测通过, 生成项目测试失败" 相同 | 同 L4 |
+| 文档构建 task 失败, seed 能构建文档 | 文档中写死了只对 seed 成立的内容 (例如包名出现在没有被参数化的形态中), 或文档依赖与默认值不兼容 | 先判断是 seed 内容问题还是参数化问题: 用 round trip 的输出对照; seed 内容问题回到 Change 阶段 |
+| 默认值通过, 某个 preset 失败 | 该 preset 的 token 字段在本机的 secret 存储中不存在, 读取得到空值, 依赖 token 的 task 失败 | 不是模板问题. 确认本机的 secret 配置, 或换用默认值试用 |
+| 手工进入项目后, mise 报配置不受信任 | `try-template` 只在本次运行中临时信任, 不写入 mise 的信任记录 | 在项目目录中运行一次 `mise trust` |
 
 
 ## Review: apply-template 之后
@@ -75,6 +87,7 @@
 | 现象 | 原因 | 修法 |
 | :--- | :--- | :--- |
 | 生成 preset 分支失败 | preset 覆盖了一个已不存在的变量, 或给 choice 变量设了非法值 | 修改 `presets/*.json`; Sync 阶段的 `check-presets` 应已提前发现 |
+| push 和 preset 分支都成功了, 但没有 tag 或 GitHub release | 最后一步创建 release 失败 (例如 `GITHUB_TOKEN` 读取失败或权限不足, 或 GitHub API 报错). 之前的步骤已经完成, 所以表面上看发布成功了 | 查看 `publish-template` 的完整输出. 不 bump 版本号, 修好原因后重新运行 `publish-template`: 前面的步骤可以重复执行, 不会产生副作用 |
 | 已发布的 `README.rst` 或 `cookiecutter.json` 的 `_template_version` 还是旧版本号 | bump 版本号之后没有重新运行 Sync | 重新运行 `sync`, 然后重新发布 |
 | release 指向的版本号不对 | 发布脚本读取了 seed 的版本号 | 改为读取 tpl repo `pyproject.toml` (见 `08-versioning-and-release.md`) |
 
@@ -83,6 +96,7 @@
 
 | 现象 | 原因 | 修法 |
 | :--- | :--- | :--- |
-| 生成的是旧版本的内容 | cookiecutter 使用了本地缓存的旧克隆, 或发布命令尚未全部执行 | 确认清除了缓存, 确认 push 已完成 |
+| 生成的是旧版本的内容 | 发布命令尚未全部执行, 或 push 失败 (`verify-release` 使用私有的克隆缓存, 不会读到 `~/.cookiecutters` 中的旧克隆) | 用 `git ls-remote` 确认远端分支已经指向刚发布的 commit |
+| 已发布版本与本地生成的结果不一致, 但发布过程没有报错 | 本地 `tmp/cctpl/template/` 不是由刚发布的 seed commit 生成的 (例如之后运行过 `try-template`, 或 seed 有了新的改动) | 确认 seed 的 HEAD 等于 `release-history.rst` 中记录的 seed commit, 并且工作区干净, 然后重新运行 `make-template` 和 `verify-release` |
 | 已发布版本与本地生成的结果不一致 | 发布时漏拷贝或多拷贝了文件 | 比较差异, 修 apply-template 或发布脚本, 作为 patch 重新发布 |
 | preset 分支生成的值不是 preset 的值 | preset 分支的 `cookiecutter.json` 没有正确更新 | 检查 `presets/<name>.json` 和 preset 分支的生成过程 |
