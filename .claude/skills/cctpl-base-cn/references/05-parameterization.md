@@ -22,7 +22,16 @@ flowchart LR
 - 由 hooks 生成的文件 (例如 license 文件), 以及 hooks 有意修改的内容.
 - 已声明的合法残留所在的文件 (见下文).
 
-这条定义比 "没有残留的 seed value" 和 "没有未解析的占位符" 都强: 前两项检查只能发现 "该替换的没替换" 和 "替换了但没渲染", round trip 还能发现 "不该替换的被替换了" (例如一个依赖的版本号被误当成项目版本号). 本节的所有规则都是为了让 round trip 成立.
+round trip 能发现 "替换之后渲染不回原样" 的问题: 派生形态的计算结果与 seed 不同, Jinja 转义出错, 文件丢失或多出, 换行符变化. 这些是 "没有残留的 seed value" 和 "没有未解析的占位符" 两项检查发现不了的.
+
+### What Round Trip Cannot See
+
+round trip **发现不了过度替换** (不该替换的被替换了). 例如 `MIT` 在某个无关文件中被替换成 `{{ cookiecutter.license }}`, 用 seed 的值渲染回来仍然是 `MIT`, 与 seed 完全一致.
+
+过度替换只能靠以下两点防住:
+
+- **预防**: 通用值必须用 context 或 file scope 限定 (见下一节). 这是规则, 不是建议.
+- **发现**: Review 阶段查看 template dir 的 diff 时, 留意新出现的 `{{ cookiecutter.xxx }}`. 一个通用变量的占位符出现在意料之外的文件中, 就是过度替换.
 
 round trip 所需的 seed values 就是参数化脚本中声明的 seed values, 不另外维护一份.
 
@@ -38,6 +47,8 @@ seed value 是参数化的 "锚点". 选择原则:
   - **file scope**: 只在指定文件中替换, 例如只在 `pyproject.toml` 和 `_version.py` 中.
 - **同一个变量需要多处 context 时**, 拆成多个 parameter. 只有其中一个写入 `cookiecutter.json`, 其余不写入 (否则 `cookiecutter.json` 中会出现重复变量).
 
+带 context 或 file scope 的 selector 一旦与 seed 的写法脱节 (例如格式化改变了空格), 就会一处都匹配不上, 而且不会报错. `check-seed-values` 会报告零命中的 parameter.
+
 参数化脚本是 seed values 和 parameters 的唯一定义处. `cookiecutter.json` 的变量, 默认值, 可选值, prompt 都由它生成, 不手改 `cookiecutter.json` (preset 的默认值由 `presets/*.json` 覆盖, 见 `07-versioning-and-release.md`).
 
 
@@ -49,6 +60,7 @@ seed value 是参数化的 "锚点". 选择原则:
 
 规则:
 
+- 参数化脚本声明哪些 seed value 是 **独特** 的. 只有独特的 seed value 会被 `check-seed-values` 扫描残留; 通用值的正确性靠 context / file scope 规则和 Review 保证.
 - 合法残留必须在参数化脚本中 **显式声明**: 哪个 seed value, 在哪些文件中, 为什么可以保留.
 - `check-seed-values` 读取这份声明, 只对未声明的残留报错.
 - 不允许通过 "忽略检查输出" 的方式接受残留. 没有声明的残留一律视为错误.
@@ -106,7 +118,7 @@ hooks 处理字符串替换做不到的事情:
 
 - hooks 是 tpl repo 的 source, 维护在根目录的 `hooks/` 中 (见 `02-repo-layout.md`).
 - 能用参数化解决的, 不用 hooks. hooks 的逻辑在 seed 中无法运行和测试, 越少越好.
-- 由 hooks 生成的文件, 在 seed 中也存在 (seed 需要它), 但必须加入 exclude, 并在 round trip 中被允许差异.
+- 由 hooks 生成的文件, 在 seed 中也存在 (seed 需要它), 但必须加入 exclude, 并在参数化脚本中声明为 hooks 的产物, round trip 才会允许它的差异.
 - 有可选值 (choice) 的变量如果会影响 hooks 的行为, 每个可选值都要在验证中覆盖到 (见 `08-verification.md`).
 
 

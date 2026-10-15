@@ -8,6 +8,7 @@ The contract these tasks follow lives in
 """
 
 import os
+import sys
 import shutil
 import subprocess
 from pathlib import Path
@@ -84,3 +85,38 @@ def stage_git_visible_files(dir_repo: Path, dir_dst: Path) -> int:
         dst.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(src, dst)
     return len(files)
+
+
+def iter_text_files(dir_root: Path):
+    """
+    Yield ``(relative path, text)`` for every UTF-8 text file under ``dir_root``.
+    Binary files are skipped.
+    """
+    for path in sorted(dir_root.rglob("*")):
+        if not path.is_file():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8")
+        except (UnicodeDecodeError, ValueError):
+            continue
+        yield str(path.relative_to(dir_root)), text
+
+
+def require_dir(path: Path, hint: str) -> None:
+    """
+    Fail with a hint naming the task to run first when ``path`` is missing.
+    """
+    if not path.is_dir():
+        raise TaskError(f"{path} does not exist. Run '{hint}' first.")
+
+
+def run_task(main) -> None:
+    """
+    Run a task's ``main()`` and exit with its return code; a ``TaskError``
+    prints its message and exits 1.
+    """
+    try:
+        sys.exit(main())
+    except TaskError as e:
+        print(f"ERROR: {e}", file=sys.stderr)
+        sys.exit(1)

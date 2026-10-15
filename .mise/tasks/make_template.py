@@ -168,9 +168,47 @@ NO_RENDER = [
     "*.html",
 ]
 
-# Seed values that may legally remain in the template, consumed by
-# check-seed-values. Each entry: (seed value, template-relative file, reason).
-LEGAL_RESIDUES: list[tuple[str, str, str]] = []
+# Files the hooks create or rewrite in a generated project. check-roundtrip
+# allows them to differ from the seed.
+HOOK_OUTPUTS = [
+    "LICENSE.txt",  # hooks/post_gen_project.py writes it from the chosen license
+]
+
+# Seed values unique enough that any occurrence left in the template is a
+# leak, scanned by check-seed-values. Generic values (license, version,
+# dev_python_version) also appear legitimately elsewhere; check-roundtrip
+# verifies them instead.
+UNIQUE_SEED_VALUES = {
+    "package_name": SeedValues.package_name,
+    "package_name_slug": SeedValues.package_name_slug,
+    "github_username": SeedValues.github_username,
+    "author": SeedValues.author,
+    "author_email": SeedValues.author_email,
+    "github_token_field": SeedValues.github_token_field,
+    "codecov_token_field": SeedValues.codecov_token_field,
+    "readthedocs_token_field": SeedValues.readthedocs_token_field,
+}
+
+_MAINTAINER_LINK = "links to the maintainer's own project, must stay literal"
+
+# Unique seed values that may legally remain in the template, consumed by
+# check-seed-values. Each entry: (seed value name, template-relative file, reason).
+LEGAL_RESIDUES: list[tuple[str, str, str]] = [
+    ("github_username", ".claude/settings.local.json.example", _MAINTAINER_LINK),
+    ("github_username", ".claude/skills/pywf-oss-base/references/01-secrets.md", _MAINTAINER_LINK),
+    ("github_username", ".claude/skills/pywf-oss-base/references/14-docfly.md", _MAINTAINER_LINK),
+]
+
+
+def get_seed_context() -> dict[str, str]:
+    """
+    The cookiecutter context that renders the template back into the seed.
+    """
+    return {
+        p.name: getattr(SeedValues, p.name)
+        for p in PARAMETERS
+        if p.in_cookiecutter_json
+    }
 
 
 def main() -> int:
@@ -197,8 +235,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    try:
-        sys.exit(main())
-    except cctpl.TaskError as e:
-        print(f"ERROR: {e}", file=sys.stderr)
-        sys.exit(1)
+    cctpl.run_task(main)

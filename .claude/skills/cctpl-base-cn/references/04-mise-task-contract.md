@@ -33,7 +33,7 @@
 | Task | Level | 读 | 写 | 成功条件 |
 | :--- | :--- | :--- | :--- | :--- |
 | `make-template` | A | seed 工作区中 git 认可的文件 (`CCTPL_SEED_DIR`, 见 `05-parameterization.md` 的 Input), 参数化脚本, `hooks/` | `tmp/cctpl/stage/`, `tmp/cctpl/template/` (先清空) | 生成完整的 cookiecutter 模板根目录: `cookiecutter.json`, `hooks/`, template dir |
-| `check-seed-values` | A | `tmp/cctpl/template/` | 无 | template dir 中 (文件名和文件内容) 不存在任何 seed value, 已声明为合法残留的除外 |
+| `check-seed-values` | A | `tmp/cctpl/template/` | 无 | template dir 中 (文件名和文件内容) 不存在任何 **独特** seed value, 已声明为合法残留的除外; 每个 parameter 至少命中一次 (零命中说明 selector 已与 seed 脱节) |
 | `test-template` | A | `tmp/cctpl/template/` | `tmp/cctpl/output/` (先清空) | `cookiecutter --no-input` 用默认值成功生成一个项目; 影响 hooks 或模板分支的 choice 变量, 每个可选值至少生成一次 (见 `08-verification.md` 的 Choice Coverage) |
 | `check-output` | A | `tmp/cctpl/output/`, `cookiecutter.json` 的 `_copy_without_render` | 无 | 生成的项目中 (文件名和文件内容) 不存在未解析的 `cookiecutter.` 变量引用. 不检查一般的 `{{` / `{%`: 它们可能来自 seed 原本的内容 (见 `05-parameterization.md` 的 Jinja Conflicts) |
 | `check-roundtrip` | A | `tmp/cctpl/template/`, 参数化脚本中的 seed values, seed 工作区 | `tmp/cctpl/roundtrip/` (先清空) | 用 seed values 渲染模板, 结果与 seed 一致; 允许的差异只有 exclude 的文件, hooks 生成或修改的内容, 已声明的合法残留 (定义见 `05-parameterization.md` 的 Round Trip) |
@@ -44,7 +44,8 @@
 
 说明:
 
-- **合法残留**: 某些 seed value 在 template dir 中合法出现 (例如一个通用字符串碰巧和某个 seed value 相同). 这类例外必须在参数化脚本中显式声明, 不能靠人工忽略检查结果. 声明方式见 `05-parameterization.md`.
+- **只扫描独特的 seed value.** 通用值 (版本号, `MIT`, Python 版本) 在模板中本来就会合法出现, 扫描它们只会产生噪音. 哪些值是独特的, 由参数化脚本声明.
+- **合法残留**: 独特的 seed value 在 template dir 中合法出现的位置 (例如指向维护者本人项目的链接). 必须在参数化脚本中显式声明, 不能靠人工忽略检查结果. 声明方式见 `05-parameterization.md`.
 - **`test-output` 不在 `sync` 中.** 它需要为生成的项目安装完整依赖, 耗时较长. Sync 阶段在以下情况运行它: 改动涉及依赖, 构建配置, 测试配置, 或 hooks. 具体判定见 `08-verification.md`.
 - **`apply-template` 是 Sync 的最后一步**, 运行后 tpl repo 的 git diff 就是本次迭代的全部 artifact 变化, 供 Review 阶段查看.
 

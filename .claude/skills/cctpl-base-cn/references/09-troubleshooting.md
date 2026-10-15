@@ -24,7 +24,7 @@
 | :--- | :--- | :--- |
 | 新文件中出现 seed value | seed 新增的文件中有 seed value, 而该文件是 no_render | 能 render 就移出 no_render; 确实需要原样拷贝时, 声明为合法残留 |
 | 某种形态的名字没被替换 | seed value 的新形态没有对应 parameter (例如 CamelCase, 标题形式, URL 中的形式) | 为该形态新增 parameter, 派生形态用 custom placeholder |
-| 原来能替换的值不再被替换 | 带 context 的 selector 与 seed 中的写法不再匹配 (例如格式化改变了空格或引号) | 更新 selector 的 context, 使之与 seed 当前写法一致 |
+| 报告某个 parameter 零命中 | 带 context 的 selector 与 seed 中的写法不再匹配 (例如格式化改变了空格或引号); 或 seed 已经不再使用这个值 | 更新 selector 的 context, 使之与 seed 当前写法一致; seed 不再需要时删除该 parameter (删除变量是 major) |
 | seed value 出现在文件名或目录名中 | 文件名总会被参数化; 出现残留说明名字中的形态没有 parameter | 同 "某种形态的名字没被替换" |
 
 
@@ -40,9 +40,10 @@
 
 ## L3: check-roundtrip
 
+过度替换 (不该替换的被替换了) 不会让 round trip 失败, 见 `05-parameterization.md` 的 What Round Trip Cannot See. 它的现象和修法列在本文的 Review 一节.
+
 | 现象 | 原因 | 修法 |
 | :--- | :--- | :--- |
-| 某处无关内容变成了别的值 | 通用值被当作裸字符串替换 (例如依赖的版本号等于项目版本号) | 给该 parameter 加 context 或 file scope |
 | 派生形态与 seed 不一致 | 派生计算 (例如 slugify) 的结果与 seed 中的实际写法不同 | 修 custom placeholder 的计算方式, 或调整 seed 中的写法使之可推导 |
 | 文件缺失 | 文件被 exclude 规则误伤 | 收窄 exclude 规则 |
 | 文件多出 | seed 中的临时文件或本地文件没有被 exclude | 补充 exclude 规则, 或把文件从 seed 中清理掉 |
@@ -63,6 +64,7 @@
 
 | 现象 | 原因 | 修法 |
 | :--- | :--- | :--- |
+| 用默认值生成的项目中, 某处无关内容变成了别的值; 或 template dir 的 diff 中, 某个通用变量的占位符出现在意料之外的文件 | 过度替换: 通用值被当作裸字符串替换 (例如依赖的版本号等于项目版本号) | 给该 parameter 加 context 或 file scope |
 | artifact 的 diff 远大于预期 | seed 中的大文件 (导出的 requirements 文件等) 被重新生成; 或换行符变化 | 确认是否为预期变化; 不是则退回 seed 排查 |
 | `cookiecutter.json` 中变量顺序或 prompt 意外变化 | parameter 的定义顺序或 prompt 被改动 | 检查参数化脚本的改动 |
 | 只有 template dir 变了, `cookiecutter.json` 没变 (或相反) | apply-template 没有同时替换两者 | 修 apply-template, 两者必须一起替换 (见 `02-repo-layout.md`) |

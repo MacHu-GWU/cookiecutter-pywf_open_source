@@ -60,6 +60,14 @@ echo "Output: file://$(cd tmp/cctpl/output && pwd)"
 description = "Check if the generated output still contains unresolved cookiecutter placeholders"
 run = ".venv/bin/python .mise/tasks/check_output.py"
 
+[tasks.check-roundtrip]
+description = "Render the template with the seed's own values and compare the result with the seed"
+run = ".venv/bin/python .mise/tasks/check_roundtrip.py"
+
+[tasks.check-presets]
+description = "Check presets/*.json against the generated cookiecutter.json"
+run = ".venv/bin/python .mise/tasks/check_presets.py"
+
 [tasks.publish-template]
 description = "Publish template: commit, push, merge branches, and create GitHub release"
 run = ".venv/bin/python .mise/tasks/publish_template.py"

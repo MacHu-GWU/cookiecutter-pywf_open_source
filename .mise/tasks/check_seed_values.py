@@ -1,118 +1,81 @@
 # -*- coding: utf-8 -*-
 
 """
-Scan the generated template directory for concrete seed values that should
-have been replaced with ``{{ cookiecutter.xxx }}`` placeholders.
+L1: scan the template dir for unique seed values that should have become
+``{{ cookiecutter.xxx }}`` placeholders, and for parameters that matched
+nothing in the seed. Exits 1 on any problem.
 
-This runs AFTER ``make-template`` and BEFORE ``test-template``.
+Only ``UNIQUE_SEED_VALUES`` are scanned for residue; generic values appear
+legitimately elsewhere. Declared ``LEGAL_RESIDUES`` are allowed.
 """
 
-import importlib.util
-from pathlib import Path
-
-from rich.console import Console
-from rich.panel import Panel
-from rich.table import Table
-from rich.text import Text
-
-# Import SeedValues from make_template.py
-_spec = importlib.util.spec_from_file_location(
-    "make_template",
-    Path(__file__).absolute().parent / "make_template.py",
-)
-_mod = importlib.util.module_from_spec(_spec)
-_spec.loader.exec_module(_mod)
-SeedValues = _mod.SeedValues
-
-dir_template = (
-    Path(__file__).absolute().parent.parent.parent
-    / "tmp"
-    / "cctpl"
-    / "template"
-    / "{{ cookiecutter.package_name }}-project"
-)
-
-# All seed values to scan for — (label, value)
-CHECKS: list[tuple[str, str]] = [
-    ("package_name", SeedValues.package_name),
-    ("package_name_slug", SeedValues.package_name_slug),
-    ("github_username", SeedValues.github_username),
-    ("license", SeedValues.license),
-    ("author", SeedValues.author),
-    ("author_email", SeedValues.author_email),
-    ("version", SeedValues.version),
-    ("dev_python_version", SeedValues.dev_python_version),
-    ("github_token_field", SeedValues.github_token_field),
-    ("codecov_token_field", SeedValues.codecov_token_field),
-    ("readthedocs_token_field", SeedValues.readthedocs_token_field),
-]
+import cctpl
+import make_template
 
 
-def highlight_value(line: str, value: str) -> Text:
-    """Build a Rich Text with all occurrences of ``value`` highlighted."""
-    text = Text()
-    start = 0
-    while True:
-        idx = line.find(value, start)
-        if idx == -1:
-            text.append(line[start:])
-            break
-        text.append(line[start:idx])
-        text.append(value, style="bold red")
-        start = idx + len(value)
-    return text
+def main() -> int:
+    dir_template = cctpl.dir_template / cctpl.TEMPLATE_DIR_NAME
+    cctpl.require_dir(dir_template, "mise run make-template")
 
+    allowed = {(name, path) for name, path, _ in make_template.LEGAL_RESIDUES}
+    used: set[tuple[str, str]] = set()
+    problems: list[str] = []
 
-def main() -> None:
-    console = Console()
+    # File and directory names
+    for path in sorted(dir_template.rglob("*")):
+        rel = str(path.relative_to(dir_template))
+        for name, value in make_template.UNIQUE_SEED_VALUES.items():
+            if value in path.name:
+                problems.append(f"{rel}: [{name}] {value!r} in path name")
 
-    if not dir_template.exists():
-        console.print(
-            f"[red]Template directory does not exist:[/red] {dir_template}"
-        )
-        console.print("Run 'mise run make-template' first.")
-        return
-
-    for label, value in CHECKS:
-        table = Table(show_header=True, expand=True, show_lines=True)
-        table.add_column("File", style="cyan", no_wrap=True, ratio=2)
-        table.add_column("Line", style="yellow", justify="right", width=5)
-        table.add_column("Content", ratio=5)
-
-        # Check file/directory names
-        for p in dir_template.rglob("*"):
-            if value in p.name:
-                rel = str(p.relative_to(dir_template))
-                table.add_row(
-                    highlight_value(rel, value),
-                    "",
-                    Text("(in path name)", style="dim"),
-                )
-
-        # Check file contents
-        for p in sorted(dir_template.rglob("*")):
-            if not p.is_file():
+    # File contents
+    for rel, text in cctpl.iter_text_files(dir_template):
+        for name, value in make_template.UNIQUE_SEED_VALUES.items():
+            if value not in text:
                 continue
-            try:
-                text = p.read_text(encoding="utf-8")
-            except (UnicodeDecodeError, ValueError):
+            if (name, rel) in allowed:
+                used.add((name, rel))
                 continue
-            rel = str(p.relative_to(dir_template))
             for lineno, line in enumerate(text.splitlines(), 1):
                 if value in line:
-                    table.add_row(
-                        rel,
-                        str(lineno),
-                        highlight_value(line.strip(), value),
-                    )
+                    problems.append(f"{rel}:{lineno}: [{name}] {line.strip()[:160]}")
 
-        panel = Panel(
-            table if table.row_count > 0 else Text("No matches", style="green"),
-            title=f"[bold]{label}[/bold] = [yellow]\"{value}\"[/yellow]",
-            border_style="blue",
+    for name, path in sorted(allowed - used):
+        print(f"WARNING: stale legal residue, no longer present: [{name}] {path}")
+
+    # Every parameter must hit at least once; a context selector that no
+    # longer matches the seed fails silently otherwise.
+    corpus = [str(p.relative_to(cctpl.dir_template)) for p in cctpl.dir_template.rglob("*")]
+    corpus.extend(text for _, text in cctpl.iter_text_files(cctpl.dir_template))
+    corpus = "\n".join(corpus)
+    for param in make_template.PARAMETERS:
+        if param.custom_placeholder:
+            needle = param.custom_placeholder
+        else:
+            needle = f"cookiecutter.{param.name}"
+        if needle not in corpus:
+            problems.append(
+                f"[{param.name}] parameter matched nothing in the seed "
+                f"(selector {param.selector[0]!r})"
+            )
+
+    if problems:
+        print("=== Seed value problems ===")
+        for line in problems:
+            print(f"  {line}")
+        print()
+        print(
+            f"FAILED: {len(problems)} problem(s). Add, scope, or fix a parameter in "
+            f"make_template.py, or declare a legal residue (05-parameterization.md)."
         )
-        console.print(panel)
+        return 1
+    print(
+        f"OK: no undeclared residue of {len(make_template.UNIQUE_SEED_VALUES)} unique "
+        f"seed values ({len(used)} declared residues); all "
+        f"{len(make_template.PARAMETERS)} parameters matched."
+    )
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    cctpl.run_task(main)

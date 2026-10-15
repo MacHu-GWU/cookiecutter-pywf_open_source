@@ -19,7 +19,7 @@ flowchart TD
 | :--- | :--- | :--- | :--- | :--- |
 | L1 Template Static Check | 模板中没有未声明的 seed value 残留 | `check-seed-values` | 漏掉的 seed value 形态, no_render 文件中的 seed value | 3 Sync |
 | L2 Generation | 用默认值能生成项目, 生成结果中没有未解析的变量 | `test-template`, `check-output` | Jinja 语法错误, hooks 报错, 引用了不存在的变量 | 3 Sync |
-| L3 Round Trip | 用 seed values 渲染模板, 结果与 seed 一致 | `check-roundtrip` | 不该替换的被替换了, 派生形态计算结果与 seed 不同, 文件丢失 | 3 Sync |
+| L3 Round Trip | 用 seed values 渲染模板, 结果与 seed 一致 | `check-roundtrip` | 派生形态计算结果与 seed 不同, Jinja 转义出错, 文件丢失或多出. **发现不了过度替换** (见 05 的 What Round Trip Cannot See) | 3 Sync |
 | L4 Generated Project Behavior | 用默认值生成的项目能安装依赖, 测试通过 | `test-output` | 默认值导致项目无法工作, 项目依赖了 seed 特有的东西 | 3 Sync (按需) |
 | L5 Published Template | 从 GitHub 拉取的已发布模板与本地一致, 生成的项目能工作 | `verify-release` | 发布时漏拷贝文件, preset 分支内容错误 | 8 Verify |
 
