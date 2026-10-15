@@ -4,7 +4,7 @@
     "license": [
         "MIT",
         "AGPL-3.0-or-later",
-        "Proprietary"
+        "LicenseRef-Proprietary"
     ],
     "author": "Firstname Lastname",
     "author_email": "firstname.lastname@email.com",
@@ -18,7 +18,7 @@
     "__prompts__": {
         "package_name": "Your Python package name, in snake case (e.g. my_package)",
         "github_username": "Your GitHub username, the owner of the new repo",
-        "license": "Pick an open source license, see https://choosealicense.com/ for details",
+        "license": "Pick a license, as an SPDX expression for pyproject.toml, see https://choosealicense.com/ for details",
         "author": "Author name for pyproject.toml",
         "author_email": "Author email for pyproject.toml",
         "version": "Semantic Version, in {major}.{minor}.{micro} (e.g. 0.1.1)",

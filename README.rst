@@ -56,10 +56,10 @@ You'll then be prompted to provide the following information (defaults in parent
 
     [1/11] Your Python package name, in snake case (e.g. my_package) (your_package_name): your_package_name
     [2/11] Your GitHub username, the owner of the new repo (your_github_username): your_github_username
-    [3/11] Pick an open source license, see https://choosealicense.com/ for details
+    [3/11] Pick a license, as an SPDX expression for pyproject.toml, see https://choosealicense.com/ for details
       1 - MIT
       2 - AGPL-3.0-or-later
-      3 - Proprietary
+      3 - LicenseRef-Proprietary
       Choose from [1/2/3] (1): 1
     [4/11] Author name for pyproject.toml (Firstname Lastname): Firstname Lastname
     [5/11] Author email for pyproject.toml (firstname.lastname@email.com): firstname.lastname@email.com

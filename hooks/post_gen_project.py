@@ -710,7 +710,7 @@ For licensing inquiries or commercial use, please contact: {{ cookiecutter.autho
 license_mapping = {
     "MIT": mit_license,
     "AGPL-3.0-or-later": agpl_3_0_or_later_license,
-    "Proprietary": proprietary_license,
+    "LicenseRef-Proprietary": proprietary_license,
 
 }
 path_license = dir_project_root.joinpath("LICENSE.txt")

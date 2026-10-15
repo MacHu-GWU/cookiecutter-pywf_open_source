@@ -22,6 +22,7 @@ Built from seed @ ``e988252``
 **Breaking Changes**
 
 - Removed the ``license_classifier`` variable. The generated ``pyproject.toml`` now uses an SPDX ``license`` expression (PEP 639) derived from ``license``, so drop ``license_classifier`` from any ``--extra-context`` or replay file
+- The ``license`` choice ``Proprietary`` is now ``LicenseRef-Proprietary``, the valid SPDX expression written to ``pyproject.toml`` (``Proprietary`` made the generated project fail to build). Update any ``--extra-context`` or replay file that uses ``license=Proprietary``
 - Generated projects now require Python 3.11+ (``requires-python = ">=3.11,<4.0"``); Python 3.10 is no longer supported
 
 **Features and Improvements**

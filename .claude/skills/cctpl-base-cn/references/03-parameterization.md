@@ -50,7 +50,7 @@ seed value 是参数化的 "锚点". 选择原则:
 
 带 context 或 file scope 的 selector 一旦与 seed 的写法脱节 (例如格式化改变了空格), 就会一处都匹配不上, 而且不会报错. `check-seed-values` 会逐个检查每个 parameter 自己的替换结果 (包括 context) 是否在 template dir 中出现, 报告零命中的 parameter. 同一个变量拆成多个 parameter 时 (多处 context), 每个 parameter 分别检查.
 
-通用值有时还需要按变量的值换算. 例如 `pyproject.toml` 的 `license` 字段是 SPDX 表达式, 而 `Proprietary` 不是合法的 SPDX 标识符, 必须写成 `LicenseRef-Proprietary`. 这时让 choice 保留使用者看得懂的值, 用 custom placeholder 在这一处换算, 不改变使用者的输入方式.
+choice 的可选值直接使用生成项目中要写入的合法值, 不另起一个更好读的标签再换算. 例如 `pyproject.toml` 的 `license` 字段是 SPDX 表达式, 专有 license 的可选值就写成 `LicenseRef-Proprietary`, 而不是 `Proprietary`. 原因: 使用者在 prompt 中看到和输入的值, 与生成项目中的值完全一致, 不需要知道中间还有一层换算.
 
 参数化脚本是 seed values 和 parameters 的唯一定义处. `cookiecutter.json` 的变量, 默认值, 可选值, prompt 都由它生成, 不手改 `cookiecutter.json` (preset 的默认值由 `presets/*.json` 覆盖, 见 `02-repo-layout.md` 的 Preset Branches).
 

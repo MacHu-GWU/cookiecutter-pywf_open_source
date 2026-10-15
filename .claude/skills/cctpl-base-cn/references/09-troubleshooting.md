@@ -55,7 +55,7 @@
 | 现象 | 原因 | 修法 |
 | :--- | :--- | :--- |
 | seed 自测通过, 生成项目测试失败 | 项目中写死了只对 seed 成立的东西 (例如 seed 的仓库地址, 文档站点名), 或默认值本身不合法 | 让该内容也参数化; 或修改默认值 |
-| `choices/` 下某个项目构建 wheel 失败 | 某个可选值渲染出的配置不合法 (例如 `license` 不是合法的 SPDX 表达式) | 用 custom placeholder 在出问题的位置换算这个值 (见 `03-parameterization.md` 的 Choosing Seed Values), 或修 hooks |
+| `choices/` 下某个项目构建 wheel 失败 | 某个可选值渲染出的配置不合法 (例如 `license` 不是合法的 SPDX 表达式) | 把可选值改成合法的值 (见 `03-parameterization.md` 的 Choosing Seed Values), 同时修改 hooks 中按这个值分支的地方 |
 | 依赖安装失败 | 生成项目没有 lock 文件, 全新 resolve 时某个依赖的最新版本不兼容 | 在 seed 的依赖声明中收紧版本范围, 在 seed 中验证后重新 Sync |
 
 

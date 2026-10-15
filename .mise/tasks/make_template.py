@@ -97,18 +97,14 @@ PARAMETERS = [
         ],
     ),
     # Generic value: only the project license field in pyproject.toml.
-    # That field is an SPDX expression (PEP 639), and "Proprietary" is not a
-    # valid SPDX identifier: setuptools refuses to build with it. The choice
-    # keeps the friendly label; only pyproject.toml gets "LicenseRef-Proprietary".
+    # That field is an SPDX expression (PEP 639) and setuptools refuses to
+    # build with an invalid one, so every choice is a valid SPDX expression,
+    # exactly the value written to pyproject.toml.
     Parameter(
         selector=[f'license = "{SeedValues.license}"', SeedValues.license],
         name="license",
-        choice=["MIT", "AGPL-3.0-or-later", "Proprietary"],
-        prompt="Pick an open source license, see https://choosealicense.com/ for details",
-        custom_placeholder=(
-            "{{ 'LicenseRef-Proprietary' if cookiecutter.license == 'Proprietary' "
-            "else cookiecutter.license }}"
-        ),
+        choice=["MIT", "AGPL-3.0-or-later", "LicenseRef-Proprietary"],
+        prompt="Pick a license, as an SPDX expression for pyproject.toml, see https://choosealicense.com/ for details",
         include=["pyproject.toml"],
     ),
     # AUTHORS.rst is the template author's bio, kept as is (LEGAL_RESIDUES).
