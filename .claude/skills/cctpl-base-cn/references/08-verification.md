@@ -78,6 +78,16 @@ L4 需要为生成的项目安装完整依赖, 耗时长, 所以按需运行. �
 
 日志: 每一步输出 `[try i/n] <时间> <步骤>`, 子命令的输出以 `|` 缩进, 每个命令结束时输出退出码和耗时; 最后输出每个 task 的 PASS / FAIL / SKIP 汇总. 全部内容同时写入 `tmp/cctpl/try/<label>.log`.
 
+### Manual Testing Recipe
+
+人在本地测试模板的推荐顺序. 所有命令都在 tpl repo 根目录开始.
+
+1. **从 seed 重新生成并检查** (推荐, 但可省略): `mise run sync`. 它跑完 L1 – L3 并把 artifact 应用到 tpl repo, 之后 `git diff` 就能看到本次改动. 只想看效果, 不想动 artifact 时跳过这一步: 第 2 步自己会从 seed 重新生成模板.
+2. **生成项目并自动跑一圈**: `mise run try-template` (默认值) 或 `mise run try-template <preset>`. 它从 seed 当前的工作区生成模板 (包括尚未 commit 的改动), 渲染项目, 并在项目中通过 mise 运行 `venv-create`, `inst`, `cov`, `build-doc`. 看最后的 `=== Try result`.
+3. **进入项目亲手看** (可选): 进入 `tmp/cctpl/try/<label>/<project>/`, 第一次先运行 `mise trust`, 然后运行任何想看的 task, 例如 `mise run view-cov`, `mise run view-doc` 在浏览器中查看覆盖率报告和文档, 或者重跑 `mise run cov`.
+
+seed 改了之后, 从第 1 步 (或第 2 步) 重新开始即可; 第 2 步每次都会清空并重建 `tmp/cctpl/try/<label>/`.
+
 
 ## L5: After Publish
 
