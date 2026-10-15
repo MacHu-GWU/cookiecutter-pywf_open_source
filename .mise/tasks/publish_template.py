@@ -62,7 +62,7 @@ if _answer != "Y":
 # Step 1 — Copy generated template to the project root
 # ---------------------------------------------------------------------------
 dir_project_root = path_enum.dir_project_root
-dir_tmp_template = dir_project_root / "tmp" / "{{ cookiecutter.package_name }}-project"
+dir_tmp_template = dir_project_root / "tmp" / "cctpl" / "template" / "{{ cookiecutter.package_name }}-project"
 dir_template = dir_project_root / "{{ cookiecutter.package_name }}-project"
 
 shutil.rmtree(dir_template, ignore_errors=True)

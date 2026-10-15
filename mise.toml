@@ -1,6 +1,8 @@
 # See claude code environment variables documents at https://code.claude.com/docs/en/settings
 [env]
 GITHUB_TOKEN = "{{ exec(command='uvx --from home-secret-toml hst get github.accounts.sh.users.sh.secrets.dev.value') }}"
+# The seed repo this template is made from. Keep in sync with permissions.additionalDirectories in .claude/settings.json
+CCTPL_SEED_DIR = "{{env.HOME}}/Documents/GitHub/cookiecutter_pywf_open_source_demo-project"
 
 [tools]
 python = "3.12"
@@ -48,10 +50,10 @@ depends = ["inst"]
 description = "Test the generated template by running cookiecutter with default values"
 depends = ["inst"]
 run = """
-rm -rf tmp/output
-.venv/bin/cookiecutter tmp --no-input --output-dir tmp/output
+rm -rf tmp/cctpl/output
+.venv/bin/cookiecutter tmp/cctpl/template --no-input --output-dir tmp/cctpl/output
 echo ""
-echo "Output: file://$(cd tmp/output && pwd)"
+echo "Output: file://$(cd tmp/cctpl/output && pwd)"
 """
 
 [tasks.check-output]

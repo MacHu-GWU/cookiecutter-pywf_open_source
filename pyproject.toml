@@ -24,7 +24,7 @@ maintainers = [
 ]
 keywords = []
 readme = "README.rst"
-requires-python = ">=3.10,<4.0"
+requires-python = ">=3.11,<4.0"
 # Full list of classifiers: https://pypi.org/classifiers/
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -43,7 +43,7 @@ classifiers = [
 # ------------------------------------------------------------------------------
 dependencies = [
     "cookiecutter>=2.6.0,<3.0.0",
-    "cookiecutter_maker>=1.0.2,<2.0.0",
+    "cookiecutter_maker>=1.1.0,<2.0.0",
     "pygithub_mate>=0.1.1,<1.0.0",
 ]
 

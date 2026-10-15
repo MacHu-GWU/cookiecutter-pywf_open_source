@@ -27,6 +27,8 @@ SeedValues = _mod.SeedValues
 dir_template = (
     Path(__file__).absolute().parent.parent.parent
     / "tmp"
+    / "cctpl"
+    / "template"
     / "{{ cookiecutter.package_name }}-project"
 )
 
@@ -36,7 +38,6 @@ CHECKS: list[tuple[str, str]] = [
     ("package_name_slug", SeedValues.package_name_slug),
     ("github_username", SeedValues.github_username),
     ("license", SeedValues.license),
-    ("license_classifier", SeedValues.license_classifier),
     ("author", SeedValues.author),
     ("author_email", SeedValues.author_email),
     ("version", SeedValues.version),

@@ -18,6 +18,7 @@ cookiecutter-<name>/
 ├── <python package>/                      # tpl repo 自身的辅助代码 (路径定义等)
 ├── tmp/                                   # gitignored. 只有 tmp/cctpl/ 属于构建流程, 其余归人自由使用
 │   └── cctpl/                             # workspace, 构建流程专属, 随时可能被清空
+│       ├── stage/                         # make-template 的输入: seed 中 git 认可的文件的副本
 │       ├── template/                      # make-template 的输出: 一个完整的 cookiecutter 模板根目录
 │       │   ├── cookiecutter.json
 │       │   ├── hooks/
@@ -48,7 +49,7 @@ tpl repo 中的每个文件都属于以下三类之一. 改动前先判断类别
 ### workspace 规则
 
 - 构建流程只读写 `tmp/cctpl/`, 绝不清空或改动 `tmp/` 下的其他内容. `tmp/` 下的其他位置可以放任何临时东西, 例如草稿, 对比用的副本, 调试输出.
-- `tmp/cctpl/` 下的每个子目录只属于一个阶段. 每个阶段开始时只清空自己的子目录: make-template 清空 `template/`, test-template 清空 `output/`, check-roundtrip 清空 `roundtrip/`, Verify 清空 `verify/`. 这样重新生成模板不会顺带删掉上一次的 Verify 结果.
+- `tmp/cctpl/` 下的每个子目录只属于一个阶段. 每个阶段开始时只清空自己的子目录: make-template 清空 `stage/` 和 `template/`, test-template 清空 `output/`, check-roundtrip 清空 `roundtrip/`, Verify 清空 `verify/`. 这样重新生成模板不会顺带删掉上一次的 Verify 结果.
 
 
 ## seed repo

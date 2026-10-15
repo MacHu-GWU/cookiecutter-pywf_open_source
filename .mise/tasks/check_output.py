@@ -8,7 +8,7 @@ Scan the generated template output directory for unresolved
 import sys
 from pathlib import Path
 
-dir_output = Path(__file__).absolute().parent.parent.parent / "tmp" / "output"
+dir_output = Path(__file__).absolute().parent.parent.parent / "tmp" / "cctpl" / "output"
 
 
 def main() -> int:
