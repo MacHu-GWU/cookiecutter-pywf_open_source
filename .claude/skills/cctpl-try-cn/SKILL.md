@@ -3,14 +3,14 @@ name: cctpl-try-cn
 description: "Try the cookiecutter template locally the way a human would: make it from the seed, render a project with default values or a preset, and run the project's own mise tasks (venv-create, inst, cov, build-doc) with step-by-step logs. Use when the user wants to test or see the generated project locally (本地测一测, 本地试用模板, 生成一个项目看看效果, 跑一下 cov 和 build-doc, try the template)."
 argument-hint: "[preset name]"
 ---
-本地试用模板: 从 seed 生成模板, 用默认值或指定 preset 渲染一个项目, 再在项目里通过 mise 运行 `venv-create`, `inst`, `cov`, `build-doc`, 并报告每一步的结果. 这是 `08-verification.md` 中推荐的 Local Trial 机制, 不属于 8 个阶段中的任何一个, 可以随时使用.
+本地试用模板: 从 seed 生成模板, 用默认值或指定 preset 渲染一个项目, 再在项目里通过 mise 运行 `venv-create`, `inst`, `cov`, `build-doc`, 并报告每一步的结果. 这是 `06-verification.md` 中推荐的 Local Trial 机制, 不属于 8 个阶段中的任何一个, 可以随时使用.
 
 Read ../cctpl-base-cn/SKILL.md, then:
 
 - ../cctpl-base-cn/references/02-repo-layout.md
-- ../cctpl-base-cn/references/04-mise-task-contract.md
-- ../cctpl-base-cn/references/06-safety-rules.md
-- ../cctpl-base-cn/references/08-verification.md
+- ../cctpl-base-cn/references/04-safety-rules.md
+- ../cctpl-base-cn/references/06-verification.md
+- ../cctpl-base-cn/references/07-mise-task-contract.md
 - ../cctpl-base-cn/references/09-troubleshooting.md
 
 Follow those docs to do the work.
@@ -26,10 +26,10 @@ Follow those docs to do the work.
 - 每个 task 的 PASS / FAIL / SKIP 和耗时.
 - 生成项目的路径和日志文件路径.
 - 有失败时: 失败的 task, 关键的错误行, 初步判断的原因和建议的下一步 (回到 Change 修 seed, 或修参数化).
-- 用户想接着手工操作时, 按 06 的 Handoff Format 给出进入项目目录, 运行 `mise trust`, 再运行 task 的命令. `mise trust` 会写入 mise 的信任记录, 由用户自己执行.
+- 用户想接着手工操作时, 按 04 的 Handoff Format 给出进入项目目录, 运行 `mise trust`, 再运行 task 的命令. `mise trust` 会写入 mise 的信任记录, 由用户自己执行.
 
 ## Boundaries
 
 - 不修改 seed 或 tpl repo 的任何文件; 只写 `tmp/cctpl/` 下的试用目录.
 - 不打印任何环境变量的值. 用 preset 试用时, 项目的 mise 会读取真实 secret.
-- 不执行任何 git 写操作, 见 06.
+- 不执行任何 git 写操作, 见 04.

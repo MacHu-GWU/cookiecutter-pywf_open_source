@@ -6,7 +6,7 @@ Convert the seed repo into a cookiecutter template.
 Input: the git-visible files of the seed repo (``CCTPL_SEED_DIR``).
 Output: ``tmp/cctpl/template/``, a complete cookiecutter template root.
 
-Rules: ``.claude/skills/cctpl-base-cn/references/05-parameterization.md``.
+Rules: ``.claude/skills/cctpl-base-cn/references/03-parameterization.md``.
 """
 
 import sys
@@ -178,7 +178,7 @@ NO_RENDER = [
 
 # Choice variables whose values send hooks or the template down different
 # branches. test-template generates once per extra choice value
-# (08-verification.md, "Choice Coverage").
+# (03-parameterization.md, "Choice Coverage").
 CHOICE_COVERAGE = [
     "license",  # hooks/post_gen_project.py writes a different LICENSE.txt per value
 ]

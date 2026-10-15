@@ -4,7 +4,7 @@
 Shared helpers for the cctpl mise tasks.
 
 The contract these tasks follow lives in
-``.claude/skills/cctpl-base-cn/references/04-mise-task-contract.md``.
+``.claude/skills/cctpl-base-cn/references/07-mise-task-contract.md``.
 """
 
 import os
@@ -30,7 +30,7 @@ dir_try = dir_cctpl / "try"
 
 TEMPLATE_DIR_NAME = "{{ cookiecutter.package_name }}-project"
 
-# --- release (07-versioning-and-release.md)
+# --- release (08-versioning-and-release.md)
 GITHUB_OWNER = "MacHu-GWU"
 GITHUB_REPO = "cookiecutter-pywf_open_source"
 dir_presets = dir_project_root / "presets"
@@ -174,7 +174,7 @@ def apply_preset(cookiecutter_json: dict, overrides: dict) -> dict:
 def run_project_tests(dir_project: Path, python: str) -> bool:
     """
     Install a generated project with uv and run its tests with pytest,
-    bypassing mise (08-verification.md, "Secrets"). Return True on success.
+    bypassing mise (06-verification.md, "Secrets"). Return True on success.
     """
     env = {
         k: v

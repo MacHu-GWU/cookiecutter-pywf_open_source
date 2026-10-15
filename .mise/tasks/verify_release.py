@@ -12,9 +12,9 @@ For each branch (default: ``main`` plus ``preset/<name>`` for every
 2. Generate the same project from the local ``tmp/cctpl/template/`` with the
    branch's defaults into ``.../local/`` and compare: they must be identical.
    This catches files lost or stale in publishing, and wrong preset values.
-3. Install the remote project and run its tests (08-verification.md, L5).
+3. Install the remote project and run its tests (06-verification.md, L5).
 
-Exits 1 if any branch fails. Spec: 08-verification.md, "L5: After Publish".
+Exits 1 if any branch fails. Spec: 06-verification.md, "L5: After Publish".
 """
 
 import os

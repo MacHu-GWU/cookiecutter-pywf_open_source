@@ -66,7 +66,7 @@ def main() -> int:
         print()
         print(
             f"FAILED: {len(problems)} problem(s). Add, scope, or fix a parameter in "
-            f"make_template.py, or declare a legal residue (05-parameterization.md)."
+            f"make_template.py, or declare a legal residue (03-parameterization.md)."
         )
         return 1
     print(

@@ -1,6 +1,6 @@
 # Troubleshooting
 
-本文按出错的位置列出常见故障: 现象, 原因, 修法. 修法遵守 `05-parameterization.md` 和 `06-safety-rules.md`; 本文只给方向, 不重复规则. 前置阅读: `04-mise-task-contract.md`, `05-parameterization.md`, `08-verification.md`.
+本文按出错的位置列出常见故障: 现象, 原因, 修法. 修法遵守 `03-parameterization.md` 和 `04-safety-rules.md`; 本文只给方向, 不重复规则. 前置阅读: `07-mise-task-contract.md`, `03-parameterization.md`, `06-verification.md`.
 
 总的排查原则:
 
@@ -32,7 +32,7 @@
 
 | 现象 | 原因 | 修法 |
 | :--- | :--- | :--- |
-| cookiecutter 报 Jinja 语法错误 | seed 中的 Jinja 风格语法没有被转义 | 确认参数化库版本支持自动转义; 不在 seed 中手工转义 (见 `05-parameterization.md`) |
+| cookiecutter 报 Jinja 语法错误 | seed 中的 Jinja 风格语法没有被转义 | 确认参数化库版本支持自动转义; 不在 seed 中手工转义 (见 `03-parameterization.md`) |
 | hooks 报错 | hooks 逻辑与新变量或新文件不匹配 | 修 tpl repo 的 `hooks/`; 对相关 choice 做 choice coverage |
 | 生成结果中有未解析的 `cookiecutter.` 引用 | custom placeholder 引用了不存在的变量, 或拼写错误 | 修 parameter 的 custom placeholder, 确认引用的变量在 `cookiecutter.json` 中 |
 | 某个文件内容原样保留了 `{{ cookiecutter.xxx }}` | 该文件是 no_render, 但它又需要被渲染 | 移出 no_render |
@@ -40,7 +40,7 @@
 
 ## L3: check-roundtrip
 
-过度替换 (不该替换的被替换了) 不会让 round trip 失败, 见 `05-parameterization.md` 的 What Round Trip Cannot See. 它的现象和修法列在本文的 Review 一节.
+过度替换 (不该替换的被替换了) 不会让 round trip 失败, 见 `03-parameterization.md` 的 What Round Trip Cannot See. 它的现象和修法列在本文的 Review 一节.
 
 | 现象 | 原因 | 修法 |
 | :--- | :--- | :--- |
@@ -55,7 +55,7 @@
 
 | 现象 | 原因 | 修法 |
 | :--- | :--- | :--- |
-| 任何 mise 命令都失败, 报 secret 或 token 相关错误 | 生成项目的 `[env]` 用占位的 token 字段名读取 secret | 按 `08-verification.md` 的 Secrets 规则, 绕过 mise 直接调用工具链 |
+| 任何 mise 命令都失败, 报 secret 或 token 相关错误 | 生成项目的 `[env]` 用占位的 token 字段名读取 secret | 按 `06-verification.md` 的 Secrets 规则, 绕过 mise 直接调用工具链 |
 | seed 自测通过, 生成项目测试失败 | 项目中写死了只对 seed 成立的东西 (例如 seed 的仓库地址, 文档站点名), 或默认值本身不合法 | 让该内容也参数化; 或修改默认值 |
 | 依赖安装失败 | 生成项目没有 lock 文件, 全新 resolve 时某个依赖的最新版本不兼容 | 在 seed 的依赖声明中收紧版本范围, 在 seed 中验证后重新 Sync |
 
@@ -76,7 +76,7 @@
 | :--- | :--- | :--- |
 | 生成 preset 分支失败 | preset 覆盖了一个已不存在的变量, 或给 choice 变量设了非法值 | 修改 `presets/*.json`; Sync 阶段的 `check-presets` 应已提前发现 |
 | 已发布的 `README.rst` 或 `cookiecutter.json` 的 `_template_version` 还是旧版本号 | bump 版本号之后没有重新运行 Sync | 重新运行 `sync`, 然后重新发布 |
-| release 指向的版本号不对 | 发布脚本读取了 seed 的版本号 | 改为读取 tpl repo `pyproject.toml` (见 `07-versioning-and-release.md`) |
+| release 指向的版本号不对 | 发布脚本读取了 seed 的版本号 | 改为读取 tpl repo `pyproject.toml` (见 `08-versioning-and-release.md`) |
 
 
 ## L5: verify-release

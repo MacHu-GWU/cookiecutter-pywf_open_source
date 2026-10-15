@@ -6,7 +6,7 @@ Check every ``presets/<name>.json`` against the freshly generated
 and a choice variable's override must be one of its choices. Exits 1 on any
 problem.
 
-Preset format: 07-versioning-and-release.md, "Preset Branches".
+Preset format: 02-repo-layout.md, "Preset Branches".
 """
 
 import json

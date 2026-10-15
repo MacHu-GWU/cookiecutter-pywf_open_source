@@ -79,7 +79,7 @@ seed 的包名, 仓库名都有独立的命名空间, 所以它们作为 seed va
 | 类型 | 含义 | 在哪里改 | 例子 |
 | :--- | :--- | :--- | :--- |
 | template content | 生成的项目里应该有什么 | seed repo | 新增一个 mise task, 改 CI 配置, 加一个文档页, 升级依赖 |
-| template mechanism | seed 怎么变成模板, 模板怎么生成项目 | tpl repo | 新增或修改 parameter, 调整 exclude / no_render 规则, 改 hooks, 改 `cookiecutter.json` 的 prompt |
+| template mechanism | seed 怎么变成模板, 模板怎么生成项目 | tpl repo | 新增或修改 parameter, 调整哪些文件不进入模板 (exclude) 或原样拷贝不做替换 (no_render), 改 hooks, 改 `cookiecutter.json` 的 prompt |
 
 有些改动同时涉及两类. 例如新增一个 parameter: 先在 seed 中写入新的 seed value (content), 再在 tpl 中声明对应的 parameter (mechanism).
 
@@ -105,4 +105,4 @@ seed repo 和 tpl repo 各有一个版本号, 二者互不相关:
 - **seed 版本号**: 只用于把 seed 发布到 PyPI, 测试发布流程本身是否工作. seed 可能结构大改但版本号不变.
 - **tpl 版本号**: 模板自己的版本, 决定 tpl repo 的 tag, GitHub release, `release-history.rst` 条目.
 
-两个版本号之间的唯一联系是: 每个 tpl 版本都记录它是由哪个 seed commit 生成的 (见 `07-versioning-and-release.md`).
+两个版本号之间的唯一联系是: 每个 tpl 版本在 tpl 的 `release-history.rst` 对应条目中记录它是由哪个 seed commit 生成的. seed 不打 tag, 这条记录是追溯 "某个模板版本对应哪个 seed 状态" 的唯一依据.

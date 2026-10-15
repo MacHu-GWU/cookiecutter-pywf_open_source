@@ -1,6 +1,6 @@
 # Workflow
 
-本文定义一次模板迭代的完整生命周期: 有哪些阶段, 每个阶段由谁执行, 进入和离开的条件, 失败时退回哪里. 前置阅读: `01-background-and-concepts.md`, `02-repo-layout.md`.
+本文定义一次模板迭代的完整生命周期: 有哪些阶段, 每个阶段由谁执行, 进入和离开的条件, 失败时退回哪里. 前置阅读: `01-background-and-concepts.md`, `02-repo-layout.md`, `03-parameterization.md`, `04-safety-rules.md`.
 
 
 ## Overview
@@ -59,7 +59,9 @@ flowchart TD
 
 ### 3 Sync
 
-在 tpl repo 中依次运行: 生成模板 → 检查 seed value 残留 → 用模板生成测试项目 → 检查未解析占位符 → 应用到 tpl repo. 具体 task 和退出码见 `04-mise-task-contract.md`, 检查层级见 `08-verification.md`.
+在 tpl repo 中运行 `mise run sync`, 它依次执行: 生成模板 → 检查 seed value 残留 → 用模板生成测试项目 (含 choice coverage) → 检查未解析占位符 → round trip 比较 → 检查 presets → 把 artifact 应用到 tpl repo. 任何一步失败立即停止. 这些步骤只读写本地文件, 速度快, 每次都全部运行.
+
+改动涉及依赖, 构建, 测试配置, hooks 或 parameter 时, 本阶段还要在生成的项目中安装依赖并运行测试. 这一步较慢, 不包含在 `sync` 中, 按需单独运行.
 
 任何一步失败:
 
@@ -92,11 +94,11 @@ flowchart TD
 3. 在当前版本条目中记录 seed commit SHA.
 4. 打印阶段 7 需要你执行的全部命令.
 
-规则细节见 `07-versioning-and-release.md`.
+第 1 步改了版本号之后必须重新运行 `sync`: 版本号也写在 artifact 里, 不重新生成, 发布出去的仍是旧版本号.
 
 ### 7 Publish
 
-你执行阶段 6 打印的命令: tpl commit, push `main`, 从 `main` 重新生成所有 `preset/*` 分支并推送, 创建 GitHub release. agent 不执行其中任何一步, 见 `06-safety-rules.md`.
+你执行阶段 6 打印的命令: tpl commit, push `main`, 从 `main` 重新生成所有 `preset/*` 分支并推送, 创建 GitHub release. agent 不执行其中任何一步, 见 `04-safety-rules.md`.
 
 ### 8 Verify
 
@@ -109,5 +111,5 @@ flowchart TD
 
 - **agent 自动串联的范围:** 阶段 1 → 2 → 3 可以在同一会话中连续执行. 阶段 3 结束后必须停下.
 - **只能由你触发的阶段:** 6 (`/cctpl-release-cn`) 和 8 (`/cctpl-verify-cn`). agent 不自动进入.
-- **每次停下时**, agent 说清楚三件事: 当前完成到哪个阶段, 结果如何, 下一步由谁做什么 (需要你执行命令时, 按 `06-safety-rules.md` 的格式给出).
+- **每次停下时**, agent 说清楚三件事: 当前完成到哪个阶段, 结果如何, 下一步由谁做什么 (需要你执行命令时, 按 `04-safety-rules.md` 的格式给出).
 - **一次迭代可以包含多次 Change.** 阶段 1 → 3 可以反复循环, 攒够一批改动再进入阶段 4.

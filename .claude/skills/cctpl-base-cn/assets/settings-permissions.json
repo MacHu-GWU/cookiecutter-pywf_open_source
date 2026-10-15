@@ -1,5 +1,5 @@
 {
-    "$comment": "cctpl standard permissions fragment. Merge the 'permissions' object into the tpl repo's .claude/settings.json (keep its existing allow list). Replace <SEED_DIR> with the seed repo path relative to the tpl repo root, e.g. ../<seed repo name>; it must point to the same directory as CCTPL_SEED_DIR in mise.toml. Spec: ../references/06-safety-rules.md",
+    "$comment": "cctpl standard permissions fragment. Merge the 'permissions' object into the tpl repo's .claude/settings.json (keep its existing allow list). Replace <SEED_DIR> with the seed repo path relative to the tpl repo root, e.g. ../<seed repo name>; it must point to the same directory as CCTPL_SEED_DIR in mise.toml. Spec: ../references/04-safety-rules.md",
     "permissions": {
         "additionalDirectories": [
             "<SEED_DIR>"

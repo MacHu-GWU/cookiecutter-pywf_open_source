@@ -1,6 +1,6 @@
 # Verification
 
-本文定义模板的验证层级: 每一层验证什么, 由哪个 task 完成, 什么样的改动需要跑到哪一层. 前置阅读: `03-workflow.md`, `04-mise-task-contract.md`, `05-parameterization.md`.
+本文定义模板的验证层级: 每一层验证什么, 由哪个 task 完成, 什么样的改动需要跑到哪一层. 前置阅读: `03-parameterization.md`, `05-workflow.md`.
 
 
 ## Levels
@@ -19,7 +19,7 @@ flowchart TD
 | :--- | :--- | :--- | :--- | :--- |
 | L1 Template Static Check | 模板中没有未声明的 seed value 残留 | `check-seed-values` | 漏掉的 seed value 形态, no_render 文件中的 seed value | 3 Sync |
 | L2 Generation | 用默认值能生成项目, 生成结果中没有未解析的变量 | `test-template`, `check-output` | Jinja 语法错误, hooks 报错, 引用了不存在的变量 | 3 Sync |
-| L3 Round Trip | 用 seed values 渲染模板, 结果与 seed 一致 | `check-roundtrip` | 派生形态计算结果与 seed 不同, Jinja 转义出错, 文件丢失或多出. **发现不了过度替换** (见 05 的 What Round Trip Cannot See) | 3 Sync |
+| L3 Round Trip | 用 seed values 渲染模板, 结果与 seed 一致 | `check-roundtrip` | 派生形态计算结果与 seed 不同, Jinja 转义出错, 文件丢失或多出. **发现不了过度替换** (见 03 的 What Round Trip Cannot See) | 3 Sync |
 | L4 Generated Project Behavior | 用默认值生成的项目能安装依赖, 测试通过 | `test-output` | 默认值导致项目无法工作, 项目依赖了 seed 特有的东西 | 3 Sync (按需) |
 | L5 Published Template | 从 GitHub 拉取的已发布模板与本地一致, 生成的项目能工作 | `verify-release` | 发布时漏拷贝文件, preset 分支内容错误 | 8 Verify |
 
@@ -32,9 +32,7 @@ L1, L2, L3 包含在 `sync` 中, 每次 Sync 都运行, 不做取舍. 它们只�
 
 ### Choice Coverage
 
-L2 默认只用 `cookiecutter.json` 的默认值生成一次. 对于有可选值 (choice) 的变量, 如果不同的值会让 hooks 或模板走不同的分支 (例如不同的 license 生成不同的文件), 默认值之外的分支在 L2 中不会被覆盖.
-
-规则: 这类变量的 **每个可选值** 都至少生成一次. 一次只改变一个变量, 其余保持默认值, 不做全组合.
+L2 除了用默认值生成一次, 还要按 `03-parameterization.md` 的 Choice Coverage, 为 `CHOICE_COVERAGE` 中每个变量的其余可选值各生成一次.
 
 
 ## L4: When Needed
@@ -104,7 +102,7 @@ L5 是阶段 8 Verify 的内容, 由 `verify-release` 完成, 在 forked context
 L5 在 forked context 中运行, 只把结论带回主会话:
 
 - 每个分支: 通过 / 失败.
-- 失败时: 哪一步失败, 涉及的文件和行号, 初步判断的原因 (参考 `09-troubleshooting.md`).
+- 失败时: 哪一步失败, 涉及的文件和行号, 初步判断的原因.
 - 不带回完整的安装和测试日志.
 
 

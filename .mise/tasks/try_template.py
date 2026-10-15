@@ -17,7 +17,7 @@ repo: the project's mise.toml is trusted for this run only
 ``MISE_CEILING_PATHS`` stops mise from also loading the tpl repo's mise.toml.
 
 Every step is logged to the console and to ``tmp/cctpl/try/<label>.log``.
-Exits 1 at the first failing step. Spec: 08-verification.md, "Local Trial".
+Exits 1 at the first failing step. Spec: 06-verification.md, "Local Trial".
 """
 
 import os

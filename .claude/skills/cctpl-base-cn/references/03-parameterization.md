@@ -31,7 +31,7 @@ round trip **发现不了过度替换** (不该替换的被替换了). 例如 `M
 过度替换只能靠以下两点防住:
 
 - **预防**: 通用值必须用 context 或 file scope 限定 (见下一节). 这是规则, 不是建议.
-- **发现**: Review 阶段查看 template dir 的 diff 时, 留意新出现的 `{{ cookiecutter.xxx }}`. 一个通用变量的占位符出现在意料之外的文件中, 就是过度替换.
+- **发现**: 人工查看 template dir 的 diff 时, 留意新出现的 `{{ cookiecutter.xxx }}`. 一个通用变量的占位符出现在意料之外的文件中, 就是过度替换.
 
 round trip 所需的 seed values 就是参数化脚本中声明的 seed values, 不另外维护一份.
 
@@ -49,7 +49,7 @@ seed value 是参数化的 "锚点". 选择原则:
 
 带 context 或 file scope 的 selector 一旦与 seed 的写法脱节 (例如格式化改变了空格), 就会一处都匹配不上, 而且不会报错. `check-seed-values` 会报告零命中的 parameter.
 
-参数化脚本是 seed values 和 parameters 的唯一定义处. `cookiecutter.json` 的变量, 默认值, 可选值, prompt 都由它生成, 不手改 `cookiecutter.json` (preset 的默认值由 `presets/*.json` 覆盖, 见 `07-versioning-and-release.md`).
+参数化脚本是 seed values 和 parameters 的唯一定义处. `cookiecutter.json` 的变量, 默认值, 可选值, prompt 都由它生成, 不手改 `cookiecutter.json` (preset 的默认值由 `presets/*.json` 覆盖, 见 `02-repo-layout.md` 的 Preset Branches).
 
 
 ## Legal Residue
@@ -60,7 +60,7 @@ seed value 是参数化的 "锚点". 选择原则:
 
 规则:
 
-- 参数化脚本声明哪些 seed value 是 **独特** 的. 只有独特的 seed value 会被 `check-seed-values` 扫描残留; 通用值的正确性靠 context / file scope 规则和 Review 保证.
+- 参数化脚本声明哪些 seed value 是 **独特** 的. 只有独特的 seed value 会被 `check-seed-values` 扫描残留; 通用值的正确性靠 context / file scope 规则和人工查看 diff 保证.
 - 合法残留必须在参数化脚本中 **显式声明**: 哪个 seed value, 在哪些文件中, 为什么可以保留.
 - `check-seed-values` 读取这份声明, 只对未声明的残留报错.
 - 不允许通过 "忽略检查输出" 的方式接受残留. 没有声明的残留一律视为错误.
@@ -75,7 +75,7 @@ seed value 是参数化的 "锚点". 选择原则:
 
 原因: seed 是一个真实项目, 它的 `.gitignore` 本来就准确描述了 "哪些是项目内容, 哪些是本地垃圾". 直接遍历目录再靠手写的 exclude 列表过滤, 每当 seed 多出一种本地缓存 (例如 `.ruff_cache/`, `.DS_Store`), 就会漏进模板. 让 git 来决定输入, exclude 列表就只需要处理 "进了 git 但不该进模板" 的少数文件.
 
-包含未跟踪但未忽略的文件, 是为了让 Sync 能在 seed 尚未提交时运行 (Change → Sync 的循环中, seed 的改动通常还没有 commit).
+包含未跟踪但未忽略的文件, 是为了在 seed 的改动 commit 之前就能生成模板并检查: "改 seed → 生成模板 → 检查" 通常要循环多次, 最后才提交.
 
 ### Three Fates
 
@@ -92,7 +92,7 @@ git 认可的每个文件, 在模板中只有三种命运:
 - no_render 的文件中, seed value **不会** 被替换. 把一个文件加入 no_render 之前, 确认它不含 seed value, 或者把其中的 seed value 声明为合法残留.
 - 新增一个 seed 文件时, 先判断它属于哪种命运. 默认是 render; 只有确实需要时才加入 exclude 或 no_render.
 - 文件和目录的 **名字** 总是会被参数化, 不受 no_render 影响.
-- **lock 文件 exclude, 不进入模板.** lock 文件中记录了 seed 自己的包名, 原样拷贝会留下错误的值, 而生成的项目第一次安装依赖时本来就要重新 lock. 生成的项目因此会 resolve 当时最新的依赖版本, 而不是 seed 测试时的版本; 这个差异由 L4 (见 `08-verification.md`) 覆盖, L4 正是在全新 resolve 的依赖上运行测试.
+- **lock 文件 exclude, 不进入模板.** lock 文件中记录了 seed 自己的包名, 原样拷贝会留下错误的值, 而生成的项目第一次安装依赖时本来就要重新 lock. 生成的项目因此会 resolve 当时最新的依赖版本, 而不是 seed 测试时的版本. 所以只在 seed 中测试是不够的: 生成的项目必须在全新 resolve 的依赖上再安装并测试一次.
 
 
 ## Jinja Conflicts
@@ -119,7 +119,17 @@ hooks 处理字符串替换做不到的事情:
 - hooks 是 tpl repo 的 source, 维护在根目录的 `hooks/` 中 (见 `02-repo-layout.md`).
 - 能用参数化解决的, 不用 hooks. hooks 的逻辑在 seed 中无法运行和测试, 越少越好.
 - 由 hooks 生成的文件, 在 seed 中也存在 (seed 需要它), 但必须加入 exclude, 并在参数化脚本中声明为 hooks 的产物, round trip 才会允许它的差异.
-- 有可选值 (choice) 的变量如果会影响 hooks 的行为, 每个可选值都要在验证中覆盖到 (见 `08-verification.md`).
+- 有可选值 (choice) 的变量如果会影响 hooks 的行为, 必须声明 choice coverage (见下一节).
+
+### Choice Coverage
+
+用默认值生成项目, 只会走到每个 choice 变量默认值对应的分支. 如果一个 choice 变量的不同值会让 hooks 或模板走不同的分支 (例如不同的 license 生成不同的 license 文件), 其余分支就从来没有被生成过, 出错也发现不了.
+
+规则:
+
+- 这类变量在参数化脚本的 `CHOICE_COVERAGE` 中声明.
+- 生成测试项目时, 每个声明的变量的 **每个可选值** 都至少生成一次.
+- 一次只改变一个变量, 其余保持默认值, 不做全组合. 原因: 组合数随变量个数成倍增长, 而这类分支通常彼此独立.
 
 
 ## Changing Parameters
@@ -130,5 +140,5 @@ hooks 处理字符串替换做不到的事情:
 - 是否有派生形态需要额外的 parameter.
 - 是否影响 hooks.
 - 是否需要声明合法残留.
-- 对 preset 的影响: 重命名或删除变量后, 修改引用它的 `presets/*.json` (见 `07-versioning-and-release.md`).
-- 对 tpl 版本号的影响: 新增变量是 minor, 重命名或删除变量是 major (见 `07-versioning-and-release.md`).
+- 是否需要 choice coverage.
+- 对 preset 的影响: 重命名或删除变量后, 修改引用它的 `presets/*.json` (格式见 `02-repo-layout.md` 的 Preset Branches).

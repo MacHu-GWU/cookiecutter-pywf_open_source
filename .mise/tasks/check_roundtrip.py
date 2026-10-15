@@ -4,7 +4,7 @@
 L3: render the template with the seed's own values and compare the result
 with the staged seed files. Exits 1 on any unexpected difference.
 
-Allowed differences (05-parameterization.md, "Round Trip"):
+Allowed differences (03-parameterization.md, "Round Trip"):
 
 - files matched by ``EXCLUDE`` exist only in the seed,
 - files in ``HOOK_OUTPUTS`` may differ or exist only on one side.

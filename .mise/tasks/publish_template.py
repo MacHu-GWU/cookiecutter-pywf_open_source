@@ -2,7 +2,7 @@
 
 """
 Publish the template. USER ONLY: agents print this command, never run it
-(06-safety-rules.md). Run it after Release Prep (/cctpl-release-cn).
+(04-safety-rules.md). Run it after Release Prep (/cctpl-release-cn).
 
 1. Commit everything on ``main`` and push.
 2. For each ``presets/<name>.json``, regenerate branch ``preset/<name>`` from
@@ -14,7 +14,7 @@ Publish the template. USER ONLY: agents print this command, never run it
 5. Create or update the GitHub release on the latest ``main`` commit, named
    after the tpl repo's own version (``pyproject.toml``).
 
-Spec: 07-versioning-and-release.md.
+Spec: 08-versioning-and-release.md.
 """
 
 import os
