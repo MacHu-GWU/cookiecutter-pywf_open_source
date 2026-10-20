@@ -10,7 +10,7 @@ Read ../pywf-oss-base/SKILL.md, then:
 
 ## Where to write the output
 
-Default to `~/.claude/skills/<package_name>/` (personal: usable in every project that installs the library). If the user clearly wants it project-only, use `.claude/skills/<package_name>/`. If the target directory exists, ask before overwriting.
+Write to `.claude/skills/<package_name>/` in this repo, and commit it: the skill ships with the source, and the README tells users how to copy it into their own projects (Step 6). Never write to `~/.claude/skills/` unless the user asks. If the target directory exists, ask before overwriting.
 
 ## Step 1: Inspect the project
 
@@ -71,6 +71,27 @@ Written for an engineer **using** the library, not maintaining it. For each publ
 ### `ref/cli.md`: full CLI reference, loaded on demand
 
 It loads when the user mentions the CLI, so it must make `--help` unnecessary: for each subcommand, a short description, every flag with type and default (a small table reads well), and one short example. Complete, not verbose.
+
+## Step 6: Mention it in the README
+
+If `README.rst` has no such section yet, add one after the install section, so users know the skill exists and how to get it. `<repo_url>` is `[project.urls].Repository` in `pyproject.toml`; `<repo_dir>` is its last path part.
+
+```rst
+.. _use-with-ai-coding-agents:
+
+Use with AI Coding Agents
+------------------------------------------------------------------------------
+
+This repo ships an `Agent Skill <https://code.claude.com/docs/en/skills>`_ that documents the public API of ``<package_name>``, so an AI coding agent such as Claude Code can use the library without reading its source. It lives in `.claude/skills/<package_name> <<repo_url>/tree/main/.claude/skills/<package_name>>`_. To use it in your project, copy it into your project's ``.claude/skills/`` folder. Run this from your project's root:
+
+.. code-block:: console
+
+    $ git clone --depth 1 <repo_url>.git /tmp/<repo_dir>
+    $ mkdir -p .claude/skills
+    $ cp -R /tmp/<repo_dir>/.claude/skills/<package_name> .claude/skills/
+```
+
+Then check that it renders on PyPI: `mise exec -- uvx --from readme-renderer python -m readme_renderer README.rst -o /dev/null`.
 
 ## Keep it short
 
