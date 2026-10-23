@@ -32,6 +32,11 @@ description = "Convert the seed project into a cookiecutter template"
 run = ".venv/bin/python .mise/tasks/make_template.py"
 depends = ["inst"]
 
+[tasks.check-version]
+description = "Check the shared version in the seed: valid, not below the tpl version, documented in release-history-seed-repo.rst, absent from release-history.rst"
+run = ".venv/bin/python .mise/tasks/check_version.py"
+depends = ["inst"]
+
 [tasks.check-seed-values]
 description = "Check if the generated template still contains residual seed project values"
 run = ".venv/bin/python .mise/tasks/check_seed_values.py"
@@ -60,7 +65,7 @@ depends = ["inst"]
 run = ".venv/bin/python .mise/tasks/test_output.py"
 
 [tasks.apply-template]
-description = "Replace cookiecutter.json and the template dir in the repo root with the generated ones"
+description = "Replace cookiecutter.json and the template dir in the repo root with the generated ones, copy the seed version into pyproject.toml and uv.lock, render README.rst"
 depends = ["inst"]
 run = ".venv/bin/python .mise/tasks/apply_template.py"
 
@@ -68,6 +73,7 @@ run = ".venv/bin/python .mise/tasks/apply_template.py"
 description = "Make the template, run all checks, and apply the artifacts; stops at the first failure"
 run = [
     "mise run make-template",
+    "mise run check-version",
     "mise run check-seed-values",
     "mise run test-template",
     "mise run check-output",
@@ -81,12 +87,29 @@ description = "Local trial: make the template, render a project (optionally with
 depends = ["inst"]
 run = ".venv/bin/python .mise/tasks/try_template.py"
 
+[tasks.e2e]
+description = "End to end, local only: sync (make, check, apply), then try-template with the defaults (render a project, run its venv-create, inst, cov, build-doc through mise)"
+run = [
+    "mise run sync",
+    "mise run try-template",
+]
+
+[tasks.check-release]
+description = "Check the version is ready to publish: same version in seed and tpl, artifacts current, seed pushed and tagged, changelog section with the seed link, tag not taken (read-only)"
+depends = ["inst"]
+run = ".venv/bin/python .mise/tasks/check_release.py"
+
 [tasks.verify-release]
 description = "Verify the template published on GitHub: generate main and preset branches, compare with local, run tests (read-only)"
 depends = ["inst"]
 run = ".venv/bin/python .mise/tasks/verify_release.py"
 
 [tasks.publish-template]
-description = "USER ONLY. Publish: commit and push main, regenerate preset/* branches from presets/*.json, create the GitHub release"
+description = "USER ONLY. Publish: run the check-release checks, commit and push main, create the tag and GitHub release (never overwrites one), then run the publish-presets steps"
 run = ".venv/bin/python .mise/tasks/publish_template.py"
+depends = ["inst"]
+
+[tasks.publish-presets]
+description = "USER ONLY. Regenerate preset/* branches from the pushed main plus presets/*.json and force-push them; rerunnable, no tag (publish-template runs it last)"
+run = ".venv/bin/python .mise/tasks/publish_presets.py"
 depends = ["inst"]

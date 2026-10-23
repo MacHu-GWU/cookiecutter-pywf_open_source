@@ -15,6 +15,32 @@ Backlog (TODO)
 **Miscellaneous**
 
 
+3.0.1 (2026-10-23)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Seed repo changes: `3.0.1 (2026-10-23) <https://github.com/MacHu-GWU/cookiecutter_pywf_open_source_demo-project/blob/3.0.1/release-history-seed-repo.rst#301-2026-10-23>`__
+
+The first template release with the shared version. There is no template ``3.0.0``: the seed's ``3.0.0`` tag was created before its changes were pushed, so the seed was released again as ``3.0.1``. The seed changelog's ``3.0.0`` section, on the same page, lists everything a generated project gets.
+
+**Features and Improvements**
+
+- The template and its seed repo now share one version number, so a template version also names the seed state it was generated from. The version jumps from ``2.1.0`` to ``3.0.1`` for this reason only: generating a project works exactly as with ``2.1.0``, and no variable changed
+- Every release entry in this file now starts with a link to the seed repo's own changelog (``release-history-seed-repo.rst``) at the seed's tag of the same version, which lists what newly generated projects get
+
+**Minor Improvements**
+
+- A published version is never overwritten: ``mise run publish-template`` creates the tag and the GitHub release in one step, refuses a version that already has a tag, and links the release to its changelog entry
+- New ``mise run publish-presets`` regenerates the ``preset/*`` branches from the pushed ``main``; ``publish-template`` runs it last, and it can be rerun alone, for example after changing only ``presets/*.json``
+- The seed's tag of the same version records which seed commit a template version was built from; changelog entries no longer carry a ``Built from seed`` commit
+- New ``mise run check-release``: before anything is pushed, checks the version is the same in the seed and in this repo, the template is current, the seed is pushed and tagged, and the changelog entry starts with the seed link
+- New ``mise run check-version``, run by ``mise run sync``: the seed version is valid, documented in the seed's changelog, and never recorded in the template's own ``release-history.rst``
+- New ``mise run e2e``: ``sync`` followed by ``try-template``, one command from the seed to a tested generated project
+
+**Miscellaneous**
+
+- ``mise run sync`` copies the seed version into this repo's ``pyproject.toml`` and ``uv.lock``; the version is never edited here
+- New ``cctpl-changelog-cn`` skill writes this file, replacing ``py-changelog``; the cctpl skills describe the shared version, the seed-only files, and the new release order
+
+
 2.1.0 (2026-10-23)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 **Features and Improvements**

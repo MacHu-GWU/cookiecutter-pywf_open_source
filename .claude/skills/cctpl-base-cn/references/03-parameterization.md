@@ -89,7 +89,7 @@ git 认可的每个文件, 在模板中只有三种命运:
 
 | 命运 | 适用于 | 例子 |
 | :--- | :--- | :--- |
-| **exclude** (不进入模板) | 进了 git 但不属于 template content 的东西: 由 hooks 生成的文件, 只对 seed 自己有意义的文件 | `LICENSE.txt`, `uv.lock` |
+| **exclude** (不进入模板) | 进了 git 但不属于 template content 的东西: 由 hooks 生成的文件, 只对 seed 自己有意义的文件, seed-only 文件 (见 `02-repo-layout.md` 的 seed repo) | `LICENSE.txt`, `uv.lock`, `release-history-seed-repo.rst`, `.claude/skills/pywf-oss-changelog-seed-repo/` |
 | **no_render** (原样拷贝) | 必须逐字节保持一致, 或体积大且不需要替换的文件; 本身就是 Jinja 模板的文件 | 导出的 requirements 文件, `*.jinja`, `*.html` |
 | **render** (默认) | 其他所有文件 | 源码, 配置, 文档 |
 

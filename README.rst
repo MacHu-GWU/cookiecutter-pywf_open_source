@@ -44,11 +44,11 @@ To use a specific released version (see the `full list of releases <https://gith
 
     cookiecutter https://github.com/MacHu-GWU/cookiecutter-pywf_open_source --checkout tags/${version}
 
-For example, to use ``2.1.0``, the latest version:
+For example, to use ``3.0.1``, the latest version:
 
 .. code-block:: bash
 
-    cookiecutter https://github.com/MacHu-GWU/cookiecutter-pywf_open_source --checkout tags/2.1.0
+    cookiecutter https://github.com/MacHu-GWU/cookiecutter-pywf_open_source --checkout tags/3.0.1
 
 You'll then be prompted to provide the following information (defaults in parentheses):
 
@@ -92,10 +92,11 @@ Project Maintainer Note
 This template is maintained using a "reverse engineering" approach, driven by Claude Code skills (``.claude/skills/cctpl-*-cn``):
 
 1. Make changes in the Seed project (``cookiecutter_pywf_open_source_demo-project``)
-2. Run ``mise run sync`` to convert the Seed into a template and check it
-3. Run ``mise run try-template`` to try a generated project locally
-4. Run ``/cctpl-release-cn`` to bump the version and update the changelog, then ``mise run publish-template`` to publish the template to GitHub
-5. Run ``/cctpl-verify-cn`` to verify the published template
+2. In the Seed, bump the version and record the changes in its own ``release-history-seed-repo.rst``. The Seed and this template share one version number, and the Seed's ``pyproject.toml`` is its only source
+3. Run ``mise run e2e``: it converts the Seed into a template, checks it, applies it to this repo (version included), then generates a project and runs its tests and docs build
+4. Commit and push the Seed, then tag it with ``mise run publish`` and ``mise run release`` in the Seed
+5. Run ``/cctpl-release-cn`` to write this repo's changelog section, which links to the Seed's section of the same version, then ``mise run publish-template`` to publish the template to GitHub. A published version is never overwritten
+6. Run ``/cctpl-verify-cn`` to verify the published template
 
 **Toolchain:**
 

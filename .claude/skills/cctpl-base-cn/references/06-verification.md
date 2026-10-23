@@ -92,6 +92,8 @@ L4 需要为生成的项目安装完整依赖, 耗时长, 所以按需运行. �
 
 seed 改了之后, 从第 1 步 (或第 2 步) 重新开始即可; 第 2 步每次都会清空并重建 `tmp/cctpl/try/<label>/`.
 
+第 1, 2 步可以用一条命令完成: `mise run e2e`, 它依次运行 `sync` 和用默认值的 `try-template`. 想试某个 preset 时, 在它之后再运行 `mise run try-template <preset>`.
+
 
 ## L5: After Publish
 

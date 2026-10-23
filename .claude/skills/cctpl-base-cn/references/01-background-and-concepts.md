@@ -88,21 +88,25 @@ seed 的包名, 仓库名都有独立的命名空间, 所以它们作为 seed va
 
 ## Where Skills Live
 
-与模板相关的 skill 有两个位置, 不能混淆:
+与模板相关的 skill 有三个位置, 不能混淆:
 
 | 位置 | 放什么 | 影响范围 |
 | :--- | :--- | :--- |
 | seed repo `.claude/skills/` | 每个生成的项目都应该有的 skill | 会被参数化进模板, 进入所有生成的项目 |
-| tpl repo `.claude/skills/` | 维护 seed → tpl → 发布这套流程的 skill: 本家族 `cctpl-*-cn`, 以及它依赖的工具 skill (`/pypi-cookiecutter_maker`, `/py-changelog`) | 只在 tpl repo 中生效, 不进入模板 |
+| seed repo 的 seed-only skill | 只服务于 seed 自身维护的 skill. 目前只有一个: 维护 seed changelog 的 `pywf-oss-changelog-seed-repo` (见下文 One Shared Version) | 只在 seed 中生效. 在参数化脚本的 exclude 列表中声明, 不进入模板 |
+| tpl repo `.claude/skills/` | 维护 seed → tpl → 发布这套流程的 skill: 本家族 `cctpl-*-cn`, 以及它依赖的工具 skill (`/pypi-cookiecutter_maker`) | 只在 tpl repo 中生效, 不进入模板 |
 
-**维护用的东西绝不放进 seed.** seed 的 `.claude/` 是模板内容的一部分, 放进去的任何东西都会被分发到每一个生成的项目.
+**维护用的东西默认不放进 seed.** seed 的 `.claude/` 是模板内容的一部分, 放进去的任何东西都会被分发到每一个生成的项目. 唯一的例外是 **seed-only 文件**: 只对 seed 自身有意义, 并且已在参数化脚本的 exclude 列表中声明的文件. 目前只有两个: seed changelog `release-history-seed-repo.rst`, 和维护它的 seed-only skill. 新增 seed-only 文件必须同时加入 exclude 列表. 模板内容 (包括 seed 中进入模板的 skill) 永远不提及 seed-only 文件.
 
 
-## Two Independent Versions
+## One Shared Version
 
-seed repo 和 tpl repo 各有一个版本号, 二者互不相关:
+seed repo 和 tpl repo **共用一个版本号**, 由程序保证一致, 不靠人:
 
-- **seed 版本号**: 只用于把 seed 发布到 PyPI, 测试发布流程本身是否工作. seed 可能结构大改但版本号不变.
-- **tpl 版本号**: 模板自己的版本, 决定 tpl repo 的 tag, GitHub release, `release-history.rst` 条目.
+- **唯一的源头是 seed 的 `pyproject.toml`.** 版本号只在 seed 中修改. tpl repo 中出现的版本号 (`pyproject.toml`, `uv.lock`, `cookiecutter.json` 的 `_template_version`, `README.rst`) 都是副本, 由 Sync 从 seed 复制过来.
+- **一个版本号同时标记两个仓库.** seed 用它发布到 PyPI 并打 tag; tpl 用它打 tag, 创建 GitHub release. 两个 tag 同名, 指向 "同一次发布" 的两半.
+- **两本 changelog, 各记各的.** seed 的改动 (也就是生成的项目里有什么变化) 记在 seed 的 `release-history-seed-repo.rst`; tpl repo 自身的改动 (参数化, hooks, 发布流程) 记在 tpl 的 `release-history.rst`. tpl 的每个版本条目第一行链接到 seed changelog 中同版本的条目.
+- **seed 的 `release-history.rst` 不是 seed 的 changelog.** 它是 template content, 是每个生成项目 changelog 的起点, 永远不为 seed 的发布而修改.
+- **发布过的版本号冻结.** 已有 tag 的版本号不再发布第二次. 发布有问题时, 发一个新的 patch 版本.
 
-两个版本号之间的唯一联系是: 每个 tpl 版本在 tpl 的 `release-history.rst` 对应条目中记录它是由哪个 seed commit 生成的. seed 不打 tag, 这条记录是追溯 "某个模板版本对应哪个 seed 状态" 的唯一依据.
+为什么不再用两个独立版本号: seed 的改动没有地方记录, 只能塞进 tpl 的 changelog; 两个版本号各自前进, 无法从一个推出另一个, 维护时必须同时记住两套历史. 共用版本号之后, 一个版本号就能定位 "模板是什么样, 它从哪个 seed 生成".

@@ -29,15 +29,16 @@
 
 | Task | Level | 读 | 写 | 成功条件 |
 | :--- | :--- | :--- | :--- | :--- |
-| `make-template` | A | seed 工作区中 git 认可的文件 (`CCTPL_SEED_DIR`, 见 `03-parameterization.md` 的 Input), 参数化脚本, `hooks/` | `tmp/cctpl/stage/`, `tmp/cctpl/template/` (先清空) | 生成完整的 cookiecutter 模板根目录: `cookiecutter.json` (含私有变量 `_template_version` = tpl 版本号), `hooks/`, template dir |
+| `make-template` | A | seed 工作区中 git 认可的文件 (`CCTPL_SEED_DIR`, 见 `03-parameterization.md` 的 Input), 参数化脚本, `hooks/` | `tmp/cctpl/stage/`, `tmp/cctpl/template/` (先清空) | 生成完整的 cookiecutter 模板根目录: `cookiecutter.json` (含私有变量 `_template_version` = seed `pyproject.toml` 中的共用版本号), `hooks/`, template dir |
+| `check-version` | A | seed 的 `pyproject.toml`, `release-history-seed-repo.rst`, `release-history.rst`; tpl 的 `pyproject.toml` | 无 | 共用版本号是 `major.minor.patch`, 不低于 tpl repo 中的版本号; seed changelog 有这个版本的条目; seed 的 `release-history.rst` (template content) **没有** 这个版本的条目 |
 | `check-seed-values` | A | `tmp/cctpl/template/` | 无 | template dir 中 (文件名和文件内容) 不存在任何 **独特** seed value, 已声明为合法残留的除外; 每个 parameter 自己的替换结果 (`Parameter.placeholder`, 含 context) 在 template dir 中至少出现一次 (零命中说明 selector 已与 seed 脱节). 不扫描 `hooks/`: hooks 本来就引用变量, 会掩盖零命中 |
 | `test-template` | A | `tmp/cctpl/template/` | `tmp/cctpl/output/` (先清空) | `cookiecutter --no-input` 用默认值成功生成一个项目; 影响 hooks 或模板分支的 choice 变量, 每个可选值至少生成一次 (见 `03-parameterization.md` 的 Choice Coverage) |
 | `check-output` | A | `tmp/cctpl/output/` (含 `choices/` 下的项目) | 无 | 生成的项目中 (文件名和文件内容) 不存在未解析的 `cookiecutter.` 变量引用. 不检查一般的 `{{` / `{%`: 它们可能来自 seed 原本的内容 (见 `03-parameterization.md` 的 Jinja Conflicts) |
 | `check-roundtrip` | A | `tmp/cctpl/template/`, 参数化脚本中的 seed values, seed 工作区 | `tmp/cctpl/roundtrip/` (先清空) | 用 seed values 渲染模板, 结果与 seed 一致; 允许的差异只有 `EXCLUDE` 中的文件只出现在 seed 一侧, 以及 `HOOK_OUTPUTS` 中的文件内容不同或只出现在一侧 (定义见 `03-parameterization.md` 的 Round Trip). 不比较文件权限 |
 | `test-output` | A | `tmp/cctpl/output/` 中生成的项目 | 这些项目的 `.venv/`, `dist/`, 测试产物 | 默认值项目安装依赖并运行测试, 全部通过; `choices/` 下的每个项目都能构建 wheel. 不依赖任何 secret (见 `06-verification.md` 的 Secrets) |
 | `check-presets` | A | `presets/*.json`, `tmp/cctpl/template/cookiecutter.json` | 无 | 每个 preset 覆盖的变量都存在于新的 `cookiecutter.json` 中; choice 变量的覆盖值是合法的可选值 |
-| `apply-template` | A | `tmp/cctpl/template/` | tpl repo 根目录的 `cookiecutter.json`, template dir (整体替换) 和 `README.rst` (从 `.mise/tasks/cctpl/README.rst.jinja` 渲染) | 模板产物两者 **一起** 被替换, `README.rst` 重新渲染. 不改动 `hooks/` (它是 source) |
-| `sync` | A | 同上 | 同上 | 按顺序运行 `make-template` → `check-seed-values` → `test-template` → `check-output` → `check-roundtrip` → `check-presets` → `apply-template`, 任何一步失败立即停止并返回非 0 |
+| `apply-template` | A | `tmp/cctpl/template/` | tpl repo 根目录的 `cookiecutter.json`, template dir (整体替换), `pyproject.toml` 的 `version` 和 `uv.lock` (版本号变化时运行 `uv lock`), `README.rst` (从 `.mise/tasks/cctpl/README.rst.jinja` 渲染) | 模板产物两者 **一起** 被替换; tpl repo 的版本号等于 `_template_version`; `README.rst` 用这个版本号重新渲染. 不改动 `hooks/` (它是 source) |
+| `sync` | A | 同上 | 同上 | 按顺序运行 `make-template` → `check-version` → `check-seed-values` → `test-template` → `check-output` → `check-roundtrip` → `check-presets` → `apply-template`, 任何一步失败立即停止并返回非 0 |
 
 说明:
 
@@ -51,10 +52,11 @@
 | Task | Level | 读 | 写 | 成功条件 |
 | :--- | :--- | :--- | :--- | :--- |
 | `try-template` | A | seed 工作区, 参数化脚本, `presets/<name>.json` (可选) | `tmp/cctpl/stage/`, `tmp/cctpl/template/`, `tmp/cctpl/try/<label>/`, `tmp/cctpl/try/<label>.log` | 生成模板, 用默认值或指定 preset 渲染一个项目, 在其中通过 mise 依次运行 `cctpl/pair.py` 的 `PROJECT_TASKS`, 全部通过 |
+| `e2e` | A | 同 `sync` 和 `try-template` | 同 `sync` 和 `try-template` | 依次运行 `sync` 和默认值的 `try-template`, 任何一步失败立即停止. 两者都是 A 级, 所以它不违反下文 Forbidden Composite Tasks |
 
 说明:
 
-- 用法: `mise run try-template` (默认值) 或 `mise run try-template <preset>`.
+- 用法: `mise run try-template` (默认值) 或 `mise run try-template <preset>`; 想一条命令完成 Sync 和试用时用 `mise run e2e`.
 - 它是推荐的人工试用机制, 不在 `sync` 中, 不做任何检查, 也不应用 artifact. 定义见 `06-verification.md` 的 Local Trial.
 - 它会覆盖 `stage/` 和 `template/`, 与 `make-template` 共用这两个子目录.
 - 每一步都输出带 `[try i/n]` 前缀的关键日志, 同时写入日志文件, 供人和 agent 排查.
@@ -64,14 +66,18 @@
 
 | Task | Level | 读 | 写 | 成功条件 |
 | :--- | :--- | :--- | :--- | :--- |
-| `publish-template` | **U** | tpl repo 工作区, `pyproject.toml` 中的 tpl 版本号 | git 历史, GitHub | 当前分支必须是 `main`, `GITHUB_TOKEN` 不能为空, 否则在推送任何东西之前立即失败; commit 并 push `main`; 按 `presets/*.json` 从 `main` 重新生成每个 `preset/*` 分支并覆盖推送 (方式见 `02-repo-layout.md` 的 Preset Branches); 切回 `main`; 报告远端多余的 `preset/*` 分支; 在 `main` 的最新 commit 上以 tpl 版本号创建或更新 tag 和 GitHub release |
+| `check-release` | A | seed 和 tpl repo 的工作区, 两边的 `origin` (只用 `git ls-remote`) | `tmp/cctpl/stage/`, `tmp/cctpl/template/` (重新生成模板, 用来比较) | 报告全部问题后再决定退出码: `check-version` 的全部检查; tpl repo 的 `pyproject.toml`, `uv.lock`, `cookiecutter.json` 的 `_template_version`, `README.rst` 都等于 seed 的版本号; 根目录的模板产物与 seed 当前生成的一致 (没有待 Sync 的变化); seed 工作区干净, HEAD 等于远端 `main`, 远端有这个版本的 tag 且指向 HEAD; tpl `release-history.rst` 有这个版本的条目, 紧接下划线的一行逐字等于预期的 seed 链接 (不符时打印预期内容); tpl 远端还没有这个版本的 tag |
+| `publish-template` | **U** | tpl repo 工作区, seed 的共用版本号 | git 历史, GitHub (只写 tpl repo) | 当前分支必须是 `main`, `GITHUB_TOKEN` 不能为空, `check-release` 的全部检查通过 (其中包括 tpl 远端还没有这个版本的 tag), 否则在推送任何东西之前立即失败; commit 并 push `main`; 在刚 push 的 `main` commit 上, 用一次 API 调用同时创建 tag 和 GitHub release. **只创建, 不覆盖**: 已有的 tag 永远不移动; 最后执行 `publish-presets` 的全部步骤 |
+| `publish-presets` | **U** | tpl repo 的 `main`, `presets/*.json` | git 历史, GitHub (`preset/*` 分支) | 当前分支必须是 `main`, 工作区干净, 本地 `main` 等于远端 `main`, 否则在推送任何东西之前立即失败; 按 `presets/*.json` 从 `main` 重新生成每个 `preset/*` 分支并覆盖推送 (方式见 `02-repo-layout.md` 的 Preset Branches); 无论成败都切回 `main`; 报告远端多余的 `preset/*` 分支. 不打 tag, 可以随时重跑 |
 | `verify-release` | A | GitHub 上已发布的模板 | `tmp/cctpl/verify/` (先清空) | 对 `main` 和每个指定的 `preset/*` 分支 (参数只接受这两种, 其他分支名立即失败), 用 `cookiecutter gh:<owner>/<repo> --checkout <branch> --no-input` 生成项目, 与本地结果比较, 并在其中运行测试, 全部通过 (步骤见 `06-verification.md` 的 L5) |
 
 说明:
 
-- `publish-template` 的 preset 列表来自 `presets/*.json`, 不在代码中写死. 远端存在但已没有对应 preset 文件的 `preset/*` 分支, 只报告, 不自动删除: 删除远端分支会影响正在使用它的人, 由人决定.
-- `publish-template` 的 tag 和 release 名称使用 **tpl** 版本号, 与 seed 版本号无关 (见 `01-background-and-concepts.md` 的 Two Independent Versions).
-- `publish-template` 运行前应有确认提示. 这是 U 级 task 中唯一允许的交互.
+- `publish-presets` 与 `publish-template` 分开: 发版本 (tag, release) 只发生一次, 而 preset 分支是派生物, 没有 tag, 可以重跑. 所以 preset 推送失败时只重跑 `publish-presets`, 只改了 `presets/*.json` 时也只运行它, 都不需要发新版本.
+- `publish-presets` 的 preset 列表来自 `presets/*.json`, 不在代码中写死. 远端存在但已没有对应 preset 文件的 `preset/*` 分支, 只报告, 不自动删除: 删除远端分支会影响正在使用它的人, 由人决定.
+- `publish-template` 的 tag 和 release 名称使用共用版本号 (见 `01-background-and-concepts.md` 的 One Shared Version). 它不碰 seed: seed 的 tag 由人在 seed 中运行 seed 自己的发布 task 创建, 并且必须在 `publish-template` 之前存在.
+- `check-release` 访问远端, 但只读, 所以是 A 级. task 名不能以 `release` 开头, 否则会被 deny 规则 `mise run release*` 拦下.
+- `publish-template` 和 `publish-presets` 运行前应有确认提示 (`publish-template` 内部调用 preset 步骤时不再重复提示). 这是 U 级 task 中唯一允许的交互.
 - `verify-release` 只从 GitHub 读取, 不写入远端, 所以是 A 级. 它是否运行由人决定 (`/cctpl-verify-cn` 只能由人触发), 但运行本身是安全的.
 
 
@@ -86,7 +92,7 @@
 
 ## Forbidden Composite Tasks
 
-**不允许存在把 A 级和 U 级 task 串在一起的复合 task.** 例如旧的 `all` (从 make-template 一直跑到 publish-template): agent 一旦被允许运行它, 就等于被允许发布. 需要一键执行的范围到 `sync` 为止.
+**不允许存在把 A 级和 U 级 task 串在一起的复合 task.** 例如旧的 `all` (从 make-template 一直跑到 publish-template): agent 一旦被允许运行它, 就等于被允许发布. 需要一键执行的范围到 `e2e` (`sync` + `try-template`) 为止.
 
 
 ## Tasks by Stage
@@ -94,8 +100,9 @@
 | Stage (见 `05-workflow.md`) | 使用的 task |
 | :--- | :--- |
 | 2 Seed Self-Test | seed repo 自己的 task (例如测试, 构建文档), 不属于本契约 |
-| 3 Sync | `sync` (或逐个运行其中的步骤), 按需 `test-output` |
+| 3 Sync | `sync` (或逐个运行其中的步骤, 或 `e2e`), 按需 `test-output` |
 | 任何时候 (不属于阶段) | `try-template` |
-| 6 Release Prep | 修改版本号后重新运行 `sync`; 其余只修改文件 |
-| 7 Publish | `publish-template` (人执行) |
+| 5 Seed Release | 在 seed 中 bump 版本号后重新运行 `sync` (或 `e2e`); seed 自己的发布 task (人执行) |
+| 6 Release Prep | `check-release`; 其余只修改文件 |
+| 7 Publish | `publish-template` (人执行, 最后包含 `publish-presets`); 重试 preset 推送时只用 `publish-presets` (人执行) |
 | 8 Verify | `verify-release` |

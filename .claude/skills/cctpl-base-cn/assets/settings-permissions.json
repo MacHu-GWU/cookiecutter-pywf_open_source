@@ -71,6 +71,7 @@
             "Bash(mise r all*)",
             "Bash(mise all*)",
             "Bash(*publish_template.py*)",
+            "Bash(*publish_presets.py*)",
             "Bash(uv publish*)",
             "Bash(*twine upload*)",
             "Bash(gh release create *)",

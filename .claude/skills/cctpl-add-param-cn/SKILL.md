@@ -36,7 +36,7 @@ Follow those docs to do the work.
 
 - 变量的最终定义 (名称, 默认值或可选值, prompt).
 - 在 seed, 参数化脚本, hooks, presets 中各改了什么.
-- 对 tpl 版本号的影响 (按 08 的 Bump Rules). 结果是 major 时明确提醒用户.
+- 对共用版本号的影响 (按 08 的 Bump Rules; 版本号在 seed 中 bump). 结果是 major 时明确提醒用户.
 - 其余同 `cctpl-sync-cn` 的输出, 合在同一份报告中, 不分两次输出.
 
 ## Boundaries

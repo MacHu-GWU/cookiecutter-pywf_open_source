@@ -3,7 +3,8 @@
 """
 Apply the generated artifacts to the tpl repo root: replace
 ``cookiecutter.json`` and the template dir **together** with the ones in
-``tmp/cctpl/template/``, and render ``README.rst`` from
+``tmp/cctpl/template/``, copy the shared version (the seed's) into the tpl
+repo's ``pyproject.toml`` and ``uv.lock``, and render ``README.rst`` from
 ``.mise/tasks/cctpl/README.rst.jinja``. ``hooks/`` is source and is never touched.
 
 Run it only after the checks pass; ``mise run sync`` does that.
@@ -13,7 +14,6 @@ import json
 import shutil
 
 import cctpl
-import make_template
 
 
 def main() -> int:
@@ -32,8 +32,13 @@ def main() -> int:
     shutil.copytree(src_dir, dst_dir)
     shutil.copy2(src_json, dst_json)
 
-    seed_repo = make_template.dir_seed.name
-    readme = cctpl.render_readme(json.loads(src_json.read_text(encoding="utf-8")), seed_repo)
+    # The tpl version is a copy of the seed's, so it changes only here, before
+    # README.rst renders it.
+    version = json.loads(src_json.read_text(encoding="utf-8"))["_template_version"]
+    if cctpl.set_tpl_version(version):
+        print(f"Set the tpl version to {version} (pyproject.toml, uv.lock)")
+
+    readme = cctpl.render_readme(json.loads(src_json.read_text(encoding="utf-8")), cctpl.get_seed_repo_name())
     (cctpl.dir_project_root / "README.rst").write_text(readme, encoding="utf-8")
 
     print(f"Applied {dst_json.name}, {dst_dir.name}/ and README.rst from {cctpl.dir_template}")

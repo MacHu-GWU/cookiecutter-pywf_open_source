@@ -87,11 +87,33 @@
 
 | 现象 | 原因 | 修法 |
 | :--- | :--- | :--- |
-| 生成 preset 分支失败 | preset 覆盖了一个已不存在的变量, 或给 choice 变量设了非法值 | 修改 `presets/*.json`; Sync 阶段的 `check-presets` 应已提前发现 |
+| 生成 preset 分支失败 | preset 覆盖了一个已不存在的变量, 或给 choice 变量设了非法值 | 修改 `presets/*.json`; Sync 阶段的 `check-presets` 应已提前发现. 修好并 push `main` 后只运行 `publish-presets` |
+| tag 和 release 已创建, 但 preset 分支推送失败 | `publish-template` 的最后一步 (`publish-presets` 的步骤) 失败, 例如网络错误 | 不要重跑 `publish-template` (tag 已存在, 它会在检查阶段停止). 只运行 `mise run publish-presets` |
 | 一开始就报 `GITHUB_TOKEN is empty` | tpl repo `mise.toml` 读取 secret 失败 (读取命令带 `\|\| true`, 失败时得到空字符串) | 确认本机的 secret 存储能读到 token; 其他 task 不需要它 |
-| push 和 preset 分支都成功了, 但没有 tag 或 GitHub release | 最后一步创建 release 失败 (例如 `GITHUB_TOKEN` 读取失败或权限不足, 或 GitHub API 报错). 之前的步骤已经完成, 所以表面上看发布成功了 | 查看 `publish-template` 的完整输出. 不 bump 版本号, 修好原因后重新运行 `publish-template`: 前面的步骤可以重复执行, 不会产生副作用 |
-| 已发布的 `README.rst` 或 `cookiecutter.json` 的 `_template_version` 还是旧版本号 | bump 版本号之后没有重新运行 Sync | 重新运行 `sync`, 然后重新发布 |
-| release 指向的版本号不对 | 发布脚本读取了 seed 的版本号 | 改为读取 tpl repo `pyproject.toml` (见 `08-versioning-and-release.md`) |
+| push 成功了, 但没有 tag 或 GitHub release | 创建 release 失败 (例如 `GITHUB_TOKEN` 权限不足, 或 GitHub API 报错). 远端还没有这个 tag | 查看 `publish-template` 的完整输出. 不 bump 版本号, 修好原因后重新运行 `publish-template`: push 可以重复执行, 不会产生副作用 |
+| 一开始就报 "is not ready to publish", 什么都没推送 | `check-release` 的某项检查失败 | 按输出逐项修: 见下文 Release Checks |
+| 报错 tag 已经存在 | 这个版本号发布过了. 发布过的版本号冻结, 不再覆盖 | 回到 Seed Release, 在 seed 中 bump 一个新版本 (见 `08-versioning-and-release.md`) |
+
+
+## Release Checks: check-version, check-release
+
+| 现象 | 原因 | 修法 |
+| :--- | :--- | :--- |
+| `check-version` 报 seed changelog 没有当前版本的条目 | seed 中 bump 了版本号, 但没有写 `release-history-seed-repo.rst` | 在 seed 中用 `pywf-oss-changelog-seed-repo` 写条目 |
+| `check-version` 报 seed 的 `release-history.rst` 有当前版本的条目 | seed 中有人用了 `pywf-oss-changelog` 或 `pywf-oss-release` 的 changelog 步骤, 把 seed 的条目写进了 template content | 把这一节移到 `release-history-seed-repo.rst`, 从 `release-history.rst` 中删掉 |
+| `check-version` 报 seed 版本号低于 tpl 版本号 | seed 版本号被改回去了, 或在 tpl repo 中手改了版本号 | 版本号只在 seed 中改, 只往前走. tpl 中的版本号由 `sync` 覆盖 |
+| `check-release` 报版本号四处不一致, 或模板产物与 seed 生成的不一致 | bump 之后, 或 seed 改动之后, 没有重新运行 Sync | 重新运行 `sync`, 让人 review diff |
+| `check-release` 报 seed 远端没有当前版本的 tag | seed 还没有发布 | 人在 seed 中 commit, push, 运行 seed 自己的发布 task |
+| `check-release` 报 seed 的 tag 不在 HEAD 上 | seed 打 tag 之后又有新的 commit | 新 commit 属于下一个版本: 在 seed 中 bump, 重新走 Seed Release |
+| `check-release` 报 tpl changelog 条目的开头不对 | 链接或锚点写错, 或 seed 条目的标题 (日期) 改过 | 用输出中打印的预期那一行替换条目开头 |
+
+
+## Versions
+
+| 现象 | 原因 | 修法 |
+| :--- | :--- | :--- |
+| 已发布的 `README.rst` 或 `cookiecutter.json` 的 `_template_version` 还是旧版本号 | bump 版本号之后没有重新运行 Sync. `check-release` 会拦下这种情况, 所以只会出现在绕过它的发布中 | 在 seed 中 bump 一个新版本, 重新走发布流程 |
+| tpl repo 的 `pyproject.toml` 版本号被 Sync 改回了 seed 的值 | 有人在 tpl repo 中手改了版本号 | 这是预期行为: 版本号只在 seed 中改 (见 `08-versioning-and-release.md`) |
 
 
 ## L5: verify-release
@@ -99,6 +121,6 @@
 | 现象 | 原因 | 修法 |
 | :--- | :--- | :--- |
 | 生成的是旧版本的内容 | 发布命令尚未全部执行, 或 push 失败 (`verify-release` 使用私有的克隆缓存, 不会读到 `~/.cookiecutters` 中的旧克隆) | 用 `git ls-remote` 确认远端分支已经指向刚发布的 commit |
-| 已发布版本与本地生成的结果不一致, 但发布过程没有报错 | 本地 `tmp/cctpl/template/` 不是由刚发布的 seed commit 生成的 (例如之后运行过 `try-template`, 或 seed 有了新的改动) | 确认 seed 的 HEAD 等于 `release-history.rst` 中记录的 seed commit, 并且工作区干净, 然后重新运行 `make-template` 和 `verify-release` |
+| 已发布版本与本地生成的结果不一致, 但发布过程没有报错 | 本地 `tmp/cctpl/template/` 不是由刚发布的 seed commit 生成的 (例如之后运行过 `try-template`, 或 seed 有了新的改动) | 确认 seed 的 HEAD 等于 seed 的同名 tag 指向的 commit (`08-versioning-and-release.md` 的 Seed Tag Record), 并且工作区干净, 然后重新运行 `make-template` 和 `verify-release` |
 | 已发布版本与本地生成的结果不一致 | 发布时漏拷贝或多拷贝了文件 | 比较差异, 修 apply-template 或发布脚本, 作为 patch 重新发布 |
 | preset 分支生成的值不是 preset 的值 | preset 分支的 `cookiecutter.json` 没有正确更新 | 检查 `presets/<name>.json` 和 preset 分支的生成过程 |

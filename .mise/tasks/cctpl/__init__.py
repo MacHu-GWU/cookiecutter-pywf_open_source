@@ -8,6 +8,7 @@ The contract these tasks follow lives in
 """
 
 import os
+import re
 import sys
 import json
 import shutil
@@ -43,6 +44,13 @@ from .pair import (
 dir_presets = dir_project_root / "presets"
 PRESET_BRANCH_PREFIX = "preset/"
 
+# --- changelogs (08-versioning-and-release.md)
+# The tpl repo's changelog, and the seed's own one. The seed's
+# release-history.rst is template content, never a changelog of the seed.
+TPL_CHANGELOG = "release-history.rst"
+SEED_CHANGELOG = "release-history-seed-repo.rst"
+SEED_TEMPLATE_CHANGELOG = "release-history.rst"
+
 
 class TaskError(Exception):
     """A task precondition or check failed; the message tells the user why."""
@@ -62,6 +70,14 @@ def get_seed_dir() -> Path:
     if not dir_seed.is_dir():
         raise TaskError(f"CCTPL_SEED_DIR does not point to a directory: {dir_seed}")
     return dir_seed
+
+
+def get_seed_repo_name() -> str:
+    """
+    The seed's GitHub repo name, under the same owner as the tpl repo: the
+    directory name of ``CCTPL_SEED_DIR``, its only source.
+    """
+    return get_seed_dir().name
 
 
 def reset_dir(path: Path) -> None:
@@ -139,12 +155,84 @@ def run_task(main) -> None:
         sys.exit(1)
 
 
+def get_seed_version() -> str:
+    """
+    The version shared by the seed and the tpl repo. Its only source is
+    ``[project].version`` in the seed's ``pyproject.toml``
+    (08-versioning-and-release.md).
+    """
+    with open(get_seed_dir() / "pyproject.toml", "rb") as f:
+        return tomllib.load(f)["project"]["version"]
+
+
 def get_tpl_version() -> str:
     """
-    The tpl repo's own version, from its ``pyproject.toml`` (never the seed's).
+    The version in the tpl repo's ``pyproject.toml``: a copy of the seed's,
+    written by apply-template (``set_tpl_version``).
     """
     with open(dir_project_root / "pyproject.toml", "rb") as f:
         return tomllib.load(f)["project"]["version"]
+
+
+_RE_PYPROJECT_VERSION = re.compile(r'^version = "[^"]*"$', re.MULTILINE)
+
+
+def set_tpl_version(version: str) -> bool:
+    """
+    Write ``version`` into the tpl repo's ``pyproject.toml``, then refresh
+    ``uv.lock``, which records it too. Return True when it changed.
+    """
+    if get_tpl_version() == version:
+        return False
+    path = dir_project_root / "pyproject.toml"
+    text, n = _RE_PYPROJECT_VERSION.subn(
+        f'version = "{version}"', path.read_text(encoding="utf-8"), count=1
+    )
+    if n != 1:
+        raise TaskError(f"no 'version = \"...\"' line in {path}")
+    path.write_text(text, encoding="utf-8")
+    subprocess.run(["uv", "lock"], cwd=dir_project_root, check=True)
+    return True
+
+
+def find_changelog_heading(text: str, version: str) -> str | None:
+    """
+    Return the section heading ``<version> (YYYY-MM-DD)`` of ``version`` in a
+    changelog, or None when the changelog has no section for it.
+    """
+    pattern = rf"^({re.escape(version)} \(\d{{4}}-\d{{2}}-\d{{2}}\))\n~+$"
+    match = re.search(pattern, text, re.MULTILINE)
+    return match.group(1) if match else None
+
+
+def github_anchor(heading: str) -> str:
+    """
+    The anchor GitHub gives a heading when it renders a file:
+    ``3.0.0 (2026-10-23)`` becomes ``300-2026-10-23``.
+    """
+    return re.sub(r"[^\w\- ]", "", heading.strip().lower()).replace(" ", "-")
+
+
+def seed_changelog_url(version: str, heading: str) -> str:
+    """
+    The link to the seed's changelog section of ``version``, at the seed's
+    git tag of that version.
+    """
+    return (
+        f"https://github.com/{GITHUB_OWNER}/{get_seed_repo_name()}/blob/{version}/"
+        f"{SEED_CHANGELOG}#{github_anchor(heading)}"
+    )
+
+
+def tpl_section_header(version: str, seed_heading: str) -> str:
+    """
+    The line every section of the tpl changelog starts with, right below its
+    ``~`` underline: the link to the seed's section of the same version. The
+    seed's tag of that version is the record of which seed commit the
+    template was built from, so no commit is written here.
+    """
+    url = seed_changelog_url(version, seed_heading)
+    return f"Seed repo changes: `{seed_heading} <{url}>`__"
 
 
 def load_presets() -> dict[str, dict]:

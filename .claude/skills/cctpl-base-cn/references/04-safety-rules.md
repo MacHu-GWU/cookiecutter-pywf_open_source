@@ -31,7 +31,8 @@ tpl repo 中的每个 mise task 都按上述原则标注一个安全级别:
 | 编辑 seed 中的文件 (含新增, 删除) | 可以 | 删除文件时在总结中明确列出 |
 | 编辑 tpl repo 中的 source | 可以 | source 的定义见 `02-repo-layout.md` |
 | 手工编辑 artifact (`cookiecutter.json`, template dir, `README.rst`) | **不可以** | 只能通过 `apply-template` 更新 |
-| 修改 tpl 版本号 (`pyproject.toml`) | 可以, 需先确认 | 只在准备发布时, 由人确认 bump 级别后修改 |
+| 修改共用版本号 (seed 的 `pyproject.toml`) | 可以, 需先确认 | 只在准备发布时, 由人确认 bump 级别后修改 (seed 的 `pywf-oss-changelog-seed-repo`) |
+| 手工修改 tpl repo 中的版本号 (`pyproject.toml`, `uv.lock`) | **不可以** | 它们是 seed 版本号的副本, 只能通过 `apply-template` 更新 |
 | 运行 A 级 task | 可以 | 级别定义见上文 Safety Levels |
 | 运行 U 级 task | **只打印** | |
 | 运行 seed 自己的本地 task (安装, 测试, 构建文档) | 可以 | |
@@ -63,7 +64,7 @@ deny 规则按命令前缀匹配整个子命令, 所以被 deny 的 git 子命�
 
 `git -c <key>=<value> ...` 整体被 deny, 因为它能绕过前缀匹配 (`git -c x=y commit` 不匹配 `git commit *`). 只读命令不要加 `-c`. `gh api` 带 `-f` / `-F` / `--field` / `--input` 时会隐式发 POST, 所以同样被 deny.
 
-同理, 通配模式 `Bash(*publish_template.py*)` 会拦下任何提到这个文件名的命令, 包括 `cat`, `grep` 这类只读命令. 需要读这个文件时, 用 Read 工具, 不用 shell 命令.
+同理, 通配模式 `Bash(*publish_template.py*)` 和 `Bash(*publish_presets.py*)` 会拦下任何提到这两个文件名的命令, 包括 `cat`, `grep` 这类只读命令. 需要读这两个文件时, 用 Read 工具, 不用 shell 命令.
 
 deny 规则优先于 allow 规则. 即使 settings 中 allow 了 `Bash(mise *)`, deny 中的 `mise run publish*` 仍然生效.
 
@@ -90,7 +91,7 @@ agent 需要在 tpl repo 的会话中直接读写 seed. 为此, tpl repo 的 `.c
 ````markdown
 ## Commands for you to run
 
-**1. seed repo: 提交本次改动** (准备发布时要记录一个已 push 的 seed commit)
+**1. seed repo: 提交本次改动** (准备发布时 tpl 的 changelog 要链接一个已 push 的 seed tag)
 
 ```bash
 git -C ~/Documents/GitHub/<seed repo> add -A
