@@ -19,7 +19,7 @@ Follow those docs to do the work.
 1. **前置检查** (08 的 Release Prep 第 1 步). 运行 `mise run check-release`, 逐项看输出. tpl changelog 那一项此时失败是正常的. 其余项失败时:
    - 版本号不一致, 或模板产物与 seed 生成的不一致: 运行 `mise run sync`. 它在 artifact 上产生了新的 diff 时停下, 请用户先 review.
    - seed 版本号没有 bump (tpl 已有这个版本的 tag), 或 seed changelog 缺少条目: 停下, 告诉用户先在 seed 中完成 Seed Release 第 1 步 (seed 的 `pywf-oss-changelog-seed-repo`).
-   - seed 未提交, 未 push, 或远端没有这个版本的 tag: 按 04 的格式打印 Seed Release 第 3 步的命令 (seed 中 commit, push, `mise run publish`, `mise run release`), 停下.
+   - seed 未提交, 未 push, 或远端没有这个版本的 tag: 按 04 的格式打印 Seed Release 第 3 步的命令 (seed 中 commit, push, 然后运行 seed 自己的发布 task, 例如 `mise run release`; seed 发布到 PyPI 时还有 `mise run publish`. 以 seed 的 `mise.toml` 为准), 停下.
    - 没有待发布的模板产物变化: 告诉用户本次属于 "不发布" (08 的 Bump Rules), 停下.
 2. **写 tpl changelog.** 运行 `/cctpl-changelog-cn`. 检查条目是写给模板使用者看的, 开头一行 (seed 链接) 与 `check-release` 打印的预期内容一致.
 3. **再次检查.** `mise run check-release` 必须全部通过. 不通过就停下报告.

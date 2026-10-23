@@ -30,7 +30,7 @@
 | Task | Level | 读 | 写 | 成功条件 |
 | :--- | :--- | :--- | :--- | :--- |
 | `make-template` | A | seed 工作区中 git 认可的文件 (`CCTPL_SEED_DIR`, 见 `03-parameterization.md` 的 Input), 参数化脚本, `hooks/` | `tmp/cctpl/stage/`, `tmp/cctpl/template/` (先清空) | 生成完整的 cookiecutter 模板根目录: `cookiecutter.json` (含私有变量 `_template_version` = seed `pyproject.toml` 中的共用版本号), `hooks/`, template dir |
-| `check-version` | A | seed 的 `pyproject.toml`, `release-history-seed-repo.rst`, `release-history.rst`; tpl 的 `pyproject.toml` | 无 | 共用版本号是 `major.minor.patch`, 不低于 tpl repo 中的版本号; seed changelog 有这个版本的条目; seed 的 `release-history.rst` (template content) **没有** 这个版本的条目 |
+| `check-version` | A | seed 的 `pyproject.toml`, `release-history-seed-repo.rst`, `release-history.rst`; tpl 的 `pyproject.toml` | 无 | 共用版本号是 `major.minor.patch`, 不低于 tpl repo 中的版本号; seed changelog 有这个版本的条目; seed 的 `release-history.rst` (template content) **没有** 这个版本的条目; 参数化脚本 `SEED_VERSION_PIN_FILES` 中的每个文件里, 指向 seed 自身 tag 的链接 (`<seed repo>/blob/<x.y.z>/`, `/tree/<x.y.z>/`) 都是这个版本号 |
 | `check-seed-values` | A | `tmp/cctpl/template/` | 无 | template dir 中 (文件名和文件内容) 不存在任何 **独特** seed value, 已声明为合法残留的除外; 每个 parameter 自己的替换结果 (`Parameter.placeholder`, 含 context) 在 template dir 中至少出现一次 (零命中说明 selector 已与 seed 脱节). 不扫描 `hooks/`: hooks 本来就引用变量, 会掩盖零命中 |
 | `test-template` | A | `tmp/cctpl/template/` | `tmp/cctpl/output/` (先清空) | `cookiecutter --no-input` 用默认值成功生成一个项目; 影响 hooks 或模板分支的 choice 变量, 每个可选值至少生成一次 (见 `03-parameterization.md` 的 Choice Coverage) |
 | `check-output` | A | `tmp/cctpl/output/` (含 `choices/` 下的项目) | 无 | 生成的项目中 (文件名和文件内容) 不存在未解析的 `cookiecutter.` 变量引用. 不检查一般的 `{{` / `{%`: 它们可能来自 seed 原本的内容 (见 `03-parameterization.md` 的 Jinja Conflicts) |

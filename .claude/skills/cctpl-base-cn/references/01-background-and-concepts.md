@@ -104,7 +104,7 @@ seed 的包名, 仓库名都有独立的命名空间, 所以它们作为 seed va
 seed repo 和 tpl repo **共用一个版本号**, 由程序保证一致, 不靠人:
 
 - **唯一的源头是 seed 的 `pyproject.toml`.** 版本号只在 seed 中修改. tpl repo 中出现的版本号 (`pyproject.toml`, `uv.lock`, `cookiecutter.json` 的 `_template_version`, `README.rst`) 都是副本, 由 Sync 从 seed 复制过来.
-- **一个版本号同时标记两个仓库.** seed 用它发布到 PyPI 并打 tag; tpl 用它打 tag, 创建 GitHub release. 两个 tag 同名, 指向 "同一次发布" 的两半.
+- **一个版本号同时标记两个仓库.** seed 用它打 tag (seed 发布到 PyPI 时也用它); tpl 用它打 tag, 创建 GitHub release. 两个 tag 同名, 指向 "同一次发布" 的两半.
 - **两本 changelog, 各记各的.** seed 的改动 (也就是生成的项目里有什么变化) 记在 seed 的 `release-history-seed-repo.rst`; tpl repo 自身的改动 (参数化, hooks, 发布流程) 记在 tpl 的 `release-history.rst`. tpl 的每个版本条目第一行链接到 seed changelog 中同版本的条目.
 - **seed 的 `release-history.rst` 不是 seed 的 changelog.** 它是 template content, 是每个生成项目 changelog 的起点, 永远不为 seed 的发布而修改.
 - **发布过的版本号冻结.** 已有 tag 的版本号不再发布第二次. 发布有问题时, 发一个新的 patch 版本.

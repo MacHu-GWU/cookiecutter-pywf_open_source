@@ -11,7 +11,7 @@
 
   | 时机 | Task | 拦下什么 |
   | :--- | :--- | :--- |
-  | 每次 Sync | `check-version` | 版本号格式不对, 比 tpl 中的版本号还低, seed changelog 缺少条目, 条目被误写进 seed 的 `release-history.rst` |
+  | 每次 Sync | `check-version` | 版本号格式不对, 比 tpl 中的版本号还低, seed changelog 缺少条目, 条目被误写进 seed 的 `release-history.rst`, `SEED_VERSION_PIN_FILES` 中指向 seed tag 的链接还是旧版本 |
   | Release Prep | `check-release` | 版本号四处不一致, artifact 不是最新, seed 未 push 或未打 tag, tpl changelog 条目缺失或开头不对, 版本号已经发布过 |
   | Publish | `publish-template` 先跑 `check-release` 的全部检查 | 同上, 在推送任何东西之前 |
 
@@ -75,9 +75,9 @@ Seed repo changes: `3.0.1 (2026-10-30) <https://github.com/<owner>/<seed repo>/b
 
 Seed Release 是 `05-workflow.md` 的阶段 5, 在 seed 中完成:
 
-1. **bump 并写 seed changelog.** seed 的 `pywf-oss-changelog-seed-repo` 按上文 Bump Rules 建议级别, 人确认后修改 seed 的 `pyproject.toml` (并更新 seed 的 `uv.lock`), 在 `release-history-seed-repo.rst` 中写条目. seed 的 `release-history.rst` 不动.
+1. **bump 并写 seed changelog.** seed 的 `pywf-oss-changelog-seed-repo` 按上文 Bump Rules 建议级别, 人确认后修改 seed 的 `pyproject.toml` (并更新 seed 的 `uv.lock`), 在 `release-history-seed-repo.rst` 中写条目. seed 中有文件把链接固定在 seed 的版本 tag 上时 (参数化脚本的 `SEED_VERSION_PIN_FILES`), 把其中的 tag 和旁边的版本文字一起改成新版本. seed 的 `release-history.rst` 不动.
 2. **重新 Sync.** 在 tpl repo 中运行 `mise run sync` (或 `mise run e2e`), 把新版本号复制到 tpl repo. 人 review artifact 的 diff.
-3. **发布 seed.** 人在 seed 中 commit, push, 然后运行 seed 自己的发布 task (发布到 PyPI, 创建同名 tag 和 GitHub release). agent 只按 `04-safety-rules.md` 的格式打印命令.
+3. **发布 seed.** 人在 seed 中 commit, **先 push**, 然后运行 seed 自己的发布 task: 至少要创建同名 tag 和 GitHub release; seed 发布到 PyPI 时也在这一步. 具体 task 名见 seed 的 `mise.toml`. 没 push 就打 tag, tag 会落在 GitHub 上 `main` 的旧 commit 上, `check-release` 会报 "tag 不在 HEAD 上". agent 只按 `04-safety-rules.md` 的格式打印命令.
 
 
 ## Release Prep

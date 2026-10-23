@@ -176,6 +176,11 @@ EXCLUDE = [
     ".claude/skills/pywf-oss-changelog-seed-repo/",
 ]
 
+# Seed files whose links pin the seed's own version tag (blob/<version>/...).
+# check-version requires every pinned version to equal the seed version, so a
+# version bump cannot leave them behind (08-versioning-and-release.md).
+SEED_VERSION_PIN_FILES: list[str] = []
+
 # Files copied byte for byte (no variable replacement).
 NO_RENDER = [
     "*/vendor/**/*.*",

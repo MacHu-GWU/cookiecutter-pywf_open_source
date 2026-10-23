@@ -111,8 +111,8 @@ def check_seed_git(version: str, problems: list[str]) -> None:
     tag_sha = _remote_sha(dir_seed, f"refs/tags/{version}")
     if tag_sha is None:
         problems.append(
-            f"seed: no tag {version} on the remote. In the seed run 'mise run publish' and "
-            "'mise run release' (user's yes each)"
+            f"seed: no tag {version} on the remote. Push the seed, then run its own release "
+            "task(s), such as 'mise run release' (user's yes each)"
         )
     elif tag_sha != head:
         problems.append(f"seed: tag {version} is on {tag_sha[:7]}, but HEAD is {head[:7]}")

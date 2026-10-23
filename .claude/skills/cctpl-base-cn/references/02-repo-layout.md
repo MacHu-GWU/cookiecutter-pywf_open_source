@@ -71,7 +71,7 @@ seed repo 就是一个普通的, 由本模板 (或其前身) 生成的项目. �
 本家族只对 seed 提出以下约束:
 
 - **不放维护逻辑, seed-only 文件除外.** 不放 `cctpl-*-cn`, 不放维护用的 settings, 不放参数化脚本. seed 的 `.claude/` 会进入模板. seed-only 文件 (上图中标为 seed-only 的两项) 是唯一的例外, 它们都在参数化脚本的 `EXCLUDE` 中, 不进入模板.
-- **像普通 Python 库一样发版, 但 changelog 写在 seed-only 文件里.** seed 的每个版本由 `pywf-oss-changelog-seed-repo` bump 版本号并在 `release-history-seed-repo.rst` 中写条目, 再由人在 seed 中运行它自己的发布 task (发布到 PyPI, 打同名 tag). seed 的 `release-history.rst` 是 template content, 不记录 seed 自己的迭代; tpl 的 Sync 中的 `check-version` 发现它出现当前版本的条目时会失败.
+- **像普通 Python 库一样发版, 但 changelog 写在 seed-only 文件里.** seed 的每个版本由 `pywf-oss-changelog-seed-repo` bump 版本号并在 `release-history-seed-repo.rst` 中写条目, 再由人在 seed 中运行它自己的发布 task (打同名 tag; seed 发布到 PyPI 时也在这一步). seed 的 `release-history.rst` 是 template content, 不记录 seed 自己的迭代; tpl 的 Sync 中的 `check-version` 发现它出现当前版本的条目时会失败.
 - **seed-only 文件不被模板内容提及.** 进入模板的文件 (例如 seed 中其他 skill 的文档, `CLAUDE.md`) 不提 seed-only 文件, 否则生成的项目会指向不存在的东西.
 - **seed value 必须足够独特.** 每个 seed value 在 seed 中只应出现在 "需要被参数化" 的位置. 如果某个 seed value 恰好也出现在无关位置 (例如版本号字符串碰巧等于某个依赖的版本), 会被误替换. 包名, 仓库名这类值靠 `_demo` 命名空间天然独特 (见 01 的 Naming Convention); 版本号, license 这类通用值无法独特, 由参数化规则限定替换范围.
 - **不参与模板的文件不从 seed 中删除.** 被 seed 的 `.gitignore` 忽略的文件 (`.venv`, 缓存, 构建产物, 本地私有配置) 天然不进入参数化, 不需要任何处理. 进了 git 但不该进模板的少数文件 (例如由 hooks 重新生成的 `LICENSE.txt`), 由 tpl repo 的参数化脚本排除. seed 需要它们才能作为真实项目运行, 所以不能删.

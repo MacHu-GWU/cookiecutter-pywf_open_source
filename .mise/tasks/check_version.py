@@ -9,11 +9,16 @@ the tpl repo. Local files only. Exits 1 on any problem.
   for it.
 - The seed's ``release-history.rst``, which is template content, has no
   section for it: a seed release must never be recorded there.
+- Every seed link to the seed's own tag, in the files of
+  ``make_template.SEED_VERSION_PIN_FILES``, pins this version.
 
 Spec: 08-versioning-and-release.md.
 """
 
+import re
+
 import cctpl
+import make_template
 
 
 def _as_tuple(version: str) -> tuple[int, ...] | None:
@@ -58,7 +63,30 @@ def collect_problems() -> list[str]:
                 f"seed {cctpl.SEED_TEMPLATE_CHANGELOG}: has a section for {version}. It is "
                 f"template content; move the section to {cctpl.SEED_CHANGELOG}"
             )
+    check_version_pins(version, problems)
     return problems
+
+
+def check_version_pins(version: str, problems: list[str]) -> None:
+    """
+    Links in ``SEED_VERSION_PIN_FILES`` that point at a tag of the seed repo
+    (``<seed repo>/blob/<x.y.z>/`` or ``/tree/<x.y.z>/``) must use ``version``.
+    """
+    dir_seed = cctpl.get_seed_dir()
+    pattern = re.compile(
+        rf"{re.escape(cctpl.get_seed_repo_name())}/(?:blob|tree)/(\d+\.\d+\.\d+)[/)]"
+    )
+    for rel in make_template.SEED_VERSION_PIN_FILES:
+        path = dir_seed / rel
+        if not path.is_file():
+            problems.append(f"seed {rel}: listed in SEED_VERSION_PIN_FILES but missing")
+            continue
+        stale = sorted(set(pattern.findall(path.read_text(encoding="utf-8"))) - {version})
+        if stale:
+            problems.append(
+                f"seed {rel}: links pin {', '.join(stale)}, expected {version}; "
+                "replace the tag in every link (and any version text next to them)"
+            )
 
 
 def main() -> int:

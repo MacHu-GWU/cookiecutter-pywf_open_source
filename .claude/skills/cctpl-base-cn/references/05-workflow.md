@@ -36,7 +36,7 @@ flowchart TD
 | 2 | Seed Self-Test | agent | seed 有改动 | seed 自己的测试 (及文档构建, 如相关) 通过 | `cctpl-change-cn` |
 | 3 | Sync | agent | 阶段 1, 2 完成 | 新的 artifact 已从 `tmp/cctpl/template/` 应用到 tpl repo, 所有检查通过 | `cctpl-sync-cn` |
 | 4 | Review | 你 | 阶段 3 通过 | 你认可 tpl repo 中 artifact 的 diff | — |
-| 5 | Seed Release | 你 (agent 准备) | 阶段 4 通过 | 共用版本号已在 seed 中 bump, seed changelog 已写, 重新 Sync 过; seed 已 commit, push, 发布到 PyPI 并打上同名 tag | seed 的 `pywf-oss-changelog-seed-repo` (agent 打印其余命令) |
+| 5 | Seed Release | 你 (agent 准备) | 阶段 4 通过 | 共用版本号已在 seed 中 bump, seed changelog 已写, 重新 Sync 过; seed 已 commit, push, 并用它自己的发布 task 打上同名 tag (seed 发布到 PyPI 时也在这一步) | seed 的 `pywf-oss-changelog-seed-repo` (agent 打印其余命令) |
 | 6 | Release Prep | agent | seed 已打上当前版本的 tag | tpl 的 `release-history.rst` 已写好当前版本条目 (seed 链接, tpl 自身改动), `check-release` 通过, 发布命令已打印 | `cctpl-release-cn`, `cctpl-changelog-cn` |
 | 7 | Publish | 你 | 阶段 6 完成 | tpl commit + push, tag 和 GitHub release 已创建, `preset/*` 已重新生成并推送 | — (执行打印的命令) |
 | 8 | Verify | agent | 阶段 7 完成 | 从 GitHub 拉取已发布模板生成项目, 测试通过 | `cctpl-verify-cn` |
@@ -80,7 +80,7 @@ flowchart TD
 
 1. agent 在 seed 中用 `pywf-oss-changelog-seed-repo`: 建议 bump 级别, 你确认后修改 seed 的 `pyproject.toml`, 并在 `release-history-seed-repo.rst` 中写当前版本的条目. 只改了 tpl repo 机制的发布也要 bump, seed 条目注明 "seed 无变化".
 2. agent 重新运行 `sync` (或 `e2e`), 把新版本号复制到 tpl repo. 这次 artifact 的 diff 应当只多出版本号.
-3. 你在 seed 中 commit, push, 然后运行 seed 自己的发布 task (发布到 PyPI, 打同名 tag 并创建 GitHub release). agent 只打印命令.
+3. 你在 seed 中 commit, **先 push**, 然后运行 seed 自己的发布 task: 至少要打同名 tag 并创建 GitHub release; seed 发布到 PyPI 时也在这一步. 具体 task 名见 seed 的 `mise.toml`. 先 push 是因为 seed 的 release task 把 tag 打在 GitHub 上 `main` 的最新 commit, 不是本地 HEAD. agent 只打印命令.
 
 之所以在 Release Prep 之前, 是因为 tpl 的 changelog 要链接 seed 的 tag, 而这个 tag 就是 "模板由哪个 seed commit 生成" 的记录. 它必须已经在远端, 别人也能找到.
 

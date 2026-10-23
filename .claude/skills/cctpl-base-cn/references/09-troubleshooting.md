@@ -101,6 +101,7 @@
 | :--- | :--- | :--- |
 | `check-version` 报 seed changelog 没有当前版本的条目 | seed 中 bump 了版本号, 但没有写 `release-history-seed-repo.rst` | 在 seed 中用 `pywf-oss-changelog-seed-repo` 写条目 |
 | `check-version` 报 seed 的 `release-history.rst` 有当前版本的条目 | seed 中有人用了 `pywf-oss-changelog` 或 `pywf-oss-release` 的 changelog 步骤, 把 seed 的条目写进了 template content | 把这一节移到 `release-history-seed-repo.rst`, 从 `release-history.rst` 中删掉 |
+| `check-version` 报某个 seed 文件的链接还固定在旧版本 tag 上 | seed 中 bump 了版本号, 但 `SEED_VERSION_PIN_FILES` 中的文件没有跟着改 | 在 seed 中把这些文件里的 tag (以及旁边的版本文字) 换成新版本 |
 | `check-version` 报 seed 版本号低于 tpl 版本号 | seed 版本号被改回去了, 或在 tpl repo 中手改了版本号 | 版本号只在 seed 中改, 只往前走. tpl 中的版本号由 `sync` 覆盖 |
 | `check-release` 报版本号四处不一致, 或模板产物与 seed 生成的不一致 | bump 之后, 或 seed 改动之后, 没有重新运行 Sync | 重新运行 `sync`, 让人 review diff |
 | `check-release` 报 seed 远端没有当前版本的 tag | seed 还没有发布 | 人在 seed 中 commit, push, 运行 seed 自己的发布 task |
