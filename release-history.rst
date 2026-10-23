@@ -15,6 +15,19 @@ Backlog (TODO)
 **Miscellaneous**
 
 
+3.0.2 (2026-10-23)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Seed repo changes: `3.0.2 (2026-10-23) <https://github.com/MacHu-GWU/cookiecutter_pywf_open_source_demo-project/blob/3.0.2/release-history-seed-repo.rst#302-2026-10-23>`__
+
+**Minor Improvements**
+
+- ``mise run check-version`` (run by ``mise run sync``) now also checks that links pinned to the seed's own version tag point at the current version, so a version bump cannot leave stale links behind. The files to check are listed in the new ``SEED_VERSION_PIN_FILES`` of the parameterization script (empty for now)
+
+**Miscellaneous**
+
+- The seed release instructions (the cctpl skills and the ``check-release`` message) now say to push the seed first and then run the seed's own release task(s); publishing the seed to PyPI is only part of that step when the seed is published there
+
+
 3.0.1 (2026-10-23)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Seed repo changes: `3.0.1 (2026-10-23) <https://github.com/MacHu-GWU/cookiecutter_pywf_open_source_demo-project/blob/3.0.1/release-history-seed-repo.rst#301-2026-10-23>`__

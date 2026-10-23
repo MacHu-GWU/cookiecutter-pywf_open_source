@@ -10,7 +10,7 @@ name = "cookiecutter_pywf_open_source"
 # A copy of the seed's version: seed and tpl share one version, and the seed's
 # pyproject.toml is its only source. Never edit it here: `mise run sync` writes
 # it here, into uv.lock, cookiecutter.json (_template_version) and README.rst.
-version = "3.0.1"
+version = "3.0.2"
 description = "Cookiecutter template for Python open source library projects"
 license = "MIT"
 license-files = ["LICENSE.txt", "AUTHORS.rst"]
