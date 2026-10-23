@@ -10,8 +10,8 @@ description: "The release sequence from a finished change to PyPI and a GitHub t
 
 | Step | Who | How |
 | :--- | :--- | :--- |
-| 1. Bump the version (`21-versioning-and-changelog.md`) | AI, after the user's yes on the number | edit `pyproject.toml`, then `mise run inst` |
-| 2. Write that version's changelog section | AI | `21-versioning-and-changelog.md` |
+| 1. Bump the version (`22-versioning-and-changelog.md`) | AI, after the user's yes on the number | edit `pyproject.toml`, then `mise run inst` |
+| 2. Write that version's changelog section | AI | `22-versioning-and-changelog.md` |
 | 3. Verify | AI | `mise run cov`, `mise run lint`, `mise run build-doc` all pass |
 | 4. Commit and push to `main` | AI, after the user's yes | git |
 | 5. Publish to PyPI | AI, after the user's yes | `mise run publish` (builds, then `uv publish` with `PYPI_TOKEN`) |

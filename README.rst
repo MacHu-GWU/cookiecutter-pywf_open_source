@@ -44,11 +44,11 @@ To use a specific released version (see the `full list of releases <https://gith
 
     cookiecutter https://github.com/MacHu-GWU/cookiecutter-pywf_open_source --checkout tags/${version}
 
-For example, to use ``2.0.0``, the latest version:
+For example, to use ``2.1.0``, the latest version:
 
 .. code-block:: bash
 
-    cookiecutter https://github.com/MacHu-GWU/cookiecutter-pywf_open_source --checkout tags/2.0.0
+    cookiecutter https://github.com/MacHu-GWU/cookiecutter-pywf_open_source --checkout tags/2.1.0
 
 You'll then be prompted to provide the following information (defaults in parentheses):
 

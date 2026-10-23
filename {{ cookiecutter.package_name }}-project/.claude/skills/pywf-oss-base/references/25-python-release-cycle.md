@@ -10,10 +10,10 @@ A new CPython is released every October, and the oldest supported one reaches en
 
 ## 1. A new version is released
 
-1. Add it to the CI matrix and to `USING_COVERAGE` (`18-github-actions.md`), and to the classifiers (`04-python-versions.md`).
+1. Add it to the CI matrix and to `USING_COVERAGE` (`19-github-actions.md`), and to the classifiers (`04-python-versions.md`).
 2. Run the full CI. If a dependency does not support the new Python yet, leave it out of the matrix and classifiers until the dependency ships.
 3. Raise the `requires-python` cap, if one is set.
-4. Record it in the changelog as a Minor Improvement (`21-versioning-and-changelog.md`).
+4. Record it in the changelog as a Minor Improvement (`22-versioning-and-changelog.md`).
 
 ---
 
@@ -21,6 +21,6 @@ A new CPython is released every October, and the oldest supported one reaches en
 
 1. Remove it from the CI matrix, `USING_COVERAGE`, and the classifiers.
 2. Raise the `requires-python` floor.
-3. Lift the dependency caps that existed only for the old floor (`05-uv-dependencies.md` section 2), through the process in `23-dependency-upgrades.md`.
+3. Lift the dependency caps that existed only for the old floor (`05-uv-dependencies.md` section 2), through the process in `24-dependency-upgrades.md`.
 4. Keep the `mise.toml` dev Python inside the range; `.readthedocs.yml` follows it (`04-python-versions.md`).
-5. Record it in the changelog as a Breaking Change (`21-versioning-and-changelog.md`): users on that Python get no new releases.
+5. Record it in the changelog as a Breaking Change (`22-versioning-and-changelog.md`): users on that Python get no new releases.

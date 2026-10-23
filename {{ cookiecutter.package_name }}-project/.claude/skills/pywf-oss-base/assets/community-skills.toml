@@ -1,6 +1,6 @@
 # Community Agent Skills, optional and installed on demand.
 #
-# How entries are added, reviewed, and installed: references/25-community-skills.md
+# How entries are added, reviewed, and installed: references/26-community-skills.md
 # Install one:  .venv/bin/python ${CLAUDE_SKILL_DIR}/../pywf-oss-base/scripts/install_community_skill.py --name <skill_name>
 # Every entry also has a `.claude/skills/<skill_name>/` line in the repo's .gitignore, so installed skills stay local
 # by default; delete that line to commit the skill with the repo.

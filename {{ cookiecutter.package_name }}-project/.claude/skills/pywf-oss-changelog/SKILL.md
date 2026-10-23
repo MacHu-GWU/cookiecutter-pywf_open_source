@@ -6,7 +6,7 @@ description: "Write or correct the section for the upcoming version in release-h
 Make the target version's section of `release-history.rst` accurate and complete, based on git history. Never touch the `x.y.z (Backlog)` section.
 
 Read ../pywf-oss-base/SKILL.md, then:
-- ../pywf-oss-base/references/21-versioning-and-changelog.md
+- ../pywf-oss-base/references/22-versioning-and-changelog.md
 
 ## Step 1: Gather state
 
@@ -28,7 +28,7 @@ git diff <last_tag>..HEAD -- '*.py'
 
 - These outputs are the ground truth.
 - Watch the `api.py` diff: added names are features; removed or renamed names are breaking changes.
-- Classify `pyproject.toml` dependency and Python version changes with the category table in `21-versioning-and-changelog.md`.
+- Classify `pyproject.toml` dependency and Python version changes with the category table in `22-versioning-and-changelog.md`.
 
 ## Step 3: Read the current file
 
@@ -37,7 +37,7 @@ Run `head -100 release-history.rst` to see this repo's exact formatting. Read th
 ## Step 4: Write
 
 - **The section exists:** compare it with git history. Add what is missing, remove what git does not support, and sharpen vague entries.
-- **The section is missing:** insert `VERSION (YYYY-MM-DD)` with today's date directly below the Backlog block, following `21-versioning-and-changelog.md`.
+- **The section is missing:** insert `VERSION (YYYY-MM-DD)` with today's date directly below the Backlog block, following `22-versioning-and-changelog.md`.
 
 Edit the file directly: it is tracked by git, so it needs no confirmation.
 

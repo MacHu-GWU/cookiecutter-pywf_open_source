@@ -31,7 +31,9 @@ Record each finding with the file, the rule broken (reference file and section),
    - every exported name has a docstring;
    - `tests/test_api.py` touches every exported name.
 5. **Test layout.** Run `python ${CLAUDE_SKILL_DIR}/../pywf-oss-base/scripts/check_test_layout.py --project_root .`.
-6. **Docs.**
+6. **Docs and knowledge channels.**
+   - No maintainer or contributor-guide pages in `docs/source/` (`18-knowledge-channels.md`); they belong in the `<maintain_prefix>` family (fixed by `pywf-oss-write-maintain-skill`).
+   - If `.claude/skills/pypi-<package_name>/` exists, its version header matches the last tag (fixed by `pywf-oss-write-pypi-skill`).
    - Folder names follow `14-docfly.md`.
    - Headings use 78-character underlines.
    - `mise run build-doc` shows no warnings. It regenerates the tracked `docs/source/api/`, and may change `uv.lock`: report any `git status` diff in either, then restore them with `git checkout docs/source/api uv.lock`.
@@ -46,6 +48,8 @@ Group the findings by fixing skill:
 - `pywf-oss-add-module`
 - `pywf-oss-write-test`
 - `pywf-oss-write-doc`
+- `pywf-oss-write-maintain-skill`
+- `pywf-oss-write-pypi-skill`
 - `pywf-oss-changelog`
 - `pywf-oss-fix-ci` (Python versions and CI config)
 - `pywf-oss-upgrade-deps` (outdated or unmaintained dependencies)

@@ -20,7 +20,7 @@ description: "codecov.yml versus .coveragerc, how the setup-codecov task stores 
 
 ## 3. Upload in CI
 
-The last workflow step (`18-github-actions.md`) uploads `coverage.xml` with `codecov/codecov-action`. The report path goes in the `files:` input; the old `file:` input is gone.
+The last workflow step (`19-github-actions.md`) uploads `coverage.xml` with `codecov/codecov-action`. The report path goes in the `files:` input; the old `file:` input is gone.
 
 ---
 

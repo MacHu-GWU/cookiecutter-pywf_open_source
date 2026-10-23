@@ -8,9 +8,9 @@ Turn a local repo generated from the template into a live project, with GitHub, 
 Read ../pywf-oss-base/SKILL.md, then:
 - ../pywf-oss-base/references/01-secrets.md
 - ../pywf-oss-base/references/03-mise.md
-- ../pywf-oss-base/references/18-github-actions.md
-- ../pywf-oss-base/references/19-codecov.md
-- ../pywf-oss-base/references/20-readthedocs.md
+- ../pywf-oss-base/references/19-github-actions.md
+- ../pywf-oss-base/references/20-codecov.md
+- ../pywf-oss-base/references/21-readthedocs.md
 
 ## Steps
 
@@ -25,10 +25,10 @@ Read ../pywf-oss-base/SKILL.md, then:
 5. **Codecov.** `mise run setup-codecov`, after the user's yes. Confirm the secret with `gh secret list` (names only).
 6. **Read the Docs.** `mise run setup-readthedocs`, after the user's yes.
 7. **CI.** Show the change that enables the `push` and `pull_request` triggers in `.github/workflows/main.yml`, commit and push it after the user's yes, and watch the run with `gh run list` and `gh run view`.
-8. **Confirm.** Report the CI run, the Codecov project, and the docs build as green or red. Diagnose anything red with `18-github-actions.md`, `19-codecov.md`, or `20-readthedocs.md`, or hand off to `pywf-oss-fix-ci`.
+8. **Confirm.** Report the CI run, the Codecov project, and the docs build as green or red. Diagnose anything red with `19-github-actions.md`, `20-codecov.md`, or `21-readthedocs.md`, or hand off to `pywf-oss-fix-ci`.
 
 ## Boundaries
 
 - Never change repo visibility, branch protection, or any repo setting not listed in these steps.
 
-Next steps: `pywf-oss-add-module` to start coding, and `pywf-oss-release` for the first version.
+Next steps: `pywf-oss-add-module` to start coding, `pywf-oss-release` for the first version, and `pywf-oss-write-maintain-skill` once there is something to say about maintaining it.

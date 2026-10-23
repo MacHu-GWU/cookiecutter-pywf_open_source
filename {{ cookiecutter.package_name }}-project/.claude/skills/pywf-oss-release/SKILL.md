@@ -8,8 +8,8 @@ Take the repo from "the change is done" to "the version is on PyPI and tagged on
 Read ../pywf-oss-base/SKILL.md, then:
 - ../pywf-oss-base/references/01-secrets.md
 - ../pywf-oss-base/references/03-mise.md
-- ../pywf-oss-base/references/21-versioning-and-changelog.md
-- ../pywf-oss-base/references/22-release.md
+- ../pywf-oss-base/references/22-versioning-and-changelog.md
+- ../pywf-oss-base/references/23-release.md
 
 ## Steps
 

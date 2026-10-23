@@ -15,6 +15,25 @@ Backlog (TODO)
 **Miscellaneous**
 
 
+2.1.0 (2026-10-23)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+**Features and Improvements**
+
+- Generated projects now support a **maintainer skill family** (``maintain-<package_name>-base`` plus one invoker per repeatable job) that records the library's own architecture, invariants, design decisions, debugging recipes, and maintenance jobs, so agents (and contributors) maintaining the repo load them instead of reading a maintainer guide in the docs
+- New ``pywf-oss-write-maintain-skill`` skill creates and updates that family from the code, asking before it writes a new family
+- New ``18-knowledge-channels.md`` reference: which fact goes to which of the three channels (Sphinx user docs, the ``pypi-<package_name>`` API skill, the ``maintain-<package_name>`` skills)
+- The generated ``CLAUDE.md`` points to the maintenance skills and says knowledge is written for agents too, never as a maintainer guide in the docs
+
+**Minor Improvements**
+
+- ``update_skill_index.py`` can regenerate the References index of any base skill (``--skill_dir``), and ``check_skill_family.py`` can check the maintenance family (``--prefix <maintain_prefix>``)
+- ``pywf-oss-write-doc`` and related skills now describe user docs only, and hand API and maintenance knowledge to the matching skill
+
+**Miscellaneous**
+
+- Renumbered the ``pywf-oss-base`` references from ``18`` onward (GitHub Actions is now ``19``, through Skill Family Workflow at ``27``) to make room for the new reference
+
+
 2.0.0 (2026-10-15)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Built from seed @ ``e988252``

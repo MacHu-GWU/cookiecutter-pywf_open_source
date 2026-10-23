@@ -1,6 +1,6 @@
 ---
 name: pywf-oss-base
-description: "Shared conventions, references, and scripts of the pywf-oss skills for pywf open-source Python libraries: setup, layout, code style, tests, docs, CI and hosting, release, dependencies, and secrets. Load it before ad-hoc work on modules, tests, or docs in such a repo, for a question about these conventions, or when unsure which pywf-oss skill fits a job."
+description: "Shared conventions, references, and scripts of the pywf-oss skills for pywf open-source Python libraries: setup, layout, code style, tests, user docs and the agent skills that hold API and maintenance knowledge, CI and hosting, release, dependencies, and secrets. Load it before ad-hoc work on modules, tests, or docs in such a repo, for a question about these conventions, or when unsure which pywf-oss skill fits a job."
 ---
 
 The conventions of the pywf open-source Python library template, shared by every `pywf-oss-*` skill. `<package_name>` is the import package directory: snake_case, equal to `[project].name` in `pyproject.toml`.
@@ -29,15 +29,16 @@ Numbered in project-lifecycle order; each cites only earlier ones. For a questio
 - **furo** (`references/15-furo.md`): Read when changing the look of the docs, the theme settings, or the furo version.
 - **sphinx-design** (`references/16-sphinx-design.md`): Read when a docs page needs more than plain text, such as a landing page, install tabs, or an FAQ.
 - **nbsphinx Notebooks** (`references/17-nbsphinx.md`): Read when creating or editing a .ipynb docs page.
-- **GitHub Actions** (`references/18-github-actions.md`): Read when changing .github/workflows/main.yml, or when a CI run fails or shows warnings.
-- **Codecov** (`references/19-codecov.md`): Read when connecting a repo to Codecov, or when the Codecov upload fails or its numbers look wrong.
-- **Read the Docs** (`references/20-readthedocs.md`): Read when setting up docs hosting, or when the hosted build fails or differs from the local one.
-- **Versioning and Changelog** (`references/21-versioning-and-changelog.md`): Read when choosing a version number, or writing or reviewing release notes.
-- **Release** (`references/22-release.md`): Read when publishing a new version.
-- **Dependency Upgrades** (`references/23-dependency-upgrades.md`): Read when upgrading or replacing a dependency, or when asked whether a new version is worth it.
-- **Following the Python Release Cycle** (`references/24-python-release-cycle.md`): Read when a new CPython is released or the oldest reaches end of life, or when asked to add or drop a supported Python version.
-- **Community Skills** (`references/25-community-skills.md`): Read when installing a community skill, or adding or updating a catalog entry.
-- **Skill Family Workflow** (`references/26-skill-family-workflow.md`): Read when unsure which skill fits a job, when a skill finishes and the next step is unclear, or when planning a multi-step job.
+- **Knowledge Channels** (`references/18-knowledge-channels.md`): Read when deciding where to write down how to use or how to maintain the library, or before writing a maintainer or contributor guide.
+- **GitHub Actions** (`references/19-github-actions.md`): Read when changing .github/workflows/main.yml, or when a CI run fails or shows warnings.
+- **Codecov** (`references/20-codecov.md`): Read when connecting a repo to Codecov, or when the Codecov upload fails or its numbers look wrong.
+- **Read the Docs** (`references/21-readthedocs.md`): Read when setting up docs hosting, or when the hosted build fails or differs from the local one.
+- **Versioning and Changelog** (`references/22-versioning-and-changelog.md`): Read when choosing a version number, or writing or reviewing release notes.
+- **Release** (`references/23-release.md`): Read when publishing a new version.
+- **Dependency Upgrades** (`references/24-dependency-upgrades.md`): Read when upgrading or replacing a dependency, or when asked whether a new version is worth it.
+- **Following the Python Release Cycle** (`references/25-python-release-cycle.md`): Read when a new CPython is released or the oldest reaches end of life, or when asked to add or drop a supported Python version.
+- **Community Skills** (`references/26-community-skills.md`): Read when installing a community skill, or adding or updating a catalog entry.
+- **Skill Family Workflow** (`references/27-skill-family-workflow.md`): Read when unsure which skill fits a job, when a skill finishes and the next step is unclear, or when planning a multi-step job.
 
 <!-- END references index -->
 
@@ -50,12 +51,12 @@ Run a script with `python ${CLAUDE_SKILL_DIR}/scripts/<script_name>.py` from thi
 | `scripts/check_test_layout.py` | Test layout check | `10-test-layout.md` |
 | `scripts/check_one_import_per_line.py` | One-import-per-statement check, run by `mise run lint` | `06-ruff.md` |
 | `scripts/check_doc_xrefs.py` | Finds cross-references that did not become links | `13-sphinx.md` |
-| `scripts/update_skill_index.py` | Regenerates the References index above | `00-authoring-references.md` |
-| `scripts/check_skill_family.py` | Checks the skill family itself | `00-authoring-references.md` |
-| `scripts/install_community_skill.py` | Stages and installs community skills | `25-community-skills.md` |
-| `assets/community-skills.toml` | The pinned community skill catalog | `25-community-skills.md` |
+| `scripts/update_skill_index.py` | Regenerates the References index above, or of any base skill (`--skill_dir`) | `00-authoring-references.md` |
+| `scripts/check_skill_family.py` | Checks this family, or the maintenance family with `--prefix <maintain_prefix>` | `00-authoring-references.md`, `18-knowledge-channels.md` |
+| `scripts/install_community_skill.py` | Stages and installs community skills | `26-community-skills.md` |
+| `assets/community-skills.toml` | The pinned community skill catalog | `26-community-skills.md` |
 | `assets/raw-rst-cell.json`, `assets/notebook-page-template.ipynb` | Notebook docs page templates | `17-nbsphinx.md` |
 
 ## Which skill to use
 
-When the job is unclear, or the question is about a convention rather than an action, stay here: read the reference that covers it, then name the invoker that fits. Which invoker does which job, and the order they run in, is in `references/26-skill-family-workflow.md`.
+When the job is unclear, or the question is about a convention rather than an action, stay here: read the reference that covers it, then name the invoker that fits. Which invoker does which job, and the order they run in, is in `references/27-skill-family-workflow.md`.

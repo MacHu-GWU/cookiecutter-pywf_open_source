@@ -14,7 +14,7 @@
     "codecov_token_field": "your_codecov_token_field",
     "readthedocs_token_field": "your_readthedocs_token_field",
     "pypi_token_field": "your_pypi_token_field",
-    "_template_version": "2.0.0",
+    "_template_version": "2.1.0",
     "__prompts__": {
         "package_name": "Your Python package name, in snake case (e.g. my_package)",
         "github_username": "Your GitHub username, the owner of the new repo",

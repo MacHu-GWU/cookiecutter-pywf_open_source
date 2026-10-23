@@ -54,6 +54,6 @@ Read each outdated package's changelog from the locked version to the latest, an
 | Code | `mise run lint` |
 | Docs build | `mise run build-doc` shows no new warnings, and the cross-reference check reports 0 unresolved (`13-sphinx.md`). |
 | Docs look | With the visual check of `13-sphinx.md`, the sample pages in `docs/source/` (reStructuredText, notebook, sphinx-design gallery) render: tabs switch, dropdowns open, the jinja table is filled, raw cells render. For a theme upgrade, check light and dark mode (`15-furo.md`). |
-| CI | After pushing, the whole matrix passes and Codecov receives the report (`18-github-actions.md`, `19-codecov.md`). |
+| CI | After pushing, the whole matrix passes and Codecov receives the report (`19-github-actions.md`, `20-codecov.md`). |
 
-The changelog entry for an upgrade follows the category table in `21-versioning-and-changelog.md`.
+The changelog entry for an upgrade follows the category table in `22-versioning-and-changelog.md`.

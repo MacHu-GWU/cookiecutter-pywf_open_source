@@ -9,7 +9,7 @@
 name = "cookiecutter_pywf_open_source"
 # The tpl version. This is its only source: `mise run sync` writes it into
 # cookiecutter.json (_template_version) and README.rst. Re-run sync after a bump.
-version = "2.0.0"
+version = "2.1.0"
 description = "Cookiecutter template for Python open source library projects"
 license = "MIT"
 license-files = ["LICENSE.txt", "AUTHORS.rst"]

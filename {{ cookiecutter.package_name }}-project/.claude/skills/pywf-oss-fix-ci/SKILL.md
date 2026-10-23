@@ -7,14 +7,14 @@ Find from the logs why a hosted service is red, fix the cause in the repo, and c
 
 Read ../pywf-oss-base/SKILL.md, then:
 - ../pywf-oss-base/references/04-python-versions.md
-- ../pywf-oss-base/references/18-github-actions.md
-- ../pywf-oss-base/references/19-codecov.md
-- ../pywf-oss-base/references/20-readthedocs.md
-- ../pywf-oss-base/references/24-python-release-cycle.md (only for adding or dropping a Python version)
+- ../pywf-oss-base/references/19-github-actions.md
+- ../pywf-oss-base/references/20-codecov.md
+- ../pywf-oss-base/references/21-readthedocs.md
+- ../pywf-oss-base/references/25-python-release-cycle.md (only for adding or dropping a Python version)
 
 ## Steps
 
-1. **Find the red service and its log** with the commands in `18-github-actions.md`, `19-codecov.md`, or `20-readthedocs.md`. Quote the decisive log lines to the user.
+1. **Find the red service and its log** with the commands in `19-github-actions.md`, `20-codecov.md`, or `21-readthedocs.md`. Quote the decisive log lines to the user.
 2. **Reproduce locally** where possible: `mise run cov` for tests, `mise run build-doc` for docs. If it passes locally, compare OS and Python version, the installed extras (`uv sync --extra test` in CI, `--all-extras` locally), and the working directory.
 3. **Fix the cause, not the symptom.**
    - Never skip, xfail, or delete a failing test to turn CI green without the user's yes.

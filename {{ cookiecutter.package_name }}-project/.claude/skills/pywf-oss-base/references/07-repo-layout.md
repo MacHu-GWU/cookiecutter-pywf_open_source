@@ -16,7 +16,8 @@ description: "The top-level tree of a template repo: what each folder and config
 ├── tests_load/                # optional: load tests
 ├── docs/source/               # Sphinx source
 ├── .mise/tasks/*.py           # Python scripts behind mise tasks
-├── .claude/                   # Claude Code settings, skills, and launch.json (docs preview server)
+├── .claude/                   # Claude Code settings, launch.json (docs preview server), and skills:
+│   └── skills/                #   pywf-oss-* (template), pypi-<package_name> (API), <maintain_prefix>-* (maintenance)
 ├── .github/workflows/main.yml # CI
 ├── pyproject.toml             # metadata, dependencies, tool config (ruff, pytest)
 ├── mise.toml                  # tools, tasks, env vars
